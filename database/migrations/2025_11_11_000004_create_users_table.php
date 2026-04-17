@@ -20,7 +20,7 @@ return new class extends Migration {
             $table->boolean('is_banned')->default(false);
             $table->text('ban_reason')->nullable();
             $table->timestamp('banned_at')->nullable();
-            $table->unsignedInteger('removed_reviews_count')->default(0)->after('banned_at');
+            $table->unsignedInteger('removed_reviews_count')->default(0);
 
             $table->string('stripe_account_id')->nullable()->index();
             $table->boolean('stripe_onboarded')->default(false);
@@ -30,7 +30,7 @@ return new class extends Migration {
             $table->string('pending_email')->nullable()->unique();
             $table->string('pending_email_token')->nullable();
 
-            $table->string('buyer_code', 6)->nullable()->unique()->after('role');
+            $table->string('buyer_code', 6)->nullable()->unique();
 
             $table->timestamps();
             $table->rememberToken();

@@ -2,10 +2,10 @@
 
 namespace App\Services;
 
-use App\Models\Review;
 use App\Models\Listing;
 use App\Models\Order;
 use App\Models\OrderItem;
+use App\Models\Review;
 use App\Models\ServiceOrder;
 use App\Repositories\Contracts\ReviewRepositoryInterface;
 
@@ -42,42 +42,43 @@ class ReviewService
             throw new \Exception('Negalite palikti atsiliepimo ant savo skelbimo.');
         }
 
-        $existing = Review::where('listing_id', $listingId)
+        $existingReviewCount = Review::query()
+            ->where('listing_id', $listingId)
             ->where('user_id', $userId)
-            ->first();
+            ->count();
 
-        if ($existing) {
-            throw new \Exception('Jau įvertinote šį skelbimą.');
+        $allowedPurchaseCount = 0;
+
+        if ($listing->tipas === 'preke') {
+            if ($listing->is_renewable || (int) $listing->kiekis >= 1) {
+                throw new \Exception('Atsiliepimą prekei galima palikti tik kai skelbimas nėra atsinaujinantis ir prekė nebeturi likučio.');
+            }
+
+            $allowedPurchaseCount = (int) OrderItem::query()
+                ->where('listing_id', $listingId)
+                ->whereHas('order', function ($q) use ($userId) {
+                    $q->where('user_id', $userId)
+                      ->where('statusas', Order::STATUS_PAID);
+                })
+                ->whereHas('order.shipments', function ($q) use ($listing) {
+                    $q->where('seller_id', $listing->user_id)
+                      ->whereIn('status', ['approved', 'reimbursed']);
+                })
+                ->sum('kiekis');
+        } elseif ($listing->tipas === 'paslauga') {
+            $allowedPurchaseCount = ServiceOrder::query()
+                ->where('listing_id', $listingId)
+                ->where('buyer_id', $userId)
+                ->where('payment_status', ServiceOrder::PAYMENT_PAID)
+                ->count();
         }
 
-        $hasPurchasedProduct = OrderItem::query()
-            ->where('listing_id', $listingId)
-            ->whereHas('order', function ($q) use ($userId) {
-                $q->where('user_id', $userId)
-                  ->where('statusas', Order::STATUS_PAID);
-            })
-            ->whereHas('order.shipments', function ($q) use ($listing) {
-                $q->where('seller_id', $listing->user_id)
-                  ->whereIn('status', ['approved', 'reimbursed']);
-            })
-            ->exists();
-
-        $hasPurchasedService = ServiceOrder::query()
-            ->where('listing_id', $listingId)
-            ->where('buyer_id', $userId)
-            ->where(function ($q) {
-                $q->where(function ($q2) {
-                    $q2->where('completion_method', ServiceOrder::COMPLETION_PLATFORM)
-                       ->where('payment_status', ServiceOrder::PAYMENT_PAID);
-                })->orWhere(function ($q2) {
-                    $q2->where('completion_method', ServiceOrder::COMPLETION_PRIVATE)
-                       ->where('status', ServiceOrder::STATUS_COMPLETED);
-                });
-            })
-            ->exists();
-
-        if (!($hasPurchasedProduct || $hasPurchasedService)) {
+        if ($allowedPurchaseCount < 1) {
             throw new \Exception('Įvertinti galima tik pirktus skelbimus');
+        }
+
+        if ($existingReviewCount >= $allowedPurchaseCount) {
+            throw new \Exception('Jau palikote maksimalų galimą atsiliepimų skaičių šiam skelbimui.');
         }
 
         return $this->reviewRepository->create($data);

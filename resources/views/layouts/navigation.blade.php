@@ -497,7 +497,9 @@
                 style="background-color: rgb(234, 220, 200)"
                 placeholder="Min. kaina"
                 value="{{ request('min_price') }}"
-                min="0"
+               min="0.20"
+               max="99999"
+               step="0.01"
             >
 
             <!-- Max Price -->
@@ -508,7 +510,9 @@
                 style="background-color: rgb(234, 220, 200)"
                 placeholder="Maks. kaina"
                 value="{{ request('max_price') }}"
-                min="0"
+               min="0.20"
+               max="99999"
+               step="0.01"
             >
 
             <!-- City -->

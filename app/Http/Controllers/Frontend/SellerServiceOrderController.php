@@ -165,7 +165,7 @@ class SellerServiceOrderController extends Controller
                 'package_size.required' => 'Pasirinkite siuntos dydį.',
                 'package_size.in' => 'Pasirinktas siuntos dydis neteisingas.',
             
-                'proof.required' => 'Įkelkite siuntos įrodymą.',
+                'proof.required' => 'Įkelkite siuntos lipduką.',
                 'proof.file' => 'Įkeltas įrodymas turi būti failas.',
                 'proof.mimes' => 'Siuntos įrodymas turi būti JPG, JPEG, PNG, PDF, DOC arba DOCX formato.',
                 'proof.max' => 'Siuntos įrodymo failas negali būti didesnis nei 5 MB.',

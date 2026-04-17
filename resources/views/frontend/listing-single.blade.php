@@ -858,7 +858,7 @@ input[type=number] {
 @if(auth()->check() && !$isOwner && $hasReviewed)
     <div class="p-3 rounded text-black mb-4"
          style="background-color: rgb(207, 174, 134); border: 1px solid #836354">
-        Jūs jau palikote atsiliepimą šiam skelbimui.
+        Jūs jau palikote atsiliepimą kiekvienam prikimui šiame skelbime.
     </div>
 @endif
         

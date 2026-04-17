@@ -55,7 +55,7 @@
                                         </span>
                         
                                         <a href="{{ route('listing.single', $item->Listing->id) }}"
-                                           class="text-black">
+                                           class="text-black hover:underline">
                                             {{ $itemReviewLeft ? 'Peržiūrėti skelbimą' : 'Palikti atsiliepimą' }}
                                         </a>
                                     </div>

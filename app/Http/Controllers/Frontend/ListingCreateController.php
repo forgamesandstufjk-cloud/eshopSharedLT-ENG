@@ -75,7 +75,6 @@ class ListingCreateController extends Controller
     abort(403);
 }
 
-        // Prevent editing non-renewable sold-out items
         if ($listing->is_hidden && $listing->is_renewable == 0) {
             abort(403, 'Šis išparduotas skelbimas negali būti redaguojamas.');
         }
@@ -101,10 +100,10 @@ class ListingCreateController extends Controller
     $data = $request->validate([
         'pavadinimas'   => 'required|string|max:255',
         'aprasymas'     => 'required|string|max:2000',
-        'kaina'         => 'required|numeric|min:0',
+        'kaina'         => 'required|numeric|min:0.20|max:99999',
         'tipas'         => 'required|in:preke,paslauga',
         'category_id'   => 'required|exists:category,id',
-        'kiekis'        => 'required_if:tipas,preke|integer|min:1',
+        'kiekis'        => 'required_if:tipas,preke|integer|min:1|max:999',
         'package_size'  => 'required_if:tipas,preke|in:XS,S,M,L',
         'is_renewable'  => 'nullable|boolean',
         'photos.*'      => 'nullable|image|max:4096',

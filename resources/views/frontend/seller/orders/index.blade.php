@@ -129,7 +129,7 @@
                                         <input type="hidden" name="shipment_form_id" value="{{ $s->id }}">
                                 
                                         @if($showShipmentErrors)
-                                            <div class="p-2 rounded text-sm text-black" style="background-color: rgb(230, 190, 190)">
+                                            <div class="p-3 rounded text-sm text-black border" style="background-color: rgb(207, 174, 134); border-color: #836354">
                                                 <ul class="list-disc pl-5">
                                                     @foreach($errors->all() as $error)
                                                         <li>{{ $error }}</li>
@@ -311,7 +311,7 @@
                                                 <input type="hidden" name="service_order_form_id" value="{{ $so->id }}">
                                         
                                                 @if($showServiceShipmentErrors)
-                                                    <div class="p-2 rounded text-sm text-black" style="background-color: rgb(230, 190, 190)">
+                                                    <div class="p-3 rounded text-sm text-black border" style="background-color: rgb(207, 174, 134); border-color: #836354">
                                                         <ul class="list-disc pl-5">
                                                             @foreach($errors->all() as $error)
                                                                 <li>{{ $error }}</li>

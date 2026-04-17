@@ -117,26 +117,42 @@
                             <td class="p-3 block sm:table-cell text-black">
                                 <span class="font-semibold sm:hidden">Siuntos patvirtinimas:</span>
                                 @if($s->status === 'pending')
+                                    @php
+                                        $showShipmentErrors = old('shipment_form_id') == $s->id && $errors->any();
+                                    @endphp
+                                
                                     <form method="POST"
                                           action="{{ route('seller.shipments.update', $s) }}"
                                           enctype="multipart/form-data"
                                           class="space-y-2 mt-2">
                                         @csrf
-
+                                        <input type="hidden" name="shipment_form_id" value="{{ $s->id }}">
+                                
+                                        @if($showShipmentErrors)
+                                            <div class="p-2 rounded text-sm text-black" style="background-color: rgb(230, 190, 190)">
+                                                <ul class="list-disc pl-5">
+                                                    @foreach($errors->all() as $error)
+                                                        <li>{{ $error }}</li>
+                                                    @endforeach
+                                                </ul>
+                                            </div>
+                                        @endif
+                                
                                         <input
                                             name="tracking_number"
+                                            value="{{ old('shipment_form_id') == $s->id ? old('tracking_number') : '' }}"
                                             class="border p-2 rounded w-full text-black focus:outline-none focus:ring-1 focus:ring-[#836354] focus:border-[#836354]"
                                             style="background-color: rgb(234, 220, 200); border-color: #6B7280"
                                             placeholder="Siuntos sekimo numeris"
                                         >
-
+                                
                                         <input
                                             type="file"
                                             name="proof"
                                             class="border p-2 rounded w-full text-black focus:outline-none focus:ring-1 focus:ring-[#836354] focus:border-[#836354]"
                                             style="background-color: rgb(234, 220, 200); border-color: #6B7280"
                                         >
-
+                                
                                         <button
                                             class="text-white px-3 py-2 rounded w-full hover:text-black"
                                             style="background-color: rgb(131, 99, 84)">
@@ -279,36 +295,52 @@
                                         </form>
                             
                                     @elseif(
-                                        $so->completion_method === \App\Models\ServiceOrder::COMPLETION_PLATFORM &&
-                                        $so->payment_status === \App\Models\ServiceOrder::PAYMENT_PAID &&
-                                        $so->shipment_status === \App\Models\ServiceOrder::SHIPMENT_PENDING
-                                    )
-                                        <form method="POST"
-                                              action="{{ route('seller.service-orders.shipment.submit', $so) }}"
-                                              enctype="multipart/form-data"
-                                              class="space-y-2 mt-2">
-                                            @csrf
-                            
-                                            <input
-                                                name="tracking_number"
-                                                class="border p-2 rounded w-full text-black focus:outline-none focus:ring-1 focus:ring-[#836354] focus:border-[#836354]"
-                                                style="background-color: rgb(234, 220, 200); border-color: #6B7280"
-                                                placeholder="Siuntos sekimo numeris"
-                                            >
-                            
-                                            <input
-                                                type="file"
-                                                name="proof"
-                                                class="border p-2 rounded w-full text-black focus:outline-none focus:ring-1 focus:ring-[#836354] focus:border-[#836354]"
-                                                style="background-color: rgb(234, 220, 200); border-color: #6B7280"
-                                            >
-                            
-                                            <button
-                                                class="text-white px-3 py-2 rounded w-full hover:text-black"
-                                                style="background-color: rgb(131, 99, 84)">
-                                                Pateikti siuntos įrodymą
-                                            </button>
-                                        </form>
+                                            $so->completion_method === \App\Models\ServiceOrder::COMPLETION_PLATFORM &&
+                                            $so->payment_status === \App\Models\ServiceOrder::PAYMENT_PAID &&
+                                            $so->shipment_status === \App\Models\ServiceOrder::SHIPMENT_PENDING
+                                        )
+                                            @php
+                                                $showServiceShipmentErrors = old('service_order_form_id') == $so->id && $errors->any();
+                                            @endphp
+                                        
+                                            <form method="POST"
+                                                  action="{{ route('seller.service-orders.shipment.submit', $so) }}"
+                                                  enctype="multipart/form-data"
+                                                  class="space-y-2 mt-2">
+                                                @csrf
+                                                <input type="hidden" name="service_order_form_id" value="{{ $so->id }}">
+                                        
+                                                @if($showServiceShipmentErrors)
+                                                    <div class="p-2 rounded text-sm text-black" style="background-color: rgb(230, 190, 190)">
+                                                        <ul class="list-disc pl-5">
+                                                            @foreach($errors->all() as $error)
+                                                                <li>{{ $error }}</li>
+                                                            @endforeach
+                                                        </ul>
+                                                    </div>
+                                                @endif
+                                        
+                                                <input
+                                                    name="tracking_number"
+                                                    value="{{ old('service_order_form_id') == $so->id ? old('tracking_number') : '' }}"
+                                                    class="border p-2 rounded w-full text-black focus:outline-none focus:ring-1 focus:ring-[#836354] focus:border-[#836354]"
+                                                    style="background-color: rgb(234, 220, 200); border-color: #6B7280"
+                                                    placeholder="Siuntos sekimo numeris"
+                                                >
+                                        
+                                                <input
+                                                    type="file"
+                                                    name="proof"
+                                                    class="border p-2 rounded w-full text-black focus:outline-none focus:ring-1 focus:ring-[#836354] focus:border-[#836354]"
+                                                    style="background-color: rgb(234, 220, 200); border-color: #6B7280"
+                                                >
+                                        
+                                                <button
+                                                    class="text-white px-3 py-2 rounded w-full hover:text-black"
+                                                    style="background-color: rgb(131, 99, 84)">
+                                                    Pateikti siuntos įrodymą
+                                                </button>
+                                            </form>
                             
                                     @elseif($so->shipment_status === \App\Models\ServiceOrder::SHIPMENT_NEEDS_REVIEW && $so->proof_path)
                                         <a href="{{ \Illuminate\Support\Facades\Storage::disk('photos')->url($so->proof_path) }}"

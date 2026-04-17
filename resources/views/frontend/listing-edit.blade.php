@@ -60,7 +60,8 @@
                 <label class="font-semibold text-black">Kaina (€)</label>
                 <input 
                     type="number" 
-                    min="0"
+                     min="0.20"
+                     max="99999"
                     step="0.01" 
                     name="kaina"
                     value="{{ old('kaina', $listing->kaina) }}"
@@ -207,6 +208,7 @@
                     <input 
                         type="number" 
                         min="1"
+                        max="999"
                         name="kiekis"
                         value="{{ old('kiekis', $listing->kiekis) }}"
                         class="w-full border border-gray-500 rounded px-3 py-2 text-black focus:outline-none focus:ring-1 focus:ring-[#836354] focus:border-[#836354]"

@@ -35,7 +35,7 @@ return new class extends Migration
             $table->string('payment_provider')->nullable();
             $table->string('payment_intent_id')->nullable();
             $table->unsignedBigInteger('amount_charged_cents')->nullable();
-            $table->string('reimbursement_transfer_id')->nullable()->after('amount_charged_cents');
+            $table->string('reimbursement_transfer_id')->nullable();
 
             $table->boolean('is_anonymous')->default(false);
             $table->string('buyer_code_snapshot', 20)->nullable();

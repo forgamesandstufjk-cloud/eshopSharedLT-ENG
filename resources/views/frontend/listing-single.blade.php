@@ -596,16 +596,25 @@ input[type=number] {
 @php
     $user = auth()->user();
     $isOwner = $user && $user->id === $listing->user_id;
+    $isBanned = $user && $user->isBannedUser();
 
-    $reviewsAllowed = $listing->tipas === 'paslauga'
-        ? $hasPurchased
-        : (!$listing->is_renewable && (int) $listing->kiekis < 1);
+    $purchaseCount = $listing->tipas === 'preke'
+        ? $productPurchaseCount
+        : $servicePurchaseCount;
 
-    $canLeaveReview = !$isOwner
-        && $reviewsAllowed
-        && !($user && $user->isBannedUser())
-        && $hasPurchased
-        && !$hasReviewed;
+    $reviewCount = auth()->check()
+        ? $listing->review()->where('user_id', auth()->id())->count()
+        : 0;
+
+    $reviewWindowOpen = $listing->tipas === 'preke'
+        ? ($listing->is_renewable || (int) $listing->kiekis >= 1)
+        : true;
+
+    $canLeaveReview = auth()->check()
+        && !$isOwner
+        && !$isBanned
+        && $reviewWindowOpen
+        && $purchaseCount > $reviewCount;
 
     $sort = request('sort', 'newest');
 
@@ -855,10 +864,10 @@ input[type=number] {
         </div>
 
         {{-- RIGHT: REVIEW FORM --}}
-@if(auth()->check() && !$isOwner && $hasReviewed)
+@if(auth()->check() && !$isOwner && $purchaseCount > 0 && !$canLeaveReview)
     <div class="p-3 rounded text-black mb-4"
          style="background-color: rgb(207, 174, 134); border: 1px solid #836354">
-        Jūs jau palikote atsiliepimą kiekvienam pirkimui šiame skelbime.
+        Jūs jau palikote atsiliepimą kiekvienam šio skelbimo pirkimui.
     </div>
 @endif
         

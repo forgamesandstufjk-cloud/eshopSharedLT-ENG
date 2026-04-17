@@ -150,9 +150,31 @@ class SellerServiceOrderController extends Controller
         abort_unless((int) $serviceOrder->seller_id === (int) auth()->id(), 403);
 
         $data = $request->validate([
-            'tracking_number' => 'required|string|max:255',
-            'proof' => 'required|file|mimes:jpg,jpeg,png,pdf,doc,docx|max:5120',
-        ]);
+                'tracking_number' => 'required|string|max:255',
+                'carrier' => 'required|in:omniva,venipak',
+                'package_size' => 'required|in:S,M,L',
+                'proof' => 'required|file|mimes:jpg,jpeg,png,pdf,doc,docx|max:5120',
+            ], [
+                'tracking_number.required' => 'Įveskite siuntos sekimo numerį.',
+                'tracking_number.string' => 'Siuntos sekimo numeris turi būti tekstas.',
+                'tracking_number.max' => 'Siuntos sekimo numeris yra per ilgas.',
+            
+                'carrier.required' => 'Pasirinkite siuntos vežėją.',
+                'carrier.in' => 'Pasirinktas siuntos vežėjas neteisingas.',
+            
+                'package_size.required' => 'Pasirinkite siuntos dydį.',
+                'package_size.in' => 'Pasirinktas siuntos dydis neteisingas.',
+            
+                'proof.required' => 'Įkelkite siuntos įrodymą.',
+                'proof.file' => 'Įkeltas įrodymas turi būti failas.',
+                'proof.mimes' => 'Siuntos įrodymas turi būti JPG, JPEG, PNG, PDF, DOC arba DOCX formato.',
+                'proof.max' => 'Siuntos įrodymo failas negali būti didesnis nei 5 MB.',
+            ], [
+                'tracking_number' => 'siuntos sekimo numeris',
+                'carrier' => 'vežėjas',
+                'package_size' => 'siuntos dydis',
+                'proof' => 'siuntos įrodymas',
+            ]);
 
         $serviceOrder = $this->serviceOrderService->submitShipmentProof($serviceOrder, $data, auth()->user());
 

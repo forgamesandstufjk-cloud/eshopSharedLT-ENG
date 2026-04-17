@@ -10,7 +10,7 @@
 
             <div class="container mx-auto relative z-10">
                 @php
-                    $filters = array_filter($filters);
+                    $filters = array_filter($filters, fn ($value) => $value !== null && $value !== '');
                 @endphp
 
                 @if (!empty($filters))

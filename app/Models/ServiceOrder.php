@@ -63,6 +63,7 @@ class ServiceOrder extends Model
         'payment_provider',
         'payment_intent_id',
         'amount_charged_cents',
+        'reimbursement_transfer_id',
     ];
 
     protected $casts = [

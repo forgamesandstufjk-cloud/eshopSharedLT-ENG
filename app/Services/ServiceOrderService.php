@@ -117,9 +117,7 @@ class ServiceOrderService
                     ServiceOrder::STATUS_READY_TO_SHIP,
                     ServiceOrder::STATUS_CANCELLED,
                 ],
-                ServiceOrder::STATUS_READY_TO_SHIP => [
-                    ServiceOrder::STATUS_CANCELLED,
-                ],
+                ServiceOrder::STATUS_READY_TO_SHIP => [],
                 ServiceOrder::STATUS_COMPLETED => [],
                 ServiceOrder::STATUS_CANCELLED => [],
             ];
@@ -141,14 +139,18 @@ class ServiceOrderService
 
             if ($newStatus === ServiceOrder::STATUS_READY_TO_SHIP) {
                 $updates['ready_to_ship_at'] = now();
-
+        
+                $updates['shipment_status'] = null;
+            
                 if ($serviceOrder->canUsePlatformFlow()) {
-                    $updates['shipment_status'] = $serviceOrder->shipment_status ?: ServiceOrder::SHIPMENT_PENDING;
-                    $updates['payment_status'] = $serviceOrder->payment_status ?: ServiceOrder::PAYMENT_PENDING;
+                    $updates['payment_status'] = $serviceOrder->paid_at
+                        ? ServiceOrder::PAYMENT_PAID
+                        : ServiceOrder::PAYMENT_PENDING;
                 } else {
-                    $updates['shipment_status'] = null;
                     $updates['payment_status'] = null;
                 }
+            
+                $updates['completion_method'] = null;
             }
 
             $serviceOrder->update($updates);
@@ -247,42 +249,106 @@ class ServiceOrderService
     }
 
     public function approveShipment(ServiceOrder $serviceOrder): ServiceOrder
-    {
-        if ($serviceOrder->status !== ServiceOrder::STATUS_READY_TO_SHIP) {
-            throw ValidationException::withMessages([
-                'status' => 'Neteisinga užsakymo būsena.',
-            ]);
-        }
-
-        if (!$serviceOrder->canUsePlatformFlow()) {
-            throw ValidationException::withMessages([
-                'buyer' => 'Negalima tvirtinti siuntos per svetainę, nes nėra susieto pirkėjo.',
-            ]);
-        }
-
-        if ($serviceOrder->payment_status !== ServiceOrder::PAYMENT_PAID) {
-            throw ValidationException::withMessages([
-                'payment_status' => 'Negalima tvirtinti siuntos, nes užsakymas dar neapmokėtas.',
-            ]);
-        }
-
-        if ($serviceOrder->shipment_status !== ServiceOrder::SHIPMENT_NEEDS_REVIEW) {
-            throw ValidationException::withMessages([
-                'shipment_status' => 'Neteisinga siuntos peržiūros būsena.',
-            ]);
-        }
-
-        $serviceOrder->update([
-            'shipment_status' => ServiceOrder::SHIPMENT_APPROVED,
-            'shipment_approved_at' => now(),
-            'completion_method' => ServiceOrder::COMPLETION_PLATFORM,
-            'status' => ServiceOrder::STATUS_COMPLETED,
-            'completed_at' => now(),
-            'last_status_change_at' => now(),
+{
+    if ($serviceOrder->status !== ServiceOrder::STATUS_READY_TO_SHIP) {
+        throw ValidationException::withMessages([
+            'status' => 'Neteisinga užsakymo būsena.',
         ]);
-
-        return $serviceOrder->fresh();
     }
+
+    if (!$serviceOrder->canUsePlatformFlow()) {
+        throw ValidationException::withMessages([
+            'buyer' => 'Negalima tvirtinti siuntos per svetainę, nes nėra susieto pirkėjo.',
+        ]);
+    }
+
+    if ($serviceOrder->payment_status !== ServiceOrder::PAYMENT_PAID) {
+        throw ValidationException::withMessages([
+            'payment_status' => 'Negalima tvirtinti siuntos, nes užsakymas dar neapmokėtas.',
+        ]);
+    }
+
+    if ($serviceOrder->shipment_status !== ServiceOrder::SHIPMENT_NEEDS_REVIEW) {
+        throw ValidationException::withMessages([
+            'shipment_status' => 'Neteisinga siuntos peržiūros būsena.',
+        ]);
+    }
+
+    $seller = $serviceOrder->seller;
+
+    if (!$seller || !$seller->stripe_account_id || !$seller->stripe_onboarded) {
+        throw ValidationException::withMessages([
+            'seller' => 'Pardavėjas nėra paruoštas Stripe išmokoms.',
+        ]);
+    }
+
+    $subtotalCents = (int) round(((float) $serviceOrder->final_price) * 100);
+    $platformFeeCents = (int) round($subtotalCents * 0.10);
+    $shippingCents = (int) ($serviceOrder->shipping_cents ?? 0);
+    $sellerAmountCents = ($subtotalCents - $platformFeeCents) + $shippingCents;
+
+    if ($sellerAmountCents < 0) {
+        throw ValidationException::withMessages([
+            'amount' => 'Apskaičiuota neteisinga išmokos suma.',
+        ]);
+    }
+
+    \Stripe\Stripe::setApiKey(config('services.stripe.secret'));
+
+    $transferId = $serviceOrder->reimbursement_transfer_id;
+
+    if (!$transferId) {
+        try {
+            $transfer = \Stripe\Transfer::create([
+                'amount' => $sellerAmountCents,
+                'currency' => 'eur',
+                'destination' => $seller->stripe_account_id,
+                'transfer_group' => 'service_order_' . $serviceOrder->id,
+                'metadata' => [
+                    'service_order_id' => (string) $serviceOrder->id,
+                    'seller_id' => (string) $seller->id,
+                    'type' => 'service_order_payout',
+                ],
+            ], [
+                'idempotency_key' => 'service_order_' . $serviceOrder->id . '_seller_' . $seller->id,
+            ]);
+
+            $transferId = $transfer->id;
+        } catch (\Throwable $e) {
+            \Log::error('Service order transfer failed', [
+                'service_order_id' => $serviceOrder->id,
+                'seller_id' => $seller->id,
+                'error' => $e->getMessage(),
+            ]);
+
+            throw ValidationException::withMessages([
+                'stripe' => 'Nepavyko pervesti lėšų pardavėjui.',
+            ]);
+        }
+    }
+
+    $serviceOrder->update([
+        'shipment_status' => ServiceOrder::SHIPMENT_REIMBURSED,
+        'shipment_approved_at' => now(),
+        'completion_method' => ServiceOrder::COMPLETION_PLATFORM,
+        'status' => ServiceOrder::STATUS_COMPLETED,
+        'completed_at' => now(),
+        'last_status_change_at' => now(),
+        'reimbursement_transfer_id' => $transferId,
+    ]);
+
+    \Log::info('Service order payout completed', [
+        'service_order_id' => $serviceOrder->id,
+        'seller_id' => $seller->id,
+        'subtotal_cents' => $subtotalCents,
+        'platform_fee_cents' => $platformFeeCents,
+        'shipping_cents' => $shippingCents,
+        'seller_amount_cents' => $sellerAmountCents,
+        'transfer_id' => $transferId,
+    ]);
+
+    return $serviceOrder->fresh();
+}
 
     public function rejectShipment(ServiceOrder $serviceOrder): ServiceOrder
     {
@@ -351,4 +417,74 @@ class ServiceOrderService
 
         return [$buyer->id, $buyer->buyer_code, false];
     }
+
+    public function choosePlatformFlow(ServiceOrder $serviceOrder, User $seller): ServiceOrder
+{
+    if ((int) $serviceOrder->seller_id !== (int) $seller->id) {
+        abort(403);
+    }
+
+    if ($serviceOrder->status !== ServiceOrder::STATUS_READY_TO_SHIP) {
+        throw ValidationException::withMessages([
+            'status' => 'Pasirinkti apmokėjimą per svetainę galima tik būsenoje "Paruošta išsiuntimui".',
+        ]);
+    }
+
+    if (!$serviceOrder->canUsePlatformFlow()) {
+        throw ValidationException::withMessages([
+            'buyer' => 'Per svetainę galima tęsti tik tada, kai užsakymui priskirtas registruotas pirkėjas.',
+        ]);
+    }
+
+    if ($serviceOrder->payment_status === ServiceOrder::PAYMENT_PAID) {
+        return $serviceOrder->fresh();
+    }
+
+    $serviceOrder->update([
+        'completion_method' => ServiceOrder::COMPLETION_PLATFORM,
+        'payment_status' => ServiceOrder::PAYMENT_PENDING,
+        'shipment_status' => ServiceOrder::SHIPMENT_PENDING,
+        'last_status_change_at' => now(),
+    ]);
+
+    return $serviceOrder->fresh();
+}
+
+public function choosePrivateFlow(ServiceOrder $serviceOrder, User $seller): ServiceOrder
+{
+    if ((int) $serviceOrder->seller_id !== (int) $seller->id) {
+        abort(403);
+    }
+
+    if ($serviceOrder->status !== ServiceOrder::STATUS_READY_TO_SHIP) {
+        throw ValidationException::withMessages([
+            'status' => 'Privatų užbaigimą galima pasirinkti tik būsenoje "Paruošta išsiuntimui".',
+        ]);
+    }
+
+    if ($serviceOrder->payment_status === ServiceOrder::PAYMENT_PAID) {
+        throw ValidationException::withMessages([
+            'payment_status' => 'Negalima perjungti į privatų užbaigimą, nes pirkėjas jau apmokėjo per svetainę.',
+        ]);
+    }
+
+    $serviceOrder->update([
+        'completion_method' => ServiceOrder::COMPLETION_PRIVATE,
+        'payment_status' => null,
+        'payment_provider' => null,
+        'payment_intent_id' => null,
+        'amount_charged_cents' => null,
+        'paid_at' => null,
+        'shipment_status' => null,
+        'shipment_submitted_at' => null,
+        'shipment_approved_at' => null,
+        'tracking_number' => null,
+        'proof_path' => null,
+        'carrier' => null,
+        'shipping_cents' => null,
+        'last_status_change_at' => now(),
+    ]);
+
+    return $serviceOrder->fresh();
+}
 }

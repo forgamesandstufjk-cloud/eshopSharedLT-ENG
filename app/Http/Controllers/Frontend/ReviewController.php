@@ -18,34 +18,34 @@ class ReviewController extends Controller
     {
         $this->reviewService = $reviewService;
     }
-
-    public function store(Request $request, $listingId)
+    
+       public function store(Request $request, $listingId)
     {
         $user = auth()->user();
-
+    
         if (!$user) {
             abort(403);
         }
-
+    
         if ($user->isBannedUser()) {
             return back()->with('error', 'Jūsų paskyra apribota. Negalite palikti atsiliepimų.');
         }
-
+    
         $listing = Listing::with('review')->findOrFail($listingId);
-
+    
         if ((int) $listing->user_id === (int) $user->id) {
             return back()->with('error', 'Negalite palikti atsiliepimo savo skelbimui.');
         }
-
+    
         if ($listing->review()->where('user_id', $user->id)->exists()) {
             return back()->with('error', 'Jūs jau palikote atsiliepimą šiam skelbimui.');
         }
-
+    
         $data = $request->validate([
             'ivertinimas' => 'required|integer|min:1|max:5',
             'komentaras'  => 'nullable|string|max:2000',
         ]);
-
+    
         $hasPurchasedProduct = OrderItem::query()
             ->where('listing_id', $listing->id)
             ->whereHas('order', function ($q) use ($user) {
@@ -57,34 +57,30 @@ class ReviewController extends Controller
                   ->whereIn('status', ['approved', 'reimbursed']);
             })
             ->exists();
-
+    
         $hasPurchasedService = ServiceOrder::query()
             ->where('listing_id', $listing->id)
             ->where('buyer_id', $user->id)
             ->where(function ($q) {
                 $q->where(function ($q2) {
-                    $q2->where('completion_method', ServiceOrder::COMPLETION_PLATFORM)
-                       ->whereIn('shipment_status', [
-                           ServiceOrder::SHIPMENT_APPROVED,
-                           ServiceOrder::SHIPMENT_REIMBURSED,
-                       ]);
+                    $q2->where('payment_status', ServiceOrder::PAYMENT_PAID);
                 })->orWhere(function ($q2) {
                     $q2->where('completion_method', ServiceOrder::COMPLETION_PRIVATE)
                        ->where('status', ServiceOrder::STATUS_COMPLETED);
                 });
             })
             ->exists();
-
+    
         if (!($hasPurchasedProduct || $hasPurchasedService)) {
             return back()->with('error', 'Atsiliepimą galite palikti tik po įsigijimo.');
         }
-
+    
         $data['listing_id'] = $listing->id;
         $data['user_id'] = $user->id;
-
+    
         try {
             $this->reviewService->create($data);
-
+    
             return back()->with('success', 'Įvertinimas išsaugotas!');
         } catch (\Exception $e) {
             return back()

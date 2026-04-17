@@ -593,32 +593,32 @@ input[type=number] {
 {{-- REVIEWS SECTION --}}
 <section class="mt-12 sm:mt-16">
 
-      @php
-        $user = auth()->user();
-        $isOwner = $user && $user->id === $listing->user_id;
-    
-        $reviewsAllowed = $listing->tipas === 'paslauga'
-            ? $hasPurchased
-            : (!$listing->is_renewable && (int) $listing->kiekis < 1);
-    
-        $canLeaveReview = !$isOwner
-            && $reviewsAllowed
-            && !($user && $user->isBannedUser())
-            && $hasPurchased
-            && !$hasReviewed;
-    
-        $sort = request('sort', 'newest');
-    
-        $sortedReviews = match($sort) {
-            'oldest'  => $listing->review->sortBy('created_at'),
-            'highest' => $listing->review->sortByDesc('ivertinimas'),
-            'lowest'  => $listing->review->sortBy('ivertinimas'),
-            default   => $listing->review->sortByDesc('created_at'),
-        };
-    
-        $avgRating = round($listing->review->avg('ivertinimas'), 1);
-        $totalReviews = $listing->review->count();
-    @endphp
+@php
+    $user = auth()->user();
+    $isOwner = $user && $user->id === $listing->user_id;
+
+    $reviewsAllowed = $listing->tipas === 'paslauga'
+        ? $hasPurchased
+        : (!$listing->is_renewable && (int) $listing->kiekis < 1);
+
+    $canLeaveReview = !$isOwner
+        && $reviewsAllowed
+        && !($user && $user->isBannedUser())
+        && $hasPurchased
+        && !$hasReviewed;
+
+    $sort = request('sort', 'newest');
+
+    $sortedReviews = match($sort) {
+        'oldest'  => $listing->review->sortBy('created_at'),
+        'highest' => $listing->review->sortByDesc('ivertinimas'),
+        'lowest'  => $listing->review->sortBy('ivertinimas'),
+        default   => $listing->review->sortByDesc('created_at'),
+    };
+
+    $avgRating = round($listing->review->avg('ivertinimas'), 1);
+    $totalReviews = $listing->review->count();
+@endphp
 
     <div class="grid grid-cols-1 {{ $canLeaveReview ? 'md:grid-cols-2' : '' }} gap-6 sm:gap-8 items-start">
 

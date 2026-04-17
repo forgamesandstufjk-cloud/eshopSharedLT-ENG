@@ -16,7 +16,17 @@ Jūsų užsakymas **#{{ $order->id }}** sėkmingai pateiktas.
 @foreach($order->orderItem as $item)
 | 
 @if($item->listing->photos->isNotEmpty())
-<img src="{{ \Illuminate\Support\Facades\Storage::disk('photos')->url($item->listing->photos->first()->failo_url) }}" width="60" style="border-radius:6px; border:1px solid #ddd">
+<table role="presentation" cellpadding="0" cellspacing="0" border="0" width="60" height="60" style="width:60px; height:60px; border:1px solid #ddd; border-radius:6px; overflow:hidden; background:#ffffff">
+    <tr>
+        <td align="center" valign="middle" width="60" height="60" style="width:60px; height:60px; text-align:center; vertical-align:middle">
+            <img
+                src="{{ \Illuminate\Support\Facades\Storage::disk('photos')->url($item->listing->photos->first()->failo_url) }}"
+                alt="{{ $item->listing->pavadinimas }}"
+                style="display:block; max-width:60px; max-height:60px; width:auto; height:auto; margin:0 auto; border:0"
+            >
+        </td>
+    </tr>
+</table>
 @endif
 | **{{ $item->listing->pavadinimas }}**  
 €{{ number_format($item->kaina, 2) }} × {{ $item->kiekis }}

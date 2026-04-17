@@ -6,8 +6,8 @@ use App\Http\Controllers\Controller;
 use App\Mail\AdminShipmentNeedsReviewMail;
 use App\Models\Listing;
 use App\Models\ServiceOrder;
-use App\Services\ServiceOrderService;
 use App\Models\User;
+use App\Services\ServiceOrderService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
 
@@ -150,33 +150,47 @@ class SellerServiceOrderController extends Controller
         abort_unless((int) $serviceOrder->seller_id === (int) auth()->id(), 403);
 
         $data = $request->validate([
-                'tracking_number' => 'required|string|max:255',
-                'carrier' => 'required|in:omniva,venipak',
-                'package_size' => 'required|in:S,M,L',
-                'proof' => 'required|file|mimes:jpg,jpeg,png,pdf,doc,docx|max:5120',
-            ], [
-                'tracking_number.required' => 'Įveskite siuntos sekimo numerį.',
-                'tracking_number.string' => 'Siuntos sekimo numeris turi būti tekstas.',
-                'tracking_number.max' => 'Siuntos sekimo numeris yra per ilgas.',
-            
-                'carrier.required' => 'Pasirinkite siuntos vežėją.',
-                'carrier.in' => 'Pasirinktas siuntos vežėjas neteisingas.',
-            
-                'package_size.required' => 'Pasirinkite siuntos dydį.',
-                'package_size.in' => 'Pasirinktas siuntos dydis neteisingas.',
-            
-                'proof.required' => 'Įkelkite siuntos lipduką.',
-                'proof.file' => 'Įkeltas įrodymas turi būti failas.',
-                'proof.mimes' => 'Siuntos įrodymas turi būti JPG, JPEG, PNG, PDF, DOC arba DOCX formato.',
-                'proof.max' => 'Siuntos įrodymo failas negali būti didesnis nei 5 MB.',
-            ], [
-                'tracking_number' => 'siuntos sekimo numeris',
-                'carrier' => 'vežėjas',
-                'package_size' => 'siuntos dydis',
-                'proof' => 'siuntos įrodymas',
-            ]);
+            'tracking_number' => 'required|string|max:255',
+            'proof' => 'required|file|mimes:jpg,jpeg,png,pdf,doc,docx|max:5120',
+            'service_order_form_id' => 'nullable',
+        ], [
+            'tracking_number.required' => 'Įveskite siuntos sekimo numerį.',
+            'tracking_number.string' => 'Siuntos sekimo numeris turi būti tekstas.',
+            'tracking_number.max' => 'Siuntos sekimo numeris yra per ilgas.',
 
-        $serviceOrder = $this->serviceOrderService->submitShipmentProof($serviceOrder, $data, auth()->user());
+            'proof.required' => 'Įkelkite siuntos lipduką.',
+            'proof.file' => 'Įkeltas įrodymas turi būti failas.',
+            'proof.mimes' => 'Siuntos įrodymas turi būti JPG, JPEG, PNG, PDF, DOC arba DOCX formato.',
+            'proof.max' => 'Siuntos įrodymo failas negali būti didesnis nei 5 MB.',
+        ], [
+            'tracking_number' => 'siuntos sekimo numeris',
+            'proof' => 'siuntos įrodymas',
+        ]);
+
+        if (!$serviceOrder->carrier) {
+            return back()
+                ->withErrors(['carrier' => 'Pirkėjas dar nepasirinko siuntos vežėjo.'])
+                ->withInput();
+        }
+
+        if (!$serviceOrder->package_size) {
+            return back()
+                ->withErrors(['package_size' => 'Pardavėjas dar nepasirinko siuntos dydžio.'])
+                ->withInput();
+        }
+
+        $payload = [
+            'tracking_number' => $data['tracking_number'],
+            'proof' => $request->file('proof'),
+            'carrier' => $serviceOrder->carrier,
+            'package_size' => $serviceOrder->package_size,
+        ];
+
+        $serviceOrder = $this->serviceOrderService->submitShipmentProof(
+            $serviceOrder,
+            $payload,
+            auth()->user()
+        );
 
         $admins = User::where('role', 'admin')->pluck('el_pastas');
         if ($admins->isNotEmpty()) {
@@ -227,17 +241,17 @@ class SellerServiceOrderController extends Controller
         ]);
     }
 
-        public function choosePlatform(ServiceOrder $serviceOrder)
+    public function choosePlatform(ServiceOrder $serviceOrder)
     {
         $this->serviceOrderService->choosePlatformFlow($serviceOrder, auth()->user());
-    
+
         return back()->with('success', 'Pasirinktas atsiskaitymas per svetainę.');
     }
-    
+
     public function choosePrivate(ServiceOrder $serviceOrder)
     {
         $this->serviceOrderService->choosePrivateFlow($serviceOrder, auth()->user());
-    
+
         return back()->with('success', 'Pasirinktas privatus užbaigimas.');
     }
 }

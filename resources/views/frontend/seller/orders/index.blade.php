@@ -24,6 +24,7 @@
                             <th class="p-3 text-left text-white">Užsakymas</th>
                             <th class="p-3 text-left text-white">Prekės</th>
                             <th class="p-3 text-left text-white">Pristatymas</th>
+                            <th class="p-3 text-left text-white">Pristatymo adresas</th>
                             <th class="p-3 text-left text-white">Būsena</th>
                             <th class="p-3 text-left text-white">Įkelti siuntos patvirtinimą</th>
                         </tr>
@@ -78,6 +79,48 @@
                                         {{ $s->order->address->city->country->pavadinimas }}
                                     </div>
                                 @endif
+                            </td>
+
+                            <td class="p-3 block sm:table-cell text-black">
+                                <span class="font-semibold sm:hidden">Pristatymo adresas: </span>
+                            
+                                @php
+                                    $shippingAddress = $s->order->shipping_address ?? [];
+                            
+                                    $addressLine = trim(collect([
+                                        $shippingAddress['address'] ?? null,
+                                    ])->filter()->implode(' '));
+                            
+                                    $cityLine = $shippingAddress['city']
+                                        ?? ($s->order->address?->city?->pavadinimas ?? null);
+                            
+                                    $countryLine = $shippingAddress['country']
+                                        ?? ($s->order->address?->city?->country?->pavadinimas ?? null);
+                            
+                                    $postalLine = $shippingAddress['postal_code'] ?? null;
+                                @endphp
+                            
+                                <div class="text-sm space-y-1">
+                                    <div>
+                                        <span class="font-medium">Adresas:</span>
+                                        {{ $addressLine ?: '—' }}
+                                    </div>
+                            
+                                    <div>
+                                        <span class="font-medium">Miestas:</span>
+                                        {{ $cityLine ?: '—' }}
+                                    </div>
+                            
+                                    <div>
+                                        <span class="font-medium">Šalis:</span>
+                                        {{ $countryLine ?: '—' }}
+                                    </div>
+                            
+                                    <div>
+                                        <span class="font-medium">Pašto kodas:</span>
+                                        {{ $postalLine ?: '—' }}
+                                    </div>
+                                </div>
                             </td>
 
                             <td class="p-3 block sm:table-cell text-black">
@@ -166,7 +209,7 @@
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="5" class="p-4 text-center text-black">
+                            <td colspan="6" class="p-4 text-center text-black">
                                 Kol kas pardavimų nėra.
                             </td>
                         </tr>

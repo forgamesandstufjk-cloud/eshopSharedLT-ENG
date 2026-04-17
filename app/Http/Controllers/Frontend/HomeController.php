@@ -3,11 +3,11 @@
 namespace App\Http\Controllers\Frontend;
 
 use App\Http\Controllers\Controller;
-use App\Services\ListingService;
 use App\Models\Listing;
-use App\Models\OrderItem;
 use App\Models\Order;
+use App\Models\OrderItem;
 use App\Models\ServiceOrder;
+use App\Services\ListingService;
 
 class HomeController extends Controller
 {
@@ -64,47 +64,48 @@ class HomeController extends Controller
             ->take(4)
             ->get();
 
+        $purchaseCount = 0;
+        $reviewCount = 0;
         $hasPurchased = false;
+
         $hasReviewed = false;
 
         if (auth()->check()) {
             $userId = auth()->id();
 
-            $hasReviewed = $listing->review()
+            $reviewCount = (int) $listing->review()
                 ->where('user_id', $userId)
-                ->exists();
+                ->count();
 
-            $hasPurchasedProduct = OrderItem::query()
-                ->where('listing_id', $listing->id)
-                ->whereHas('order', function ($q) use ($userId) {
-                    $q->where('user_id', $userId)
-                      ->where('statusas', Order::STATUS_PAID);
-                })
-                ->whereHas('order.shipments', function ($q) use ($listing) {
-                    $q->where('seller_id', $listing->user_id)
-                      ->whereIn('status', ['approved', 'reimbursed']);
-                })
-                ->exists();
+            if ($listing->tipas === 'preke') {
+                $purchaseCount = (int) OrderItem::query()
+                    ->where('listing_id', $listing->id)
+                    ->whereHas('order', function ($q) use ($userId) {
+                        $q->where('user_id', $userId)
+                          ->where('statusas', Order::STATUS_PAID);
+                    })
+                    ->whereHas('order.shipments', function ($q) use ($listing) {
+                        $q->where('seller_id', $listing->user_id)
+                          ->whereIn('status', ['approved', 'reimbursed']);
+                    })
+                    ->sum('kiekis');
+            }
 
-            $hasPurchasedService = ServiceOrder::query()
-                ->where('listing_id', $listing->id)
-                ->where('buyer_id', $userId)
-                ->where(function ($q) {
-                    $q->where(function ($q2) {
-                        $q2->where('payment_status', ServiceOrder::PAYMENT_PAID);
-                    })->orWhere(function ($q2) {
-                        $q2->where('completion_method', ServiceOrder::COMPLETION_PRIVATE)
-                           ->where('status', ServiceOrder::STATUS_COMPLETED);
-                    });
-                })
-                ->exists();
+            if ($listing->tipas === 'paslauga') {
+                $purchaseCount = (int) ServiceOrder::query()
+                    ->where('listing_id', $listing->id)
+                    ->where('buyer_id', $userId)
+                    ->where('payment_status', ServiceOrder::PAYMENT_PAID)
+                    ->count();
+            }
 
-            $hasPurchased = $hasPurchasedProduct || $hasPurchasedService;
+            $hasPurchased = $purchaseCount > 0;
+            $hasReviewed = $hasPurchased && $reviewCount >= $purchaseCount;
         }
 
         $reviewsAllowed = $listing->tipas === 'paslauga'
             ? $hasPurchased
-            : ($listing->is_renewable || $listing->kiekis >= 1);
+            : (!$listing->is_renewable && (int) $listing->kiekis < 1);
 
         return view('frontend.listing-single', [
             'listing'        => $listing,
@@ -112,6 +113,8 @@ class HomeController extends Controller
             'hasPurchased'   => $hasPurchased,
             'hasReviewed'    => $hasReviewed,
             'reviewsAllowed' => $reviewsAllowed,
+            'purchaseCount'  => $purchaseCount,
+            'reviewCount'    => $reviewCount,
         ]);
     }
 }

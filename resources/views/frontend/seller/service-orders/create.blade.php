@@ -124,11 +124,12 @@
                     <label class="block text-sm font-medium text-black mb-1">Galutinė sutarta kaina</label>
                     <input type="number"
                            step="0.01"
-                           min="0.01"
+                           min="0.20"
+                           max="99999"
                            name="final_price"
                            value="{{ old('final_price', $serviceOrder?->final_price ?? $listing?->kaina ?? '') }}"
                            class="w-full border rounded p-2 text-black focus:outline-none focus:ring-1 focus:ring-[#836354] focus:border-[#836354]"
-                           style="background-color: rgb(234, 220, 200); border-color: #836354;"
+                           style="background-color: rgb(234, 220, 200); border-color: #836354"
                            placeholder="Pvz. 49.99"
                            onwheel="event.preventDefault()"
                            required>

@@ -14,12 +14,12 @@ input[type=number] {
 }
 </style>
 
-<div
-    x-data
-    x-init="if ({{ auth()->check() ? 'true' : 'false' }}) Alpine.store('favorites').load()"
-    class="max-w-6xl mx-auto py-6 sm:py-10 px-3 sm:px-4"
-    style="background-color: rgb(234, 220, 200)"
->
+<div class="min-h-screen flex flex-col" style="background-color: rgb(234, 220, 200)">
+    <div
+        x-data
+        x-init="if ({{ auth()->check() ? 'true' : 'false' }}) Alpine.store('favorites').load()"
+        class="max-w-6xl mx-auto w-full flex-1 py-6 sm:py-10 px-3 sm:px-4"
+    >
 
     {{-- SUCCESS MESSAGE --}}
     @if(session('success'))
@@ -910,7 +910,7 @@ input[type=number] {
 
     </div>
 </section>
-
-
+                    </div>
+  @include('components.footer')
 </div>
 </x-app-layout>

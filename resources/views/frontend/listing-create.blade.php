@@ -241,7 +241,7 @@
               <input
                   type="number"
                   min="0.20"
-                  min="99999"
+                  max="99999"
                   step="0.01"
                   name="kaina"
                    value="{{ old('kaina', '0.20') }}"

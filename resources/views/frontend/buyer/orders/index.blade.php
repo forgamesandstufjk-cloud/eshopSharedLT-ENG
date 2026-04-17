@@ -28,6 +28,13 @@
 
                         <div class="border-t pt-3" style="border-color: #836354">
                             @foreach($order->orderItem as $item)
+                                @php
+                                    $itemShipment = $order->shipments->firstWhere('seller_id', $item->Listing->user_id);
+                                    $canReviewItem = $itemShipment && in_array($itemShipment->status, ['approved', 'reimbursed'], true);
+                                    $itemReviewLeft = $item->Listing
+                                        && $item->Listing->review->contains(fn ($review) => (int) $review->user_id === (int) auth()->id());
+                                @endphp
+                        
                                 <div class="flex justify-between text-sm mb-1 text-black">
                                     <span>
                                         {{ $item->Listing->pavadinimas }}
@@ -39,6 +46,21 @@
                                         €{{ number_format($item->kaina * $item->kiekis, 2) }}
                                     </span>
                                 </div>
+                        
+                                @if($canReviewItem && $item->Listing)
+                                    <div class="ml-2 mb-2 flex flex-wrap items-center gap-2 text-xs">
+                                        <span class="px-2 py-1 rounded text-black"
+                                              style="background-color: {{ $itemReviewLeft ? 'rgb(207, 174, 134)' : 'rgb(234, 220, 200)' }}">
+                                            {{ $itemReviewLeft ? 'Atsiliepimas paliktas' : 'Atsiliepimas nepaliktas' }}
+                                        </span>
+                        
+                                        <a href="{{ route('listing.single', $item->Listing->id) }}"
+                                           class="underline"
+                                           style="color: rgb(131, 99, 84)">
+                                            {{ $itemReviewLeft ? 'Peržiūrėti skelbimą' : 'Palikti atsiliepimą' }}
+                                        </a>
+                                    </div>
+                                @endif
                             @endforeach
                         </div>
 

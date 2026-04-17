@@ -50,10 +50,13 @@ class ReviewService
         $allowedPurchaseCount = 0;
 
         if ($listing->tipas === 'preke') {
-            if ($listing->is_renewable || (int) $listing->kiekis >= 1) {
-                throw new \Exception('Atsiliepimą prekei galima palikti tik kai skelbimas nėra atsinaujinantis ir prekė nebeturi likučio.');
+            // Prekei review leidžiamas tik kol taisyklė dar galioja:
+            // atsinaujinanti ARBA dar yra likutis
+            if (!($listing->is_renewable || (int) $listing->kiekis >= 1)) {
+                throw new \Exception('Atsiliepimą šiai prekei dabar palikti negalima.');
             }
 
+            // Kiek review leidžiama pagal nupirktą kiekį
             $allowedPurchaseCount = (int) OrderItem::query()
                 ->where('listing_id', $listingId)
                 ->whereHas('order', function ($q) use ($userId) {
@@ -66,15 +69,25 @@ class ReviewService
                 })
                 ->sum('kiekis');
         } elseif ($listing->tipas === 'paslauga') {
-            $allowedPurchaseCount = ServiceOrder::query()
+            // Paslaugai review leidžiamas jei yra susietas service order:
+            // 1) apmokėtas per svetainę
+            // ARBA
+            // 2) užbaigtas privačiai
+            $allowedPurchaseCount = (int) ServiceOrder::query()
                 ->where('listing_id', $listingId)
                 ->where('buyer_id', $userId)
-                ->where('payment_status', ServiceOrder::PAYMENT_PAID)
+                ->where(function ($q) {
+                    $q->where('payment_status', ServiceOrder::PAYMENT_PAID)
+                      ->orWhere(function ($q2) {
+                          $q2->where('completion_method', ServiceOrder::COMPLETION_PRIVATE)
+                             ->where('status', ServiceOrder::STATUS_COMPLETED);
+                      });
+                })
                 ->count();
         }
 
         if ($allowedPurchaseCount < 1) {
-            throw new \Exception('Įvertinti galima tik pirktus skelbimus');
+            throw new \Exception('Įvertinti galima tik pirktus skelbimus.');
         }
 
         if ($existingReviewCount >= $allowedPurchaseCount) {

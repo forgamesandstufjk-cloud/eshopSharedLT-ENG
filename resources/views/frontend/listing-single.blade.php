@@ -592,14 +592,14 @@ input[type=number] {
         
 {{-- REVIEWS SECTION --}}
 <section class="mt-12 sm:mt-16">
-    
-    @php
+
+      @php
         $user = auth()->user();
         $isOwner = $user && $user->id === $listing->user_id;
     
         $reviewsAllowed = $listing->tipas === 'paslauga'
             ? $hasPurchased
-            : ($listing->is_renewable || $listing->kiekis >= 1);
+            : (!$listing->is_renewable && (int) $listing->kiekis < 1);
     
         $canLeaveReview = !$isOwner
             && $reviewsAllowed
@@ -608,14 +608,14 @@ input[type=number] {
             && !$hasReviewed;
     
         $sort = request('sort', 'newest');
-
+    
         $sortedReviews = match($sort) {
             'oldest'  => $listing->review->sortBy('created_at'),
             'highest' => $listing->review->sortByDesc('ivertinimas'),
             'lowest'  => $listing->review->sortBy('ivertinimas'),
             default   => $listing->review->sortByDesc('created_at'),
         };
-
+    
         $avgRating = round($listing->review->avg('ivertinimas'), 1);
         $totalReviews = $listing->review->count();
     @endphp
@@ -858,7 +858,7 @@ input[type=number] {
 @if(auth()->check() && !$isOwner && $hasReviewed)
     <div class="p-3 rounded text-black mb-4"
          style="background-color: rgb(207, 174, 134); border: 1px solid #836354">
-        Jūs jau palikote atsiliepimą kiekvienam prikimui šiame skelbime.
+        Jūs jau palikote atsiliepimą kiekvienam pirkimui šiame skelbime.
     </div>
 @endif
         

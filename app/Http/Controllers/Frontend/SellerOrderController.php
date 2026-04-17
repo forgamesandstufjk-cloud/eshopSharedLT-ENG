@@ -47,6 +47,18 @@ class SellerOrderController extends Controller
         $data = $request->validate([
             'tracking_number' => 'required|string|max:255',
             'proof' => 'required|file|mimes:jpg,jpeg,png,pdf,doc,docx|max:5120',
+        ], [
+            'tracking_number.required' => 'Įveskite siuntos sekimo numerį.',
+            'tracking_number.string' => 'Siuntos sekimo numeris turi būti tekstas.',
+            'tracking_number.max' => 'Siuntos sekimo numeris yra per ilgas.',
+        
+            'proof.required' => 'Įkelkite siuntos įrodymą.',
+            'proof.file' => 'Įkeltas įrodymas turi būti failas.',
+            'proof.mimes' => 'Siuntos įrodymas turi būti JPG, JPEG, PNG, PDF, DOC arba DOCX formato.',
+            'proof.max' => 'Siuntos įrodymo failas negali būti didesnis nei 5 MB.',
+        ], [
+            'tracking_number' => 'siuntos sekimo numeris',
+            'proof' => 'siuntos įrodymas',
         ]);
 
         $shipment->tracking_number = $data['tracking_number'];

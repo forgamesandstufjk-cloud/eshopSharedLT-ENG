@@ -588,15 +588,25 @@ input[type=number] {
     </div>
 </section>
 @endif
-    
+
+        
 {{-- REVIEWS SECTION --}}
 <section class="mt-12 sm:mt-16">
-
+    
     @php
         $user = auth()->user();
         $isOwner = $user && $user->id === $listing->user_id;
-        $reviewsAllowed = $listing->is_renewable || $listing->kiekis >= 1;
-        $canLeaveReview = !$isOwner && $reviewsAllowed  && !($user && $user->isBannedUser()) && $hasPurchased;
+    
+        $reviewsAllowed = $listing->tipas === 'paslauga'
+            ? $hasPurchased
+            : ($listing->is_renewable || $listing->kiekis >= 1);
+    
+        $canLeaveReview = !$isOwner
+            && $reviewsAllowed
+            && !($user && $user->isBannedUser())
+            && $hasPurchased
+            && !$hasReviewed;
+    
         $sort = request('sort', 'newest');
 
         $sortedReviews = match($sort) {
@@ -845,6 +855,13 @@ input[type=number] {
         </div>
 
         {{-- RIGHT: REVIEW FORM --}}
+@if(auth()->check() && !$isOwner && $hasReviewed)
+    <div class="p-3 rounded text-black mb-4"
+         style="background-color: rgb(207, 174, 134); border: 1px solid #836354">
+        Jūs jau palikote atsiliepimą šiam skelbimui.
+    </div>
+@endif
+        
 @if($canLeaveReview)
     <div x-data="{ selectedStars: 0, hoverStars: 0 }">
         <h4 class="font-semibold mb-2 text-black">Palikti atsiliepimą</h4>

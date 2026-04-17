@@ -67,8 +67,8 @@ class HomeController extends Controller
         $purchaseCount = 0;
         $reviewCount = 0;
         $hasPurchased = false;
-
         $hasReviewed = false;
+        $reviewsAllowed = false;
 
         if (auth()->check()) {
             $userId = auth()->id();
@@ -89,23 +89,29 @@ class HomeController extends Controller
                           ->whereIn('status', ['approved', 'reimbursed']);
                     })
                     ->sum('kiekis');
+
+                $reviewsAllowed = $listing->is_renewable || (int) $listing->kiekis >= 1;
             }
 
             if ($listing->tipas === 'paslauga') {
                 $purchaseCount = (int) ServiceOrder::query()
                     ->where('listing_id', $listing->id)
                     ->where('buyer_id', $userId)
-                    ->where('payment_status', ServiceOrder::PAYMENT_PAID)
+                    ->where(function ($q) {
+                        $q->where('payment_status', ServiceOrder::PAYMENT_PAID)
+                          ->orWhere(function ($q2) {
+                              $q2->where('completion_method', ServiceOrder::COMPLETION_PRIVATE)
+                                 ->where('status', ServiceOrder::STATUS_COMPLETED);
+                          });
+                    })
                     ->count();
+
+                $reviewsAllowed = $purchaseCount > 0;
             }
 
             $hasPurchased = $purchaseCount > 0;
             $hasReviewed = $hasPurchased && $reviewCount >= $purchaseCount;
         }
-
-        $reviewsAllowed = $listing->tipas === 'paslauga'
-            ? $hasPurchased
-            : (!$listing->is_renewable && (int) $listing->kiekis < 1);
 
         return view('frontend.listing-single', [
             'listing'        => $listing,

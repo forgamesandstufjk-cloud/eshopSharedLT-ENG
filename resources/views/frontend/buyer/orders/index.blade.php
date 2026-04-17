@@ -1,6 +1,6 @@
 <x-app-layout>
-    <div class="w-full mt-10 pb-10" style="background-color: rgb(234, 220, 200)">
-        <div class="max-w-6xl mx-auto container relative z-10 px-3 sm:px-0">
+  <div class="min-h-screen flex flex-col" style="background-color: rgb(234, 220, 200)">
+    <div class="max-w-6xl mx-auto container relative z-10 px-3 sm:px-0 flex-1 w-full mt-10 pb-10">
 
             <h1 class="text-2xl font-bold mb-6 text-black">Mano pirkimai</h1>
 
@@ -216,5 +216,6 @@
             @endif
 
         </div>
+          @include('components.footer')
     </div>
 </x-app-layout>

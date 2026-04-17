@@ -129,6 +129,17 @@
                             </div>
                 
                             <div class="border-t pt-3 space-y-2" style="border-color: #836354">
+                                @php
+                                    $canReviewService = $serviceOrder->listing
+                                        && in_array($serviceOrder->shipment_status, [
+                                            \App\Models\ServiceOrder::SHIPMENT_APPROVED,
+                                            \App\Models\ServiceOrder::SHIPMENT_REIMBURSED,
+                                        ], true);
+                            
+                                    $serviceReviewLeft = $serviceOrder->listing
+                                        && $serviceOrder->listing->review->contains(fn ($review) => (int) $review->user_id === (int) auth()->id());
+                                @endphp
+                            
                                 <div class="flex justify-between text-sm text-black">
                                     <span>
                                         {{ $serviceOrder->original_listing_title }}
@@ -140,12 +151,12 @@
                                         €{{ number_format((float) $serviceOrder->final_price, 2) }}
                                     </span>
                                 </div>
-                
+                            
                                 <div class="text-sm flex justify-between items-center text-black">
                                     <div>
                                         <span class="font-medium">Būsena</span>
                                     </div>
-                
+                            
                                     <div>
                                         @if($serviceOrder->status === \App\Models\ServiceOrder::STATUS_READY_TO_SHIP)
                                             @if($serviceOrder->completion_method === \App\Models\ServiceOrder::COMPLETION_PLATFORM)
@@ -175,23 +186,23 @@
                                                         Laukia apmokėjimo per svetainę
                                                     </span>
                                                 @endif
-                
+                            
                                             @elseif($serviceOrder->completion_method === \App\Models\ServiceOrder::COMPLETION_PRIVATE)
                                                 <span class="px-2 py-1 text-xs rounded text-black" style="background-color: rgb(234, 220, 200)">
                                                     Užbaikite privačiai sutartu būdu
                                                 </span>
-                
+                            
                                             @else
                                                 <span class="px-2 py-1 text-xs rounded text-black" style="background-color: rgb(234, 220, 200)">
                                                     Laukiama kol pardavėjas pasirinks atsyskaitymo būdą
                                                 </span>
                                             @endif
-                
+                            
                                         @elseif($serviceOrder->status === \App\Models\ServiceOrder::STATUS_COMPLETED)
                                             <span class="px-2 py-1 text-xs rounded text-black" style="background-color: rgb(207, 174, 134)">
                                                 Užbaigta
                                             </span>
-                
+                            
                                         @else
                                             <span class="px-2 py-1 text-xs rounded text-black" style="background-color: rgb(234, 220, 200)">
                                                 {{ $serviceOrder->lithuanian_status }}
@@ -199,7 +210,7 @@
                                         @endif
                                     </div>
                                 </div>
-                
+                            
                                 @if(
                                     $serviceOrder->status === \App\Models\ServiceOrder::STATUS_READY_TO_SHIP &&
                                     $serviceOrder->completion_method === \App\Models\ServiceOrder::COMPLETION_PLATFORM &&
@@ -213,13 +224,28 @@
                                         Apmokėti per svetainę
                                     </a>
                                 @endif
-                
+                            
                                 @if(in_array($serviceOrder->shipment_status, [
                                     \App\Models\ServiceOrder::SHIPMENT_APPROVED,
                                     \App\Models\ServiceOrder::SHIPMENT_REIMBURSED
                                 ], true) && $serviceOrder->tracking_number)
                                     <div class="text-xs text-black ml-2">
                                         Siuntos sekimas: {{ $serviceOrder->tracking_number }}
+                                    </div>
+                                @endif
+                            
+                                @if($canReviewService)
+                                    <div class="pt-2 flex flex-wrap items-center gap-2 text-xs">
+                                        <span class="px-2 py-1 rounded text-black"
+                                              style="background-color: {{ $serviceReviewLeft ? 'rgb(207, 174, 134)' : 'rgb(234, 220, 200)' }}">
+                                            {{ $serviceReviewLeft ? 'Atsiliepimas paliktas' : 'Atsiliepimas nepaliktas' }}
+                                        </span>
+                            
+                                        <a href="{{ route('listing.single', $serviceOrder->listing->id) }}"
+                                           class="underline"
+                                           style="color: rgb(131, 99, 84)">
+                                            {{ $serviceReviewLeft ? 'Peržiūrėti skelbimą' : 'Palikti atsiliepimą' }}
+                                        </a>
                                     </div>
                                 @endif
                             </div>

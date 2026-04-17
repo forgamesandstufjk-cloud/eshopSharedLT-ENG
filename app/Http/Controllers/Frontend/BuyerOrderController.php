@@ -12,6 +12,7 @@ class BuyerOrderController extends Controller
     {
         $orders = Order::with([
                 'orderItem.Listing.user',
+                'orderItem.Listing.review',
                 'shipments.seller',
             ])
             ->where('user_id', auth()->id())
@@ -21,6 +22,7 @@ class BuyerOrderController extends Controller
 
         $serviceOrders = ServiceOrder::with([
                 'seller',
+                'listing.review',
             ])
             ->where('buyer_id', auth()->id())
             ->where('status', '!=', ServiceOrder::STATUS_CANCELLED)

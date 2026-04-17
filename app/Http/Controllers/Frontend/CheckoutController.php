@@ -29,6 +29,12 @@ class CheckoutController extends Controller
                     ->with('error', 'Paslaugos užsakymas dar neparuoštas apmokėjimui.');
             }
 
+            if ($serviceOrder->completion_method !== \App\Models\ServiceOrder::COMPLETION_PLATFORM) {
+                return redirect()
+                    ->route('buyer.orders')
+                    ->with('error', 'Pardavėjas dar nepasirinko atsiskaitymo per svetainę.');
+            }
+
             if ($serviceOrder->payment_status === ServiceOrder::PAYMENT_PAID) {
                 return redirect()
                     ->route('buyer.orders')
@@ -102,105 +108,117 @@ class CheckoutController extends Controller
     |--------------------------------------------------------------------------
     */
     if ($request->filled('service_order_id')) {
-        $serviceOrder = \App\Models\ServiceOrder::with(['seller'])
-            ->where('id', $request->integer('service_order_id'))
-            ->where('buyer_id', auth()->id())
-            ->firstOrFail();
+    $serviceOrder = ServiceOrder::with(['seller'])
+        ->where('id', $request->integer('service_order_id'))
+        ->where('buyer_id', auth()->id())
+        ->firstOrFail();
 
-        if ($serviceOrder->status !== \App\Models\ServiceOrder::STATUS_READY_TO_SHIP) {
-            return response()->json([
-                'error' => 'Paslaugos užsakymas dar neparuoštas apmokėjimui.'
-            ], 422);
-        }
-
-        if ($serviceOrder->payment_status === \App\Models\ServiceOrder::PAYMENT_PAID) {
-            return response()->json([
-                'error' => 'Paslaugos užsakymas jau apmokėtas.'
-            ], 422);
-        }
-
-        if (!$request->filled('carrier')) {
-            return response()->json([
-                'error' => 'Pasirinkite pristatymo būdą.'
-            ], 422);
-        }
-
-        if (!$serviceOrder->package_size) {
-            return response()->json([
-                'error' => 'Pardavėjas dar nenurodė siuntos dydžio.'
-            ], 422);
-        }
-
-        $seller = $serviceOrder->seller;
-
-        if (!$seller->stripe_account_id || !$seller->stripe_onboarded) {
-            return response()->json([
-                'error' => "Seller {$seller->id} is not ready to receive payments."
-            ], 400);
-        }
-
-        $platformPercent = 0.10;
-        $subtotal = round((float) $serviceOrder->final_price, 2);
-        $platformFee = round($subtotal * $platformPercent, 2);
-        $sellerReceives = $subtotal - $platformFee;
-
-        $subtotalCents = (int) round($subtotal * 100);
-        $platformFeeCents = (int) round($platformFee * 100);
-        $sellerReceivesCents = (int) round($sellerReceives * 100);
-
-        $shippingCents = $this->carrierPriceCents(
-            $request->carrier,
-            $serviceOrder->package_size
-        );
-
-        $totalCents = $subtotalCents + $shippingCents;
-
-        Stripe::setApiKey(config('services.stripe.secret'));
-
-        // Always create a new PaymentIntent for service checkout
-        $intent = PaymentIntent::create([
-            'amount' => $totalCents,
-            'currency' => 'eur',
-            'automatic_payment_methods' => ['enabled' => true],
-            'metadata' => [
-                'service_order_id' => (string) $serviceOrder->id,
-                'type' => 'service_order',
-            ],
-        ]);
-
-        $serviceOrder->update([
-            'payment_provider' => 'stripe',
-            'payment_intent_id' => $intent->id,
-            'amount_charged_cents' => $totalCents,
-            'carrier' => $request->carrier,
-            'shipping_cents' => $shippingCents,
-        ]);
-
-        \Log::info('Service checkout intent prepared', [
-            'service_order_id' => $serviceOrder->id,
-            'payment_intent_id' => $intent->id,
-            'carrier' => $request->carrier,
-            'package_size' => $serviceOrder->package_size,
-            'shipping_cents' => $shippingCents,
-            'total_cents' => $totalCents,
-            'seller_amount_cents' => $sellerReceivesCents + $shippingCents,
-            'metadata' => [
-                'service_order_id' => (string) $serviceOrder->id,
-                'type' => 'service_order',
-            ],
-        ]);
-
+    if ($serviceOrder->status !== \App\Models\ServiceOrder::STATUS_READY_TO_SHIP) {
         return response()->json([
-            'service_order_id' => $serviceOrder->id,
-            'client_secret' => $intent->client_secret,
-            'breakdown' => [
-                'items_total_cents' => $subtotalCents,
-                'small_order_fee_cents' => 0,
-                'shipping_total_cents' => $shippingCents,
-                'total_cents' => $totalCents,
-            ],
-        ]);
+            'error' => 'Paslaugos užsakymas dar neparuoštas apmokėjimui.'
+        ], 422);
     }
+    
+    if ($serviceOrder->completion_method !== \App\Models\ServiceOrder::COMPLETION_PLATFORM) {
+        return response()->json([
+            'error' => 'Pardavėjas dar nepasirinko atsiskaitymo per svetainę.'
+        ], 422);
+    }
+    
+    if ($serviceOrder->payment_status === \App\Models\ServiceOrder::PAYMENT_PAID) {
+        return response()->json([
+            'error' => 'Paslaugos užsakymas jau apmokėtas.'
+        ], 422);
+    }
+
+    if (!$request->filled('carrier')) {
+        return response()->json([
+            'error' => 'Pasirinkite pristatymo būdą.'
+        ], 422);
+    }
+
+    if (!$serviceOrder->package_size) {
+        return response()->json([
+            'error' => 'Pardavėjas dar nenurodė siuntos dydžio.'
+        ], 422);
+    }
+
+    $seller = $serviceOrder->seller;
+
+    if (!$seller->stripe_account_id || !$seller->stripe_onboarded) {
+        return response()->json([
+            'error' => "Seller {$seller->id} is not ready to receive payments."
+        ], 400);
+    }
+
+    $platformPercent = 0.10;
+    $smallOrderThreshold = 5.00;
+    $smallOrderFee = 0.30;
+
+    $subtotal = round((float) $serviceOrder->final_price, 2);
+    $platformFee = round($subtotal * $platformPercent, 2);
+    $sellerReceives = $subtotal - $platformFee;
+
+    $subtotalCents = (int) round($subtotal * 100);
+    $platformFeeCents = (int) round($platformFee * 100);
+    $sellerReceivesCents = (int) round($sellerReceives * 100);
+
+    $applySmallOrderFee = $subtotal < $smallOrderThreshold;
+    $smallOrderFeeCents = $applySmallOrderFee ? (int) round($smallOrderFee * 100) : 0;
+
+    $shippingCents = $this->carrierPriceCents(
+        $request->carrier,
+        $serviceOrder->package_size
+    );
+
+    $totalCents = $subtotalCents + $shippingCents + $smallOrderFeeCents;
+
+    Stripe::setApiKey(config('services.stripe.secret'));
+
+    $intent = PaymentIntent::create([
+        'amount' => $totalCents,
+        'currency' => 'eur',
+        'automatic_payment_methods' => ['enabled' => true],
+        'metadata' => [
+            'service_order_id' => (string) $serviceOrder->id,
+            'type' => 'service_order',
+        ],
+    ]);
+
+    $serviceOrder->update([
+        'payment_provider' => 'stripe',
+        'payment_intent_id' => $intent->id,
+        'amount_charged_cents' => $totalCents,
+        'carrier' => $request->carrier,
+        'shipping_cents' => $shippingCents,
+    ]);
+
+    \Log::info('Service checkout intent prepared', [
+        'service_order_id' => $serviceOrder->id,
+        'payment_intent_id' => $intent->id,
+        'carrier' => $request->carrier,
+        'package_size' => $serviceOrder->package_size,
+        'shipping_cents' => $shippingCents,
+        'small_order_fee_cents' => $smallOrderFeeCents,
+        'total_cents' => $totalCents,
+        'seller_amount_cents' => $sellerReceivesCents + $shippingCents,
+        'metadata' => [
+            'service_order_id' => (string) $serviceOrder->id,
+            'type' => 'service_order',
+        ],
+    ]);
+
+    return response()->json([
+        'service_order_id' => $serviceOrder->id,
+        'client_secret' => $intent->client_secret,
+        'breakdown' => [
+            'items_total_cents' => $subtotalCents,
+            'small_order_fee_cents' => $smallOrderFeeCents,
+            'shipping_total_cents' => $shippingCents,
+            'total_cents' => $totalCents,
+        ],
+    ]);
+}
 
     /*
     |--------------------------------------------------------------------------
@@ -213,7 +231,7 @@ class CheckoutController extends Controller
 
     if ($hasServiceItems) {
         return response()->json([
-            'error' => 'Service listings cannot be purchased through normal checkout.'
+            'error' => 'Paslaugos negali būti perkamos per krepšelį.'
         ], 422);
     }
 
@@ -243,7 +261,7 @@ class CheckoutController extends Controller
 
         if (!$seller->stripe_account_id || !$seller->stripe_onboarded) {
             return response()->json([
-                'error' => "Seller {$seller->id} is not ready to receive payments."
+                'error' => "Seller {$seller->id} nepasiruošės gavimo sąskaitos."
             ], 400);
         }
 

@@ -151,8 +151,6 @@ class SellerServiceOrderController extends Controller
 
         $data = $request->validate([
             'tracking_number' => 'required|string|max:255',
-            'carrier' => 'required|in:omniva,venipak',
-            'package_size' => 'required|in:S,M,L',
             'proof' => 'required|file|mimes:jpg,jpeg,png,pdf,doc,docx|max:5120',
         ]);
 
@@ -180,9 +178,9 @@ class SellerServiceOrderController extends Controller
         return $request->validate([
             'listing_id' => 'required|exists:listing,id',
             'is_anonymous' => 'nullable|boolean',
-            'buyer_code' => 'nullable|string|max:20',
-            'package_size' => 'required|in:S,M,L',
+            'buyer_code' => 'nullable|string|max:7',
             'final_price' => 'required|numeric|min:0.30',
+            'package_size' => 'required|in:S,M,L',
             'buyer_information' => 'nullable|string|max:2000',
             'agreed_specifications' => 'nullable|string|max:5000',
             'notes' => 'nullable|string|max:5000',
@@ -190,6 +188,34 @@ class SellerServiceOrderController extends Controller
             'custom_requirements' => 'nullable|string|max:5000',
             'timeline_notes' => 'nullable|string|max:5000',
             'other_comments' => 'nullable|string|max:5000',
+        ], [
+            'listing_id.required' => 'Privaloma pasirinkti skelbimą kuris užsakytas.',
+            'listing_id.exists' => 'Pasirinktas skelbimas nerastas.',
+            'final_price.required' => 'Privaloma įvesti galutinę kainą.',
+            'final_price.numeric' => 'Galutinė kaina turi būti skaičius.',
+            'final_price.min' => 'Galutinė kaina turi būti bent 0,30 €.',
+            'package_size.required' => 'Privaloma pasirinkti siuntos dydį.',
+            'package_size.in' => 'Pasirinktas siuntos dydis neteisingas.',
+            'buyer_code.max' => 'Pirkėjo kodas negali būti ilgesnis nei 6 simbolių.',
+        ], [
+            'listing_id' => 'skelbimas',
+            'final_price' => 'galutinė kaina',
+            'package_size' => 'siuntos dydis',
+            'buyer_code' => 'pirkėjo kodas',
         ]);
+    }
+
+        public function choosePlatform(ServiceOrder $serviceOrder)
+    {
+        $this->serviceOrderService->choosePlatformFlow($serviceOrder, auth()->user());
+    
+        return back()->with('success', 'Pasirinktas atsiskaitymas per svetainę.');
+    }
+    
+    public function choosePrivate(ServiceOrder $serviceOrder)
+    {
+        $this->serviceOrderService->choosePrivateFlow($serviceOrder, auth()->user());
+    
+        return back()->with('success', 'Pasirinktas privatus užbaigimas.');
     }
 }

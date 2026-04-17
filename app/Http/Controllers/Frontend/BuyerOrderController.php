@@ -11,22 +11,30 @@ class BuyerOrderController extends Controller
     public function index()
     {
         $orders = Order::with([
-            'orderItem.Listing.user',
-            'shipments.seller'
-        ])
-        ->where('user_id', auth()->id())
-        ->where('statusas', Order::STATUS_PAID)
-        ->latest()
-        ->get();
+                'orderItem.Listing.user',
+                'shipments.seller',
+            ])
+            ->where('user_id', auth()->id())
+            ->where('statusas', Order::STATUS_PAID)
+            ->latest()
+            ->paginate(8, ['*'], 'orders_page');
 
         $serviceOrders = ServiceOrder::with([
-            'seller',
-            'listing',
-        ])
-        ->where('buyer_id', auth()->id())
-        ->latest()
-        ->get();
+                'seller',
+            ])
+            ->where('buyer_id', auth()->id())
+            ->where('status', '!=', ServiceOrder::STATUS_CANCELLED)
+            ->latest()
+            ->paginate(8, ['*'], 'service_orders_page');
 
-        return view('frontend.buyer.orders.index', compact('orders', 'serviceOrders'));
+        $hasServiceOrders = ServiceOrder::where('buyer_id', auth()->id())
+            ->where('status', '!=', ServiceOrder::STATUS_CANCELLED)
+            ->exists();
+
+        return view('frontend.buyer.orders.index', compact(
+            'orders',
+            'serviceOrders',
+            'hasServiceOrders'
+        ));
     }
 }

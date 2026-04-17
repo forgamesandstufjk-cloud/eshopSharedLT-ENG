@@ -8,4 +8,4 @@
     <p><strong>Administratoriaus pastaba:</strong> {{ $adminNote }}</p>
 @endif
 
-<p>Jei manote, kad tai įvyko per klaidą, susisiekite su administracija.</p>
+<p>Jei manote, kad tai įvyko per klaidą, susisiekite su administracija šuo adresu: infoadministracija@keblu.lt.</p>

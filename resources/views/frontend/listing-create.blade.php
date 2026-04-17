@@ -239,10 +239,10 @@
               <label class="block font-semibold">Kaina (€)</label>
               <input
                   type="number"
-                  min="0"
+                  min="0.20"
                   step="0.01"
                   name="kaina"
-                  value="{{ old('kaina') }}"
+                   value="{{ old('kaina', '0.20') }}"
                   class="w-full border rounded p-2 focus:outline-none focus:ring-1 focus:ring-[#836354] focus:border-[#836354]"
                   style="background-color: rgb(234, 220, 200)"
                   onwheel="event.preventDefault()"

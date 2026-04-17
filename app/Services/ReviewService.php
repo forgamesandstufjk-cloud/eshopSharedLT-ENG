@@ -3,9 +3,11 @@
 namespace App\Services;
 
 use App\Models\Review;
-use App\Repositories\Contracts\ReviewRepositoryInterface;
 use App\Models\Listing;
+use App\Models\Order;
 use App\Models\OrderItem;
+use App\Models\ServiceOrder;
+use App\Repositories\Contracts\ReviewRepositoryInterface;
 
 class ReviewService
 {
@@ -28,20 +30,16 @@ class ReviewService
 
     public function create(array $data)
     {
-        $userId    = $data['user_id'];
-        $listingId = $data['listing_id'];
+        $userId = (int) $data['user_id'];
+        $listingId = (int) $data['listing_id'];
 
         $listing = Listing::find($listingId);
         if (!$listing) {
-            throw new \Exception("Listing not found");
+            throw new \Exception('Listing not found');
         }
 
-        if (!$listing->is_renewable && $listing->kiekis < 1) {
-            throw new \Exception("Įvertinti galite tik prekių skelbimus ir prekes su didesniais kiekiais");
-        }
-
-        if ($listing->user_id == $userId) {
-            throw new \Exception("Negalite palikti atsiliepimo ant savo skelbimo.");
+        if ((int) $listing->user_id === $userId) {
+            throw new \Exception('Negalite palikti atsiliepimo ant savo skelbimo.');
         }
 
         $existing = Review::where('listing_id', $listingId)
@@ -49,18 +47,37 @@ class ReviewService
             ->first();
 
         if ($existing) {
-            throw new \Exception("Jau įvertinote šį skelbimą.");
+            throw new \Exception('Jau įvertinote šį skelbimą.');
         }
 
-       $hasPurchased = OrderItem::where('listing_id', $listingId)
-        ->whereHas('order', function ($q) use ($userId) {
-            $q->where('user_id', $userId)
-              ->where('statusas', \App\Models\Order::STATUS_PAID);
-        })
-    ->exists();
+        $hasPurchasedProduct = OrderItem::query()
+            ->where('listing_id', $listingId)
+            ->whereHas('order', function ($q) use ($userId) {
+                $q->where('user_id', $userId)
+                  ->where('statusas', Order::STATUS_PAID);
+            })
+            ->whereHas('order.shipments', function ($q) use ($listing) {
+                $q->where('seller_id', $listing->user_id)
+                  ->whereIn('status', ['approved', 'reimbursed']);
+            })
+            ->exists();
 
-        if (!$hasPurchased) {
-            throw new \Exception("Įvertinti galima tik pirktus skelbimus");
+        $hasPurchasedService = ServiceOrder::query()
+            ->where('listing_id', $listingId)
+            ->where('buyer_id', $userId)
+            ->where(function ($q) {
+                $q->where(function ($q2) {
+                    $q2->where('completion_method', ServiceOrder::COMPLETION_PLATFORM)
+                       ->where('payment_status', ServiceOrder::PAYMENT_PAID);
+                })->orWhere(function ($q2) {
+                    $q2->where('completion_method', ServiceOrder::COMPLETION_PRIVATE)
+                       ->where('status', ServiceOrder::STATUS_COMPLETED);
+                });
+            })
+            ->exists();
+
+        if (!($hasPurchasedProduct || $hasPurchasedService)) {
+            throw new \Exception('Įvertinti galima tik pirktus skelbimus');
         }
 
         return $this->reviewRepository->create($data);

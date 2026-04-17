@@ -92,20 +92,20 @@
                                     </span>
 
                                     <div class="flex items-center gap-3">
-                                        @if($item->tipas === 'paslauga')
-                                            <span
-                                                class="px-2 py-1 rounded text-xs text-black"
-                                                style="background-color: rgb(207, 174, 134)"
-                                                title="Paslaugos nėra perkamos per krepšelį">
-                                                Paslauga
-                                            </span>
-
-                                        @elseif(auth()->check() && auth()->id() === $item->user_id)
+                                        @if(auth()->check() && auth()->id() === $item->user_id)
                                             <span
                                                 class="px-2 py-1 rounded text-xs text-black"
                                                 style="background-color: rgb(207, 174, 134)"
                                                 title="Tai jūsų skelbimas">
                                                 Jūsų skelbimas
+                                            </span>    
+
+                                        @elseif($item->tipas === 'paslauga')
+                                             <span
+                                                class="px-2 py-1 rounded text-xs text-black"
+                                                style="background-color: rgb(207, 174, 134)"
+                                                title="Paslaugos nėra perkamos per krepšelį">
+                                                Paslauga
                                             </span>
 
                                         @elseif(

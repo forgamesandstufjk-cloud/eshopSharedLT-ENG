@@ -157,15 +157,17 @@ document.addEventListener("DOMContentLoaded", async () => {
     checkoutId = intentData.service_order_id;
     intentCreated = true;
 
-    document.getElementById("items-total").textContent = format(
-      intentData.breakdown.items_total_cents
-    );
-    document.getElementById("shipping-total").textContent = format(
-      intentData.breakdown.shipping_total_cents
-    );
-    document.getElementById("order-total").textContent = format(
-      intentData.breakdown.total_cents
-    );
+    document.getElementById("items-total").textContent = format(intentData.breakdown.items_total_cents);
+document.getElementById("shipping-total").textContent = format(intentData.breakdown.shipping_total_cents ?? 0);
+document.getElementById("order-total").textContent = format(intentData.breakdown.total_cents);
+
+if ((intentData.breakdown.small_order_fee_cents ?? 0) > 0) {
+  document.getElementById("small-order-fee").textContent =
+    format(intentData.breakdown.small_order_fee_cents);
+  document.getElementById("small-order-row").classList.remove("hidden");
+} else {
+  document.getElementById("small-order-row").classList.add("hidden");
+}
 
     resetPaymentElement();
 

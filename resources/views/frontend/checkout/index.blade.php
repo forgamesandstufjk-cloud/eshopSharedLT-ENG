@@ -249,14 +249,12 @@
                     <span id="items-total">—</span>
                 </div>
 
-                @if($checkoutMode === 'cart')
-                    <div id="small-order-row"
-                         class="flex justify-between text-sm hidden"
-                         style="color: rgb(184, 80, 54)">
-                        <span>Mažo užsakymo mokestis</span>
-                        <span id="small-order-fee">—</span>
-                    </div>
-                @endif
+                <div id="small-order-row"
+                     class="flex justify-between text-sm hidden"
+                     style="color: rgb(184, 80, 54)">
+                    <span>Mažo užsakymo mokestis</span>
+                    <span id="small-order-fee">—</span>
+                </div>
 
                 <div class="flex justify-between text-sm text-black">
                     <span>Pristatymas</span>

@@ -18,6 +18,12 @@
             </div>
         @endif
 
+        @if(session('error'))
+            <div class="p-3 rounded mb-4 text-black" style="background-color: rgb(230, 190, 190)">
+                {{ session('error') }}
+            </div>
+        @endif
+
         @if ($errors->any())
             <div class="mb-4 p-4 rounded" style="background-color: rgb(230, 190, 190)">
                 <ul class="list-disc pl-5 text-black text-sm">
@@ -32,6 +38,7 @@
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-black">
                 <div>
                     <div><strong>Skelbimas:</strong> {{ $serviceOrder->original_listing_title }}</div>
+
                     <div>
                         <strong>Pirkėjas:</strong>
                         @if($serviceOrder->is_anonymous)
@@ -44,8 +51,34 @@
                             Nepriskirtas
                         @endif
                     </div>
+
                     <div><strong>Būsena:</strong> {{ $serviceOrder->lithuanian_status }}</div>
                     <div><strong>Kaina:</strong> €{{ number_format((float) $serviceOrder->final_price, 2) }}</div>
+                    <div><strong>Siuntos dydis:</strong> {{ $serviceOrder->package_size ?: '—' }}</div>
+
+                    @if($serviceOrder->status === \App\Models\ServiceOrder::STATUS_READY_TO_SHIP)
+                        <div class="mt-3">
+                            @if($serviceOrder->completion_method === \App\Models\ServiceOrder::COMPLETION_PLATFORM)
+                                @if($serviceOrder->payment_status === \App\Models\ServiceOrder::PAYMENT_PAID)
+                                    <span class="px-2 py-1 rounded text-xs text-black" style="background-color: rgb(207, 174, 134)">
+                                        Norint gauti pinigus pateikite siuntos įrodymą
+                                    </span>
+                                @else
+                                    <span class="px-2 py-1 rounded text-xs text-black" style="background-color: rgb(207, 174, 134)">
+                                        Laukiama pirkėjo apmokėjimo
+                                    </span>
+                                @endif
+                            @elseif($serviceOrder->completion_method === \App\Models\ServiceOrder::COMPLETION_PRIVATE)
+                                <span class="px-2 py-1 rounded text-xs text-black" style="background-color: rgb(207, 174, 134)">
+                                    Bus užbaigta privačiai
+                                </span>
+                            @else
+                                <span class="px-2 py-1 rounded text-xs text-black" style="background-color: rgb(207, 174, 134)">
+                                    Laukiama užbaigimo būdo pasirinkimo
+                                </span>
+                            @endif
+                        </div>
+                    @endif
                 </div>
 
                 <div>
@@ -53,6 +86,8 @@
                     <div><strong>Pradėta:</strong> {{ $serviceOrder->started_at?->format('Y-m-d H:i') ?? '—' }}</div>
                     <div><strong>Paruošta išsiuntimui:</strong> {{ $serviceOrder->ready_to_ship_at?->format('Y-m-d H:i') ?? '—' }}</div>
                     <div><strong>Užbaigta:</strong> {{ $serviceOrder->completed_at?->format('Y-m-d H:i') ?? '—' }}</div>
+                    <div><strong>Apmokėjimo būsena:</strong> {{ $serviceOrder->payment_status ?? '—' }}</div>
+                    <div><strong>Siuntos būsena:</strong> {{ $serviceOrder->shipment_status ?? '—' }}</div>
                 </div>
             </div>
         </div>
@@ -67,91 +102,143 @@
                 <div><strong>Siuntimo pastabos:</strong> {{ $serviceOrder->shipping_notes ?: '—' }}</div>
                 <div><strong>Papildomi reikalavimai:</strong> {{ $serviceOrder->custom_requirements ?: '—' }}</div>
                 <div><strong>Termino informacija:</strong> {{ $serviceOrder->timeline_notes ?: '—' }}</div>
+                <div><strong>Vežėjas:</strong> {{ $serviceOrder->carrier ? strtoupper($serviceOrder->carrier) : '—' }}</div>
+                <div><strong>Siuntos sekimo numeris:</strong> {{ $serviceOrder->tracking_number ?: '—' }}</div>
+
+                @if($serviceOrder->proof_path)
+                    <div>
+                        <strong>Siuntos įrodymas:</strong>
+                        <a href="{{ \Illuminate\Support\Facades\Storage::disk('photos')->url($serviceOrder->proof_path) }}"
+                           target="_blank"
+                           class="underline"
+                           style="color: rgb(131, 99, 84)">
+                            Peržiūrėti įrodymą
+                        </a>
+                    </div>
+                @endif
             </div>
         </div>
 
         <div class="shadow rounded p-5 text-black" style="background-color: rgb(215, 183, 142)">
-    <h2 class="font-semibold mb-3">Veiksmai</h2>
+            <h2 class="font-semibold mb-3">Veiksmai</h2>
 
-    <div class="flex flex-wrap gap-2">
-        <a href="{{ route('seller.service-orders.index') }}"
-           class="text-white px-4 py-2 rounded"
-           style="background-color: rgb(131, 99, 84)">
-            Grįžti į lentą
-        </a>
+            <div class="flex flex-wrap gap-2">
+                <a href="{{ route('seller.service-orders.index') }}"
+                   class="text-white px-4 py-2 rounded"
+                   style="background-color: rgb(131, 99, 84)">
+                    Grįžti į lentą
+                </a>
 
-        <a href="{{ route('seller.service-orders.edit', $serviceOrder) }}"
-           class="text-white px-4 py-2 rounded"
-           style="background-color: rgb(131, 99, 84)">
-            Redaguoti
-        </a>
+                <a href="{{ route('seller.service-orders.edit', $serviceOrder) }}"
+                   class="text-white px-4 py-2 rounded"
+                   style="background-color: rgb(131, 99, 84)">
+                    Redaguoti
+                </a>
 
-        @if($serviceOrder->status === \App\Models\ServiceOrder::STATUS_AGREED)
-            <form method="POST" action="{{ route('seller.service-orders.status', $serviceOrder) }}">
-                @csrf
-                @method('PATCH')
-                <input type="hidden" name="status" value="daromas">
-                <button class="text-white px-4 py-2 rounded" style="background-color: rgb(131, 99, 84)">
-                    Perkelti į Daroma
-                </button>
-            </form>
-        @endif
+                @if($serviceOrder->status === \App\Models\ServiceOrder::STATUS_AGREED)
+                    <form method="POST" action="{{ route('seller.service-orders.status', $serviceOrder) }}">
+                        @csrf
+                        @method('PATCH')
+                        <input type="hidden" name="status" value="daromas">
+                        <button class="text-white px-4 py-2 rounded" style="background-color: rgb(131, 99, 84)">
+                            Perkelti į Daroma
+                        </button>
+                    </form>
+                @endif
 
-        @if($serviceOrder->status === \App\Models\ServiceOrder::STATUS_DAROMAS)
-            <form method="POST" action="{{ route('seller.service-orders.status', $serviceOrder) }}">
-                @csrf
-                @method('PATCH')
-                <input type="hidden" name="status" value="agreed">
-                <button class="text-white px-4 py-2 rounded" style="background-color: rgb(131, 99, 84)">
-                    Grąžinti į Sutarta
-                </button>
-            </form>
+                @if($serviceOrder->status === \App\Models\ServiceOrder::STATUS_DAROMAS)
+                    <form method="POST" action="{{ route('seller.service-orders.status', $serviceOrder) }}">
+                        @csrf
+                        @method('PATCH')
+                        <input type="hidden" name="status" value="agreed">
+                        <button class="text-white px-4 py-2 rounded" style="background-color: rgb(131, 99, 84)">
+                            Grąžinti į Sutarta
+                        </button>
+                    </form>
 
-            <form method="POST"
-                  action="{{ route('seller.service-orders.status', $serviceOrder) }}"
-                  onsubmit="return confirm('Ar tikrai norite perkelti į „Paruošta išsiuntimui“? Po šio veiksmo užsakymo nebegalėsite grąžinti atgal į „Daroma“.');">
-                @csrf
-                @method('PATCH')
-                <input type="hidden" name="status" value="ready_to_ship">
-                <button class="text-white px-4 py-2 rounded" style="background-color: rgb(131, 99, 84)">
-                    Perkelti į Paruošta išsiuntimui
-                </button>
-            </form>
-        @endif
+                    <form method="POST"
+                          action="{{ route('seller.service-orders.status', $serviceOrder) }}"
+                          onsubmit="return confirm('Ar tikrai norite perkelti į „Paruošta išsiuntimui“? Po šio veiksmo užsakymo nebegalėsite grąžinti atgal į „Daroma“.');">
+                        @csrf
+                        @method('PATCH')
+                        <input type="hidden" name="status" value="ready_to_ship">
+                        <button class="text-white px-4 py-2 rounded" style="background-color: rgb(131, 99, 84)">
+                            Perkelti į Paruošta išsiuntimui
+                        </button>
+                    </form>
+                @endif
 
-        @if($serviceOrder->status === \App\Models\ServiceOrder::STATUS_READY_TO_SHIP)
-            <a href="{{ route('seller.orders') }}#service-order-{{ $serviceOrder->id }}"
-               class="text-white px-4 py-2 rounded"
-               style="background-color: rgb(131, 99, 84)">
-                Tęsti per svetainę
-            </a>
+                @if($serviceOrder->status === \App\Models\ServiceOrder::STATUS_READY_TO_SHIP)
+                    @if($serviceOrder->completion_method === null)
+                        <form method="POST" action="{{ route('seller.service-orders.choose-platform', $serviceOrder) }}">
+                            @csrf
+                            <button class="text-white px-4 py-2 rounded" style="background-color: rgb(131, 99, 84)">
+                                Atsiskaitymas per svetainę
+                            </button>
+                        </form>
 
-            <form method="POST"
-                  action="{{ route('seller.service-orders.complete-private', $serviceOrder) }}"
-                  onsubmit="return confirm('Ar tikrai norite užbaigti privačiai? Tokiu atveju svetainė neturės siuntos įrodymų ir negalės padėti ginčų, grąžinimų ar kitų nesutarimų atveju.');">
-                @csrf
-                <button class="text-white px-4 py-2 rounded" style="background-color: rgb(184, 80, 54)">
-                    Užbaigti privačiai
-                </button>
-            </form>
-        @endif
+                        <form method="POST"
+                              action="{{ route('seller.service-orders.choose-private', $serviceOrder) }}"
+                              onsubmit="return confirm('Ar tikrai norite užbaigti privačiai?');">
+                            @csrf
+                            <button class="text-white px-4 py-2 rounded" style="background-color: rgb(184, 80, 54)">
+                                Užbaigti privačiai
+                            </button>
+                        </form>
 
-        @if(in_array($serviceOrder->status, [
-            \App\Models\ServiceOrder::STATUS_AGREED,
-            \App\Models\ServiceOrder::STATUS_DAROMAS,
-            \App\Models\ServiceOrder::STATUS_READY_TO_SHIP
-        ], true))
-            <form method="POST" action="{{ route('seller.service-orders.status', $serviceOrder) }}">
-                @csrf
-                @method('PATCH')
-                <input type="hidden" name="status" value="cancelled">
-                <button class="text-white px-4 py-2 rounded" style="background-color: rgb(184, 80, 54)">
-                    Atšaukti
-                </button>
-            </form>
-        @endif
-    </div>
-</div>
-        
+                    @elseif(
+                        $serviceOrder->completion_method === \App\Models\ServiceOrder::COMPLETION_PLATFORM &&
+                        $serviceOrder->payment_status !== \App\Models\ServiceOrder::PAYMENT_PAID
+                    )
+                        <div class="px-4 py-2 rounded text-sm text-black" style="background-color: rgb(207, 174, 134)">
+                            Laukiama pirkėjo apmokėjimo
+                        </div>
+
+                        <form method="POST"
+                              action="{{ route('seller.service-orders.choose-private', $serviceOrder) }}"
+                              onsubmit="return confirm('Ar tikrai norite perjungti į privatų užbaigimą? Tai padarius nebebus galima užbaigti per svetainę.');">
+                            @csrf
+                            <button class="text-white px-4 py-2 rounded" style="background-color: rgb(184, 80, 54)">
+                                Užbaigti privačiai
+                            </button>
+                        </form>
+
+                    @elseif(
+                        $serviceOrder->completion_method === \App\Models\ServiceOrder::COMPLETION_PLATFORM &&
+                        $serviceOrder->payment_status === \App\Models\ServiceOrder::PAYMENT_PAID
+                    )
+                        <a href="{{ route('seller.orders') }}#service-order-{{ $serviceOrder->id }}"
+                           class="text-white px-4 py-2 rounded"
+                           style="background-color: rgb(131, 99, 84)">
+                            Tęsti per svetainę
+                        </a>
+
+                    @elseif($serviceOrder->completion_method === \App\Models\ServiceOrder::COMPLETION_PRIVATE)
+                        <form method="POST"
+                              action="{{ route('seller.service-orders.complete-private', $serviceOrder) }}"
+                              onsubmit="return confirm('Ar tikrai norite užbaigti privačiai?');">
+                            @csrf
+                            <button class="text-white px-4 py-2 rounded" style="background-color: rgb(184, 80, 54)">
+                                Užbaigti privačiai
+                            </button>
+                        </form>
+                    @endif
+                @endif
+
+                @if(in_array($serviceOrder->status, [
+                    \App\Models\ServiceOrder::STATUS_AGREED,
+                    \App\Models\ServiceOrder::STATUS_DAROMAS
+                ], true))
+                    <form method="POST" action="{{ route('seller.service-orders.status', $serviceOrder) }}">
+                        @csrf
+                        @method('PATCH')
+                        <input type="hidden" name="status" value="cancelled">
+                        <button class="text-white px-4 py-2 rounded" style="background-color: rgb(184, 80, 54)">
+                            Atšaukti
+                        </button>
+                    </form>
+                @endif
+            </div>
+        </div>
     </div>
 </x-app-layout>

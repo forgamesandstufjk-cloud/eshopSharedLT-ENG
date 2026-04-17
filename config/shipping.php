@@ -2,15 +2,14 @@
 
 return [
 
-    // Lithuania only  ALL VALUES IN CENTS
     'carriers' => [
         'omniva' => [
             'label' => 'Omniva',
             'prices_cents' => [
                 'XS' => 250,
                 'S'  => 300,
-                'M'  => 350,
-                'L'  => 450,
+                'M'  => 400,
+                'L'  => 500,
             ],
         ],
 

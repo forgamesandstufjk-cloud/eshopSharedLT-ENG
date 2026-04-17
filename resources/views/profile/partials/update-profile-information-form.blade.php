@@ -15,6 +15,42 @@
         </p>
     </header>
 
+     {{-- BUYER CODE --}}
+<div x-data="{ copied: false }" class="mt-5">
+    <label for="buyer_code" class="block font-medium text-sm text-black">Jūsų pirkėjo kodas</label>
+
+    <div class="mt-1 flex gap-2">
+        <input
+            id="buyer_code"
+            type="text"
+            readonly
+            value="{{ $user->buyer_code ?? '—' }}"
+            class="block w-full rounded-md shadow-sm border border-gray-500 text-black focus:outline-none focus:ring-1 focus:ring-[#836354] focus:border-[#836354]"
+            style="background-color: rgb(234, 220, 200)"
+        />
+
+        @if($user->buyer_code)
+            <button
+                type="button"
+                @click="
+                    navigator.clipboard.writeText('{{ $user->buyer_code }}');
+                    copied = true;
+                    setTimeout(() => copied = false, 2000);
+                "
+                class="px-4 py-2 rounded-md font-semibold text-white hover:text-black transition whitespace-nowrap"
+                style="background-color: rgb(131, 99, 84)"
+                x-text="copied ? 'Nukopijuota' : 'Kopijuoti'"
+            >
+                Kopijuoti
+            </button>
+        @endif
+    </div>
+
+    <p class="mt-1 text-xs text-black">
+       {{ __("Šį kodą galite pateikti pardavėjui, kai jis kuria paslaugos užsakymą per svetainę.") }}
+    </p>
+</div>
+
     @if(session('error'))
     <div class="mt-4 mb-4 px-4 py-3 rounded text-black"
          style="background-color: rgb(207, 174, 134); border: 1px solid #836354">

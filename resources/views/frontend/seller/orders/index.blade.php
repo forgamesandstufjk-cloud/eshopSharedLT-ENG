@@ -218,12 +218,15 @@
                                 @elseif($so->shipment_status === \App\Models\ServiceOrder::SHIPMENT_NEEDS_REVIEW)
                                     <span class="font-medium" style="color: rgb(131, 99, 84)">Laukiama patvirtinimo</span>
 
+                                @elseif($so->shipment_status === \App\Models\ServiceOrder::SHIPMENT_APPROVED)
+                                    <span style="color: rgb(184, 80, 54)">Apdorojamas kompensavimas</span>
+
+                                @elseif($so->shipment_status === \App\Models\ServiceOrder::SHIPMENT_REIMBURSED)
+                                    <span style="color: rgb(131, 99, 84)">Užbaigta</span>
+
                                 @elseif($so->status === \App\Models\ServiceOrder::STATUS_READY_TO_SHIP)
                                     @if($so->payment_status === \App\Models\ServiceOrder::PAYMENT_PAID)
-                                        <span class="text-black">Paruošta išsiuntimui</span>
-                                        <div class="text-xs mt-1" style="color: rgb(131, 99, 84)">
-                                            Pirkėjas apmokėjo per svetainę
-                                        </div>
+                                        <div class="text-black">Laukiama išsiuntimo</div>
                                     @else
                                         <span class="font-medium" style="color: rgb(131, 99, 84)">Laukiama pirkėjo apmokėjimo</span>
                                     @endif
@@ -235,86 +238,89 @@
 
                             <td class="p-3 block sm:table-cell text-black">
                                 <span class="font-semibold sm:hidden">Veiksmai: </span>
-
-                                @if(
-                                    $so->status === \App\Models\ServiceOrder::STATUS_READY_TO_SHIP &&
-                                    $so->payment_status === \App\Models\ServiceOrder::PAYMENT_PAID &&
-                                    $so->completion_method !== \App\Models\ServiceOrder::COMPLETION_PRIVATE &&
-                                    $so->shipment_status !== \App\Models\ServiceOrder::SHIPMENT_NEEDS_REVIEW &&
-                                    !$so->proof_path
-                                )
-                                    <form method="POST"
-                                          action="{{ route('seller.service-orders.shipment.submit', $so) }}"
-                                          enctype="multipart/form-data"
-                                          class="space-y-2 mt-2">
-                                        @csrf
-
-                                        <select
-                                            name="carrier"
-                                            class="border p-2 rounded w-full text-black focus:outline-none focus:ring-1 focus:ring-[#836354] focus:border-[#836354]"
-                                            style="background-color: rgb(234, 220, 200); border-color: #6B7280">
-                                            <option value="omniva">Omniva</option>
-                                            <option value="venipak">Venipak</option>
-                                        </select>
-
-                                        <select
-                                            name="package_size"
-                                            class="border p-2 rounded w-full text-black focus:outline-none focus:ring-1 focus:ring-[#836354] focus:border-[#836354]"
-                                            style="background-color: rgb(234, 220, 200); border-color: #6B7280">
-                                            <option value="S">S</option>
-                                            <option value="M">M</option>
-                                            <option value="L">L</option>
-                                        </select>
-
-                                        <input
-                                            name="tracking_number"
-                                            class="border p-2 rounded w-full text-black focus:outline-none focus:ring-1 focus:ring-[#836354] focus:border-[#836354]"
-                                            style="background-color: rgb(234, 220, 200); border-color: #6B7280"
-                                            placeholder="Siuntos sekimo numeris"
-                                        >
-
-                                        <input
-                                            type="file"
-                                            name="proof"
-                                            class="border p-2 rounded w-full text-black focus:outline-none focus:ring-1 focus:ring-[#836354] focus:border-[#836354]"
-                                            style="background-color: rgb(234, 220, 200); border-color: #6B7280"
-                                        >
-
-                                        <button
-                                            class="text-white px-3 py-2 rounded w-full hover:text-black"
-                                            style="background-color: rgb(131, 99, 84)">
-                                            Pateikti siuntos įrodymą
-                                        </button>
-                                    </form>
-
-                                    <form method="POST"
-                                          action="{{ route('seller.service-orders.complete-private', $so) }}"
-                                          class="mt-2"
-                                          onsubmit="return confirm('Ar tikrai norite užbaigti privačiai? Tokiu atveju svetainė neturės siuntos įrodymų ir negalės padėti ginčų, grąžinimų ar kitų nesutarimų atveju.');">
-                                        @csrf
-                                        <button
-                                            class="text-white px-3 py-2 rounded w-full"
-                                            style="background-color: rgb(184, 80, 54)">
-                                            Užbaigti privačiai
-                                        </button>
-                                    </form>
-
-                                @elseif(
-                                    $so->status === \App\Models\ServiceOrder::STATUS_READY_TO_SHIP &&
-                                    $so->payment_status !== \App\Models\ServiceOrder::PAYMENT_PAID &&
-                                    $so->completion_method !== \App\Models\ServiceOrder::COMPLETION_PRIVATE
-                                )
-                                    <div class="text-sm text-black">
-                                        Laukiama, kol pirkėjas apmokės per svetainę.
-                                    </div>
-
-                                @elseif($so->proof_path)
-                                    <a href="{{ \Illuminate\Support\Facades\Storage::disk('photos')->url($so->proof_path) }}"
-                                       target="_blank"
-                                       class="underline"
-                                       style="color: rgb(131, 99, 84)">
-                                        Peržiūrėti įrodymą
-                                    </a>
+                            
+                                @if($so->status === \App\Models\ServiceOrder::STATUS_READY_TO_SHIP)
+                                    @if($so->completion_method === null)
+                                        <div class="space-y-2 mt-2">
+                                            <form method="POST" action="{{ route('seller.service-orders.choose-platform', $so) }}">
+                                                @csrf
+                                                <button
+                                                    class="text-white px-3 py-2 rounded w-full hover:text-black"
+                                                    style="background-color: rgb(131, 99, 84)">
+                                                    Atsiskaitymas per svetainę
+                                                </button>
+                                            </form>
+                            
+                                            <form method="POST" action="{{ route('seller.service-orders.choose-private', $so) }}">
+                                                @csrf
+                                                <button
+                                                    class="text-white px-3 py-2 rounded w-full"
+                                                    style="background-color: rgb(184, 80, 54)">
+                                                    Užbaigti privačiai
+                                                </button>
+                                            </form>
+                                        </div>
+                            
+                                    @elseif(
+                                        $so->completion_method === \App\Models\ServiceOrder::COMPLETION_PLATFORM &&
+                                        $so->payment_status !== \App\Models\ServiceOrder::PAYMENT_PAID
+                                    )
+                                        <div class="text-sm text-black">
+                                            Laukiama, kol pirkėjas apmokės per svetainę.
+                                        </div>
+                            
+                                        <form method="POST" action="{{ route('seller.service-orders.choose-private', $so) }}" class="mt-2">
+                                            @csrf
+                                            <button
+                                                class="text-white px-3 py-2 rounded w-full"
+                                                style="background-color: rgb(184, 80, 54)">
+                                                Perjungti į privatų
+                                            </button>
+                                        </form>
+                            
+                                    @elseif(
+                                        $so->completion_method === \App\Models\ServiceOrder::COMPLETION_PLATFORM &&
+                                        $so->payment_status === \App\Models\ServiceOrder::PAYMENT_PAID &&
+                                        $so->shipment_status === \App\Models\ServiceOrder::SHIPMENT_PENDING
+                                    )
+                                        <form method="POST"
+                                              action="{{ route('seller.service-orders.shipment.submit', $so) }}"
+                                              enctype="multipart/form-data"
+                                              class="space-y-2 mt-2">
+                                            @csrf
+                            
+                                            <input
+                                                name="tracking_number"
+                                                class="border p-2 rounded w-full text-black focus:outline-none focus:ring-1 focus:ring-[#836354] focus:border-[#836354]"
+                                                style="background-color: rgb(234, 220, 200); border-color: #6B7280"
+                                                placeholder="Siuntos sekimo numeris"
+                                            >
+                            
+                                            <input
+                                                type="file"
+                                                name="proof"
+                                                class="border p-2 rounded w-full text-black focus:outline-none focus:ring-1 focus:ring-[#836354] focus:border-[#836354]"
+                                                style="background-color: rgb(234, 220, 200); border-color: #6B7280"
+                                            >
+                            
+                                            <button
+                                                class="text-white px-3 py-2 rounded w-full hover:text-black"
+                                                style="background-color: rgb(131, 99, 84)">
+                                                Pateikti siuntos įrodymą
+                                            </button>
+                                        </form>
+                            
+                                    @elseif($so->shipment_status === \App\Models\ServiceOrder::SHIPMENT_NEEDS_REVIEW && $so->proof_path)
+                                        <a href="{{ \Illuminate\Support\Facades\Storage::disk('photos')->url($so->proof_path) }}"
+                                           target="_blank"
+                                           class="underline"
+                                           style="color: rgb(131, 99, 84)">
+                                            Peržiūrėti įrodymą
+                                        </a>
+                            
+                                    @else
+                                        —
+                                    @endif
                                 @else
                                     —
                                 @endif

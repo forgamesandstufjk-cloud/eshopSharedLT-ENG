@@ -180,28 +180,28 @@
                         @click="selected = 'XS'; open = false"
                         class="block w-full px-3 py-2 text-black cursor-pointer hover:bg-[#cfae86]"
                     >
-                        XS – Vokas
+                        XS – 61x18x8 cm, iki 1 kg
                     </div>
 
                     <div
                         @click="selected = 'S'; open = false"
                         class="block w-full px-3 py-2 text-black cursor-pointer hover:bg-[#cfae86]"
                     >
-                        S – Maža dėžė
+                        S – 64×38×9 cm, iki 25 kg
                     </div>
 
                     <div
                         @click="selected = 'M'; open = false"
                         class="block w-full px-3 py-2 text-black cursor-pointer hover:bg-[#cfae86]"
                     >
-                        M – Vidutinė dėžė
+                        M – 64×38×19 cm, iki 25 kg
                     </div>
 
                     <div
                         @click="selected = 'L'; open = false"
                         class="block w-full px-3 py-2 text-black cursor-pointer hover:bg-[#cfae86]"
                     >
-                        L – Didelė dėžė
+                        L – 64×38×39 cm, iki 25 kg
                     </div>
                 </div>
             </div>
@@ -234,20 +234,21 @@
             </div>
         </div>
 
-        {{-- PRICE --}}
-        <div class="mb-4">
-            <label class="block font-semibold">Kaina (€)</label>
-            <input
-    type="number"
-    min="0"
-    step="0.01"
-    name="kaina"
-    value="{{ old('kaina') }}"
-    class="w-full border rounded p-2 focus:outline-none focus:ring-1 focus:ring-[#836354] focus:border-[#836354]"
-    style="background-color: rgb(234, 220, 200)"
-    required
->
-        </div>
+       {{-- PRICE --}}
+          <div class="mb-4">
+              <label class="block font-semibold">Kaina (€)</label>
+              <input
+                  type="number"
+                  min="0"
+                  step="0.01"
+                  name="kaina"
+                  value="{{ old('kaina') }}"
+                  class="w-full border rounded p-2 focus:outline-none focus:ring-1 focus:ring-[#836354] focus:border-[#836354]"
+                  style="background-color: rgb(234, 220, 200)"
+                  onwheel="event.preventDefault()"
+                  required
+              >
+          </div>
 
         {{-- PHOTOS WITH LIVE PREVIEW --}}
         <div class="mb-6" x-data="{ fileNames: '' }">

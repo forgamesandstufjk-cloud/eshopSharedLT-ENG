@@ -548,6 +548,9 @@ Route::middleware('auth')->group(function () {
     Route::get('/{serviceOrder}/edit', [SellerServiceOrderController::class, 'edit'])->name('edit');
     Route::put('/{serviceOrder}', [SellerServiceOrderController::class, 'update'])->name('update');
 
+    Route::post('/{serviceOrder}/choose-platform', [SellerServiceOrderController::class, 'choosePlatform'])->name('choose-platform');
+    Route::post('/{serviceOrder}/choose-private', [SellerServiceOrderController::class, 'choosePrivate'])->name('choose-private');
+
     Route::patch('/{serviceOrder}/status', [SellerServiceOrderController::class, 'updateStatus'])->name('status');
     Route::post('/{serviceOrder}/shipment', [SellerServiceOrderController::class, 'submitShipment'])->name('shipment.submit');
     Route::post('/{serviceOrder}/complete-private', [SellerServiceOrderController::class, 'completePrivately'])->name('complete-private');

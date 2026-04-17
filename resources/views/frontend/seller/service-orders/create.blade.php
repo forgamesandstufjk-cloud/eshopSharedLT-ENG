@@ -5,7 +5,7 @@
         </h1>
 
         @if ($errors->any())
-            <div class="mb-4 p-4 rounded" style="background-color: rgb(230, 190, 190)">
+            <div class="mb-4 p-4 rounded border" style="background-color: rgb(207, 174, 134); border-color: #836354">
                 <ul class="list-disc pl-5 text-black text-sm">
                     @foreach ($errors->all() as $error)
                         <li>{{ $error }}</li>
@@ -60,15 +60,8 @@
                             x-show="open"
                             @click.outside="open = false"
                             class="absolute left-0 right-0 mt-1 rounded border shadow overflow-hidden z-50 max-h-60 overflow-y-auto"
-                            style="background-color: rgb(234, 220, 200); border-color: #836354;"
+                            style="background-color: rgb(234, 220, 200); border-color: #836354"
                         >
-                            <div
-                                @click="selected = ''; open = false"
-                                class="block w-full px-3 py-2 text-black cursor-pointer hover:bg-[#cfae86]"
-                            >
-                                Pasirinkite skelbimą
-                            </div>
-
                             @foreach($listings as $item)
                                 <div
                                     @click="selected = '{{ $item->id }}'; open = false"
@@ -137,6 +130,7 @@
                            class="w-full border rounded p-2 text-black focus:outline-none focus:ring-1 focus:ring-[#836354] focus:border-[#836354]"
                            style="background-color: rgb(234, 220, 200); border-color: #836354;"
                            placeholder="Pvz. 49.99"
+                           onwheel="event.preventDefault()"
                            required>
                     <p class="text-xs text-black mt-1">
                         Įveskite galutinę su pirkėju sutartą sumą eurais.
@@ -157,10 +151,10 @@
                         style="background-color: rgb(234, 220, 200);"
                     >
                         <span x-text="
-                            selected === 'S' ? 'S – Maža siunta' :
-                            selected === 'M' ? 'M – Vidutinė siunta' :
-                            'L – Didelė siunta'
-                        "></span>
+                        selected === 'S' ? 'S – 64×38×9 cm, iki 25 kg' :
+                        selected === 'M' ? 'M – 64×38×19 cm, iki 25 kg' :
+                        'L – 64×38×39 cm, iki 25 kg'
+                    "></span>
 
                         <svg class="h-5 w-5 text-black" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
                             <path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 11.06l3.71-3.83a.75.75 0 111.08 1.04l-4.25 4.4a.75.75 0 01-1.08 0L5.21 8.27a.75.75 0 01.02-1.06z" clip-rule="evenodd" />
@@ -171,27 +165,27 @@
                         x-show="open"
                         @click.outside="open = false"
                         class="absolute left-0 right-0 mt-1 rounded border shadow overflow-hidden z-50"
-                        style="background-color: rgb(234, 220, 200); border-color: #836354;"
+                        style="background-color: rgb(234, 220, 200); border-color: #836354"
                     >
                         <div
                             @click="selected = 'S'; open = false"
                             class="block w-full px-3 py-2 text-black cursor-pointer hover:bg-[#cfae86]"
                         >
-                            S – Maža siunta
+                            S – 64×38×9 cm, iki 25 kg
                         </div>
-
+                        
                         <div
                             @click="selected = 'M'; open = false"
                             class="block w-full px-3 py-2 text-black cursor-pointer hover:bg-[#cfae86]"
                         >
-                            M – Vidutinė siunta
+                            M – 64×38×19 cm, iki 25 kg
                         </div>
-
+                        
                         <div
                             @click="selected = 'L'; open = false"
                             class="block w-full px-3 py-2 text-black cursor-pointer hover:bg-[#cfae86]"
                         >
-                            L – Didelė siunta
+                            L – 64×38×39 cm, iki 25 kg
                         </div>
                     </div>
 
@@ -199,12 +193,12 @@
                         Šis dydis bus naudojamas apskaičiuoti pristatymo kainą, kai pirkėjas apmokės per svetainę.
                     </p>
                 </div>
-
+                <label class="block text-sm font-medium text-black mb-3">Papildomi laukeliai</label>
                 <div>
                     <label class="block text-sm font-medium text-black mb-1">Sutartos specifikacijos</label>
                     <textarea name="agreed_specifications" rows="4"
                               class="w-full border rounded p-2 text-black focus:outline-none focus:ring-1 focus:ring-[#836354] focus:border-[#836354]"
-                              style="background-color: rgb(234, 220, 200); border-color: #836354;"
+                              style="background-color: rgb(234, 220, 200); border-color: #836354"
                               placeholder="Aprašykite, kas tiksliai sutarta: apimtis, medžiagos, variantai, formatas ir pan.">{{ old('agreed_specifications', data_get($serviceOrder?->agreed_details, 'agreed_specifications')) }}</textarea>
                 </div>
 
@@ -212,7 +206,7 @@
                     <label class="block text-sm font-medium text-black mb-1">Pastabos</label>
                     <textarea name="notes" rows="3"
                               class="w-full border rounded p-2 text-black focus:outline-none focus:ring-1 focus:ring-[#836354] focus:border-[#836354]"
-                              style="background-color: rgb(234, 220, 200); border-color: #836354;"
+                              style="background-color: rgb(234, 220, 200); border-color: #836354"
                               placeholder="Bendros pastabos apie užsakymą, susitarimus ar papildomą informaciją.">{{ old('notes', $serviceOrder?->notes) }}</textarea>
                 </div>
 
@@ -220,7 +214,7 @@
                     <label class="block text-sm font-medium text-black mb-1">Siuntimo pastabos</label>
                     <textarea name="shipping_notes" rows="3"
                               class="w-full border rounded p-2 text-black focus:outline-none focus:ring-1 focus:ring-[#836354] focus:border-[#836354]"
-                              style="background-color: rgb(234, 220, 200); border-color: #836354;"
+                              style="background-color: rgb(234, 220, 200); border-color: #836354"
                               placeholder="Jei aktualu, nurodykite pristatymo būdą, terminą, adresą ar kitą siuntimo informaciją.">{{ old('shipping_notes', $serviceOrder?->shipping_notes) }}</textarea>
                 </div>
 
@@ -228,7 +222,7 @@
                     <label class="block text-sm font-medium text-black mb-1">Papildomi reikalavimai</label>
                     <textarea name="custom_requirements" rows="3"
                               class="w-full border rounded p-2 text-black focus:outline-none focus:ring-1 focus:ring-[#836354] focus:border-[#836354]"
-                              style="background-color: rgb(234, 220, 200); border-color: #836354;"
+                              style="background-color: rgb(234, 220, 200); border-color: #836354"
                               placeholder="Įrašykite papildomus pirkėjo pageidavimus ar techninius reikalavimus.">{{ old('custom_requirements', $serviceOrder?->custom_requirements) }}</textarea>
                 </div>
 
@@ -236,7 +230,7 @@
                     <label class="block text-sm font-medium text-black mb-1">Termino / eigos pastabos</label>
                     <textarea name="timeline_notes" rows="3"
                               class="w-full border rounded p-2 text-black focus:outline-none focus:ring-1 focus:ring-[#836354] focus:border-[#836354]"
-                              style="background-color: rgb(234, 220, 200); border-color: #836354;"
+                              style="background-color: rgb(234, 220, 200); border-color: #836354"
                               placeholder="Nurodykite darbų eigą, etapus, terminus ar svarbias datas.">{{ old('timeline_notes', $serviceOrder?->timeline_notes) }}</textarea>
                 </div>
 

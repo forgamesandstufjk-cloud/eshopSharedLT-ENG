@@ -214,6 +214,7 @@
     name="kiekis"
     value="{{ old('kiekis', 1) }}"
     min="1"
+    max="999"
     class="w-full border p-2 rounded focus:outline-none focus:ring-1 focus:ring-[#836354] focus:border-[#836354]"
     style="background-color: rgb(234, 220, 200)"
     required
@@ -240,6 +241,7 @@
               <input
                   type="number"
                   min="0.20"
+                  min="99999"
                   step="0.01"
                   name="kaina"
                    value="{{ old('kaina', '0.20') }}"

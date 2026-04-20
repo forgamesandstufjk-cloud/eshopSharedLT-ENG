@@ -27,7 +27,7 @@ class SellerServiceOrderController extends Controller
             $serviceOrders = (clone $baseQuery)
                 ->where('status', ServiceOrder::STATUS_COMPLETED)
                 ->latest()
-                ->paginate(12);
+                ->paginate(10);
 
             return view('frontend.seller.service-orders.completed', compact('serviceOrders'));
         }
@@ -214,7 +214,7 @@ class SellerServiceOrderController extends Controller
         return $request->validate([
             'listing_id' => 'required|exists:listing,id',
             'is_anonymous' => 'nullable|boolean',
-            'buyer_code' => 'nullable|string|max:7',
+            'buyer_code' => 'nullable|string|max:6',
             'final_price' => 'required|numeric|min:0.20',
             'package_size' => 'required|in:S,M,L',
             'buyer_information' => 'nullable|string|max:1000',

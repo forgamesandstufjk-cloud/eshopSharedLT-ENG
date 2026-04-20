@@ -26,22 +26,86 @@
                             </div>
                         </div>
 
-                        <div class="border-t pt-3" style="border-color: #836354">
-                          @foreach($order->orderItem as $item)
-                              @php
-                                  $itemShipment = $order->shipments->firstWhere('seller_id', $item->Listing->user_id);
-                      
-                                  $shipmentDelivered = $itemShipment && in_array($itemShipment->status, ['approved', 'reimbursed'], true);
-                      
-                                  $listingCanBeOpened = $item->Listing
-                                      && !$item->Listing->is_hidden
-                                      && $item->Listing->statusas !== 'parduotas';
-                      
-                                  $canReviewItem = $shipmentDelivered && $listingCanBeOpened;
-                      
-                                  $itemReviewLeft = $canReviewItem
-                                      && $item->Listing->review->contains(fn ($review) => (int) $review->user_id === (int) auth()->id());
-                              @endphp
+                      <div class="border-t pt-3" style="border-color: #836354">
+                        @foreach($order->orderItem as $item)
+                          @php
+                            $itemListing = $item->Listing;
+                        
+                            $itemShipment = $itemListing
+                                ? $order->shipments->firstWhere('seller_id', $itemListing->user_id)
+                                : null;
+                        
+                            $shipmentDelivered = $itemShipment && in_array($itemShipment->status, ['approved', 'reimbursed'], true);
+                        
+                            $listingCanBeOpened = $itemListing
+                                && !$itemListing->is_hidden
+                                && $itemListing->statusas !== 'parduotas';
+                        
+                            $productReviewWindowOpen = $itemListing
+                                && ($itemListing->is_renewable || (int) $itemListing->kiekis >= 1);
+                        
+                            $userReviewCountForListing = $itemListing
+                                ? (int) $itemListing->review->where('user_id', auth()->id())->count()
+                                : 0;
+                        
+                            $productPurchaseCountForListing = $itemListing
+                                ? (int) \App\Models\OrderItem::query()
+                                    ->where('listing_id', $itemListing->id)
+                                    ->whereHas('order', function ($q) {
+                                        $q->where('user_id', auth()->id())
+                                          ->where('statusas', \App\Models\Order::STATUS_PAID);
+                                    })
+                                    ->whereHas('order.shipments', function ($q) use ($itemListing) {
+                                        $q->where('seller_id', $itemListing->user_id)
+                                          ->whereIn('status', ['approved', 'reimbursed']);
+                                    })
+                                    ->sum('kiekis')
+                                : 0;
+                        
+                            $remainingProductReviews = max(0, $productPurchaseCountForListing - $userReviewCountForListing);
+                        
+                            $showProductReviewStatus = $shipmentDelivered && $listingCanBeOpened;
+                        
+                            $canLeaveProductReviewNow = $showProductReviewStatus
+                                && $productReviewWindowOpen
+                                && $remainingProductReviews > 0;
+                        @endphp
+                        
+                        <div class="flex justify-between text-sm mb-1 text-black">
+                            <span>
+                                {{ $item->Listing->pavadinimas }}
+                                <span class="text-black">
+                                    (Pardavėjas: {{ $item->Listing->user->vardas }})
+                                </span>
+                            </span>
+                            <span>
+                                €{{ number_format($item->kaina * $item->kiekis, 2) }}
+                            </span>
+                        </div>
+                        
+                        @if($showProductReviewStatus)
+                            <div class="ml-2 mb-2 flex flex-wrap items-center gap-2 text-xs">
+                                <span class="px-2 py-1 rounded text-black"
+                                      style="background-color:
+                                        {{ $canLeaveProductReviewNow
+                                            ? 'rgb(234, 220, 200)'
+                                            : 'rgb(207, 174, 134)' }}">
+                                    @if($canLeaveProductReviewNow)
+                                        Galite palikti dar {{ $remainingProductReviews }} atsiliepimą(-ų)
+                                    @elseif(!$productReviewWindowOpen)
+                                        Atsiliepimas šiam skelbimui dabar negalimas
+                                    @else
+                                        Visi galimi atsiliepimai jau palikti
+                                    @endif
+                                </span>
+                        
+                                <a href="{{ route('listing.single', $item->Listing->id) }}"
+                                   class="underline"
+                                   style="color: rgb(131, 99, 84)">
+                                    {{ $canLeaveProductReviewNow ? 'Palikti atsiliepimą' : 'Peržiūrėti skelbimą' }}
+                                </a>
+                            </div>
+                        @endif
                       
                               <div class="flex justify-between text-sm mb-1 text-black">
                                   <span>
@@ -137,21 +201,48 @@
                             </div>
                 
                           <div class="border-t pt-3 space-y-2" style="border-color: #836354">
-                              @php
-                                  $shipmentDelivered = in_array($serviceOrder->shipment_status, [
-                                      \App\Models\ServiceOrder::SHIPMENT_APPROVED,
-                                      \App\Models\ServiceOrder::SHIPMENT_REIMBURSED,
-                                  ], true);
-                          
-                                  $listingCanBeOpened = $serviceOrder->listing
-                                      && !$serviceOrder->listing->is_hidden
-                                      && $serviceOrder->listing->statusas !== 'parduotas';
-                          
-                                  $canReviewService = $shipmentDelivered && $listingCanBeOpened;
-                          
-                                  $serviceReviewLeft = $canReviewService
-                                      && $serviceOrder->listing->review->contains(fn ($review) => (int) $review->user_id === (int) auth()->id());
-                              @endphp
+                             @php
+                                $serviceListing = $serviceOrder->listing;
+                            
+                                $serviceReviewEligibleByStatus =
+                                    in_array($serviceOrder->shipment_status, [
+                                        \App\Models\ServiceOrder::SHIPMENT_APPROVED,
+                                        \App\Models\ServiceOrder::SHIPMENT_REIMBURSED,
+                                    ], true)
+                                    || (
+                                        $serviceOrder->completion_method === \App\Models\ServiceOrder::COMPLETION_PRIVATE
+                                        && $serviceOrder->status === \App\Models\ServiceOrder::STATUS_COMPLETED
+                                    );
+                            
+                                $listingCanBeOpened = $serviceListing
+                                    && !$serviceListing->is_hidden
+                                    && $serviceListing->statusas !== 'parduotas';
+                            
+                                $userReviewCountForServiceListing = $serviceListing
+                                    ? (int) $serviceListing->review->where('user_id', auth()->id())->count()
+                                    : 0;
+                            
+                                $servicePurchaseCountForListing = $serviceListing
+                                    ? (int) \App\Models\ServiceOrder::query()
+                                        ->where('listing_id', $serviceListing->id)
+                                        ->where('buyer_id', auth()->id())
+                                        ->where(function ($q) {
+                                            $q->where('payment_status', \App\Models\ServiceOrder::PAYMENT_PAID)
+                                              ->orWhere(function ($q2) {
+                                                  $q2->where('completion_method', \App\Models\ServiceOrder::COMPLETION_PRIVATE)
+                                                     ->where('status', \App\Models\ServiceOrder::STATUS_COMPLETED);
+                                              });
+                                        })
+                                        ->count()
+                                    : 0;
+                            
+                                $remainingServiceReviews = max(0, $servicePurchaseCountForListing - $userReviewCountForServiceListing);
+                            
+                                $showServiceReviewStatus = $serviceReviewEligibleByStatus && $listingCanBeOpened;
+                            
+                                $canLeaveServiceReviewNow = $showServiceReviewStatus
+                                    && $remainingServiceReviews > 0;
+                            @endphp
                           
                               <div class="flex justify-between text-sm text-black">
                                   <span>
@@ -247,20 +338,27 @@
                                   </div>
                               @endif
                           
-                              @if($canReviewService)
-                                  <div class="pt-2 flex flex-wrap items-center gap-2 text-xs">
-                                      <span class="px-2 py-1 rounded text-black"
-                                            style="background-color: {{ $serviceReviewLeft ? 'rgb(207, 174, 134)' : 'rgb(234, 220, 200)' }}">
-                                          {{ $serviceReviewLeft ? 'Atsiliepimas paliktas' : 'Atsiliepimas nepaliktas' }}
-                                      </span>
-                          
-                                      <a href="{{ route('listing.single', $serviceOrder->listing->id) }}"
-                                         class="underline"
-                                         style="color: rgb(131, 99, 84)">
-                                          {{ $serviceReviewLeft ? 'Peržiūrėti skelbimą' : 'Palikti atsiliepimą' }}
-                                      </a>
-                                  </div>
-                              @endif
+                              @if($showServiceReviewStatus)
+                                <div class="pt-2 flex flex-wrap items-center gap-2 text-xs">
+                                    <span class="px-2 py-1 rounded text-black"
+                                          style="background-color:
+                                            {{ $canLeaveServiceReviewNow
+                                                ? 'rgb(234, 220, 200)'
+                                                : 'rgb(207, 174, 134)' }}">
+                                        @if($canLeaveServiceReviewNow)
+                                            Galite palikti dar {{ $remainingServiceReviews }} atsiliepimą(-ų)
+                                        @else
+                                            Visi galimi atsiliepimai jau palikti
+                                        @endif
+                                    </span>
+                            
+                                    <a href="{{ route('listing.single', $serviceOrder->listing->id) }}"
+                                       class="underline"
+                                       style="color: rgb(131, 99, 84)">
+                                        {{ $canLeaveServiceReviewNow ? 'Palikti atsiliepimą' : 'Peržiūrėti skelbimą' }}
+                                    </a>
+                                </div>
+                            @endif
                           </div>
                         </div>
                     @endforeach

@@ -102,8 +102,7 @@
                                         @elseif(auth()->check() && auth()->user()->role === 'admin')
                                             <a
                                                 href="{{ route('listing.single', ['listing' => $item->id, 'back' => request()->fullUrl()]) }}"
-                                                class="font-semibold text-sm"
-                                                style="color: rgb(131, 99, 84)"
+                                                class="font-semibold text-sm text-black hover:underline"
                                             >
                                                 Plačiau →
                                             </a>

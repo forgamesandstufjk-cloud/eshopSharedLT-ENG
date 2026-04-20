@@ -167,9 +167,8 @@
             </div>
         @endif
     </div>
-    @include('components.footer')
 </div>
-
+  @include('components.footer')
 <script>
     function cartPage(initialItems, csrf) {
         return {

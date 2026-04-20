@@ -376,7 +376,7 @@ input[type=number] {
                             <span x-text="sellerError"></span>
                         </div>
                 
-                        <div x-show="revealed" x-cloak class="mt-4">
+                        <div x-show="revealed" x-cloak>
                             <div class="text-black font-semibold text-base sm:text-lg pr-8" x-text="seller.name"></div>
                 
                             <template x-if="seller.email">

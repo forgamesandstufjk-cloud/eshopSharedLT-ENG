@@ -95,7 +95,7 @@
                                     @elseif(!$productReviewWindowOpen)
                                         Atsiliepimas šiam skelbimui dabar negalimas
                                     @else
-                                        Visi galimi atsiliepimai jau palikti
+                                         Atsiliepimas jau paliktas
                                     @endif
                                 </span>
                         
@@ -321,7 +321,7 @@
                                         @if($canLeaveServiceReviewNow)
                                             Galite palikti dar {{ $remainingServiceReviews }} atsiliepimą(-ų)
                                         @else
-                                            Visi galimi atsiliepimai jau palikti
+                                            Atsiliepimas jau paliktas
                                         @endif
                                     </span>
                             

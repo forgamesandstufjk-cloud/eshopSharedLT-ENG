@@ -32,6 +32,7 @@ class StripeWebhookController extends Controller
             Log::warning('Stripe webhook signature verification failed', [
                 'error' => $e->getMessage(),
             ]);
+
             return response()->json(['error' => 'Invalid signature'], 400);
         }
 
@@ -52,6 +53,10 @@ class StripeWebhookController extends Controller
             'type' => $type,
         ]);
 
+        // SERVICE ORDERS:
+        // mark service order paid here
+        // do NOT transfer seller money here
+        // seller payout happens only after admin approves shipment proof
         if (!empty($serviceOrderId)) {
             return DB::transaction(function () use ($intent, $serviceOrderId, $serviceOrderService) {
                 Log::info('Stripe webhook service-order branch entered', [
@@ -59,7 +64,8 @@ class StripeWebhookController extends Controller
                     'service_order_id' => $serviceOrderId,
                 ]);
 
-                $serviceOrder = ServiceOrder::where('id', $serviceOrderId)
+                $serviceOrder = ServiceOrder::with('convertedOrder')
+                    ->where('id', $serviceOrderId)
                     ->where('payment_intent_id', $intent->id)
                     ->lockForUpdate()
                     ->first();
@@ -69,6 +75,7 @@ class StripeWebhookController extends Controller
                         'payment_intent' => $intent->id,
                         'service_order_id' => $serviceOrderId,
                     ]);
+
                     return response()->json(['status' => 'ok']);
                 }
 
@@ -77,10 +84,25 @@ class StripeWebhookController extends Controller
                     'payment_status' => $serviceOrder->payment_status,
                     'shipment_status' => $serviceOrder->shipment_status,
                     'payment_intent_id' => $serviceOrder->payment_intent_id,
+                    'converted_order_id' => $serviceOrder->converted_order_id,
                 ]);
 
                 if ($serviceOrder->payment_status !== ServiceOrder::PAYMENT_PAID) {
                     $serviceOrderService->markPaid($serviceOrder);
+                    $serviceOrder->refresh();
+                }
+
+                if ($serviceOrder->convertedOrder && $serviceOrder->convertedOrder->statusas !== Order::STATUS_PAID) {
+                    $serviceOrder->convertedOrder->update([
+                        'statusas' => Order::STATUS_PAID,
+                        'pirkimo_data' => now(),
+                        'payment_provider' => 'stripe',
+                        'payment_reference' => $intent->latest_charge ?? null,
+                        'payment_intent_id' => $intent->id,
+                        'amount_charged_cents' => (int) ($serviceOrder->amount_charged_cents ?? 0),
+                        'shipping_total_cents' => (int) ($serviceOrder->shipping_cents ?? 0),
+                        'bendra_suma' => (float) $serviceOrder->final_price,
+                    ]);
                 }
 
                 $serviceOrder->refresh();
@@ -89,6 +111,7 @@ class StripeWebhookController extends Controller
                     'service_order_id' => $serviceOrder->id,
                     'payment_status' => $serviceOrder->payment_status,
                     'shipment_status' => $serviceOrder->shipment_status,
+                    'converted_order_id' => $serviceOrder->converted_order_id,
                     'paid_at' => $serviceOrder->paid_at,
                 ]);
 
@@ -96,6 +119,8 @@ class StripeWebhookController extends Controller
             });
         }
 
+        // NORMAL PRODUCT ORDERS:
+        // transfer seller item money here as before
         return DB::transaction(function () use ($intent, $orderService) {
             $order = Order::with('orderItem.Listing.user')
                 ->where('payment_intent_id', $intent->id)
@@ -106,6 +131,7 @@ class StripeWebhookController extends Controller
                 Log::warning('Stripe webhook: order not found', [
                     'payment_intent' => $intent->id,
                 ]);
+
                 return response()->json(['status' => 'ok']);
             }
 
@@ -114,10 +140,12 @@ class StripeWebhookController extends Controller
             }
 
             $splits = $order->payment_intents ?? [];
+
             if (!is_array($splits) || empty($splits)) {
                 Log::error('Stripe webhook: missing payment split data', [
                     'order_id' => $order->id,
                 ]);
+
                 return response()->json(['error' => 'Missing split data'], 500);
             }
 
@@ -149,6 +177,7 @@ class StripeWebhookController extends Controller
                         'seller_id' => $split['seller_id'] ?? null,
                         'error' => $e->getMessage(),
                     ]);
+
                     return response()->json(['error' => 'Transfer failed'], 500);
                 }
             }

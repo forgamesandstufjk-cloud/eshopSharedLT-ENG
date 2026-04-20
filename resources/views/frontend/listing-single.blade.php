@@ -726,13 +726,10 @@ input[type=number] {
                         @if(auth()->id() === $review->user_id)
                             <button
                                 type="button"
-                                class="absolute top-3 right-3 text-black transition duration-150 hover:scale-110 hover:text-[#836354]"
+                                class="absolute top-3 right-3 text-lg text-black transition duration-150 hover:scale-110 hover:text-[#836354]"
                                 title="Redaguoti atsiliepimą"
                             >
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 sm:h-6 sm:w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="M16.862 3.487a2.25 2.25 0 113.182 3.182L8.25 18.463 3 21l2.537-5.25L16.862 3.487z"/>
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="M14.25 6.75l3 3"/>
-                                </svg>
+                                🖉
                             </button>
                         @elseif(auth()->id() !== $review->user_id)
                             <button

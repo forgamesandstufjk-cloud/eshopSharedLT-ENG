@@ -27,7 +27,6 @@ use App\Models\ServiceOrder;
 use Illuminate\Support\Str;
 
 use App\Mail\BuyerShipmentShippedMail;
-use App\Models\OrderShipment;
 use Illuminate\Support\Facades\Mail;
 
 Route::get('/_debug/resend-shipment-mail/{shipment}', function (OrderShipment $shipment) {

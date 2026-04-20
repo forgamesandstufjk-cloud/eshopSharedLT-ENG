@@ -149,7 +149,6 @@
                                     <span class="font-bold text-base sm:text-lg" style="color: rgb(131, 99, 84)">
                                         {{ $item['kaina'] }} €
                                     </span>
-
                                     <div class="flex items-center gap-3">
                                         @if(auth()->check() && auth()->id() === $item->user_id)
                                             <span
@@ -158,7 +157,12 @@
                                                 title="Tai jūsų skelbimas">
                                                 Jūsų skelbimas
                                             </span>
-                                        
+                                    
+                                        @elseif(auth()->check() && auth()->user()->role === 'admin')
+                                            <span class="text-black font-semibold text-sm hover:underline">
+                                                Plačiau →
+                                            </span>
+                                    
                                         @elseif($item->tipas === 'paslauga')
                                             <span
                                                 class="px-2 py-1 rounded text-xs text-black"
@@ -166,7 +170,7 @@
                                                 title="Paslaugos nėra perkamos per krepšelį">
                                                 Paslauga
                                             </span>
-
+                                    
                                         @elseif(
                                             $item->statusas !== 'parduotas' &&
                                             !$item->is_hidden
@@ -224,7 +228,7 @@
                                                     </svg>
                                                 </a>
                                             @endauth
-
+                                    
                                         @else
                                             <span
                                                 class="px-2 py-1 rounded text-xs text-black"
@@ -233,6 +237,7 @@
                                             </span>
                                         @endif
                                     </div>
+                                    
                                 </div>
                             </div>
                         </a>

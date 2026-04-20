@@ -150,4 +150,16 @@ class HomeController extends Controller
             'sort'           => $sort,
         ]);
     }
+
+    public function sellerContact(\App\Models\Listing $listing)
+    {
+        $seller = $listing->user()->with('address.city')->firstOrFail();
+    
+        return response()->json([
+            'name' => trim(($seller->vardas ?? '') . ' ' . ($seller->pavarde ?? '')),
+            'email' => $seller->business_email,
+            'phone' => $seller->telefonas,
+            'city' => $seller->address?->city?->pavadinimas,
+        ]);
+    }
 }

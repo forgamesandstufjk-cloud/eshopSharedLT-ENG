@@ -84,41 +84,37 @@
                             <td class="p-3 block sm:table-cell text-black">
                                 <span class="font-semibold sm:hidden">Pristatymo adresas: </span>
 
-                                @php
-                                    $shippingAddress = $s->order->shipping_address ?? [];
-
-                                    $addressLine = trim(collect([
-                                        $shippingAddress['address'] ?? null,
+                               @php
+                                    $serviceShippingAddress = $so->convertedOrder?->shipping_address ?? [];
+                                
+                                    $serviceAddressLine = trim(collect([
+                                        $serviceShippingAddress['address'] ?? null,
                                     ])->filter()->implode(' '));
-
-                                    $cityLine = $shippingAddress['city']
-                                        ?? ($s->order->address?->city?->pavadinimas ?? null);
-
-                                    $countryLine = $shippingAddress['country']
-                                        ?? ($s->order->address?->city?->country?->pavadinimas ?? null);
-
-                                    $postalLine = $shippingAddress['postal_code'] ?? null;
+                                
+                                    $serviceCityLine = $serviceShippingAddress['city'] ?? null;
+                                    $serviceCountryLine = $serviceShippingAddress['country'] ?? null;
+                                    $servicePostalLine = $serviceShippingAddress['postal_code'] ?? null;
                                 @endphp
-
+                                
                                 <div class="text-sm space-y-1">
                                     <div>
                                         <span class="font-medium">Adresas:</span>
-                                        {{ $addressLine ?: '—' }}
+                                        {{ $serviceAddressLine ?: '—' }}
                                     </div>
-
+                                
                                     <div>
                                         <span class="font-medium">Miestas:</span>
-                                        {{ $cityLine ?: '—' }}
+                                        {{ $serviceCityLine ?: '—' }}
                                     </div>
-
+                                
                                     <div>
                                         <span class="font-medium">Šalis:</span>
-                                        {{ $countryLine ?: '—' }}
+                                        {{ $serviceCountryLine ?: '—' }}
                                     </div>
-
+                                
                                     <div>
                                         <span class="font-medium">Pašto kodas:</span>
-                                        {{ $postalLine ?: '—' }}
+                                        {{ $servicePostalLine ?: '—' }}
                                     </div>
                                 </div>
                             </td>

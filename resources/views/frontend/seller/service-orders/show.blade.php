@@ -234,5 +234,6 @@
                 @endif
             </div>
         </div>
+          @include('components.footer')
     </div>
 </x-app-layout>

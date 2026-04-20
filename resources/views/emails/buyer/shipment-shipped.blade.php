@@ -15,8 +15,8 @@ Sveiki, {{ $shipment->order->user->vardas }},
     <tr>
         <td style="vertical-align:middle;">
             <strong>' . e($item->listing->pavadinimas) . '</strong><br>
-            <span style="color:#6b7280">Kiekis: ' . e($item->kiekis) . '</span>
-           <span style="color:#6b7280">Kaina: €' . e(number_format($item->kaina, 2)) . '</span>
+            <div style="color:#6b7280;">Kiekis: ' . e($item->kiekis) . '</div>
+            <div style="color:#6b7280;">Kaina: €' . e(number_format($item->kaina, 2)) . '</div>
         </td>
         <td align="right" width="70" style="vertical-align:middle; width:70px">
             ' . (

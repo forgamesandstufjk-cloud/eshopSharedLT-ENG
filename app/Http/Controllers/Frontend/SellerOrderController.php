@@ -16,13 +16,18 @@ class SellerOrderController extends Controller
     {
         $shipments = OrderShipment::with([
             'order.user',
-            'order.orderItem.listing'
+            'order.orderItem.listing',
+            'order.address.city.country',
         ])
         ->where('seller_id', auth()->id())
         ->latest()
         ->paginate(10, ['*'], 'shipments_page');
-
-        $serviceOrders = ServiceOrder::with(['buyer', 'listing'])
+    
+        $serviceOrders = ServiceOrder::with([
+            'buyer',
+            'listing',
+            'convertedOrder.address.city.country',
+        ])
             ->where('seller_id', auth()->id())
             ->where(function ($q) {
                 $q->where('status', ServiceOrder::STATUS_READY_TO_SHIP)
@@ -30,7 +35,7 @@ class SellerOrderController extends Controller
             })
             ->latest()
             ->paginate(10, ['*'], 'service_orders_page');
-
+    
         return view('frontend.seller.orders.index', compact('shipments', 'serviceOrders'));
     }
 

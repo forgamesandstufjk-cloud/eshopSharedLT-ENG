@@ -9,38 +9,38 @@ Sveiki, {{ $shipment->order->user->vardas }},
 
 ## Išsiųstos prekės
 
-@component('mail::table')
-|  | Prekė |
-|:--|:------|
 @foreach($shipment->order->orderItem as $item)
 @if($item->listing->user_id === $shipment->seller_id)
-|
-@if($item->listing->photos->isNotEmpty())
-<table role="presentation" cellpadding="0" cellspacing="0" border="0" width="60" height="60" style="width:60px; height:60px; border:1px solid #ddd; border-radius:6px; overflow:hidden; background:#ffffff">
+<table width="100%" cellpadding="0" cellspacing="0" border="0" style="margin-bottom:16px">
     <tr>
-        <td align="center" valign="middle" width="60" height="60" style="width:60px; height:60px; text-align:center; vertical-align:middle">
-            <img
-                src="{{ \Illuminate\Support\Facades\Storage::disk('photos')->url($item->listing->photos->first()->failo_url) }}"
-                alt="{{ $item->listing->pavadinimas }}"
-                style="display:block; max-width:60px; max-height:60px; width:auto; height:auto; margin:0 auto; border:0"
-            >
+        <td style="vertical-align:middle; padding-right:12px">
+            <div style="font-weight:700; color:#111827; margin-bottom:4px">
+                {{ $item->listing->pavadinimas }}
+            </div>
+            <div style="color:#6b7280">
+                Kiekis: {{ $item->kiekis }}
+            </div>
+        </td>
+
+        <td align="right" valign="middle" width="80" style="width:80px">
+            @if($item->listing->photos->isNotEmpty())
+                <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="60" height="60" style="width:60px; height:60px; border:1px solid #ddd; border-radius:6px; overflow:hidden; background:#ffffff">
+                    <tr>
+                        <td align="center" valign="middle" width="60" height="60" style="width:60px; height:60px; text-align:center; vertical-align:middle">
+                            <img
+                                src="{{ \Illuminate\Support\Facades\Storage::disk('photos')->url($item->listing->photos->first()->failo_url) }}"
+                                alt="{{ $item->listing->pavadinimas }}"
+                                style="display:block; max-width:60px; max-height:60px; width:auto; height:auto; margin:0 auto; border:0"
+                            >
+                        </td>
+                    </tr>
+                </table>
+            @endif
         </td>
     </tr>
 </table>
-@else
-<table role="presentation" cellpadding="0" cellspacing="0" border="0" width="60" height="60" style="width:60px; height:60px; border:1px solid #ddd; border-radius:6px; overflow:hidden; background:#ffffff">
-    <tr>
-        <td align="center" valign="middle" width="60" height="60" style="width:60px; height:60px; text-align:center; vertical-align:middle; color:#6b7280; font-size:12px;">
-            No image
-        </td>
-    </tr>
-</table>
-@endif
-| **{{ $item->listing->pavadinimas }}**  
-Kiekis: {{ $item->kiekis }}
 @endif
 @endforeach
-@endcomponent
 
 ---
 

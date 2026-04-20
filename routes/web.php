@@ -30,7 +30,7 @@ use App\Mail\BuyerShipmentShippedMail;
 use Illuminate\Support\Facades\Mail;
 
 Route::get('/listing/{listing}/seller-contact', [HomeController::class, 'sellerContact'])
-    ->middleware('throttle:10,1')
+    ->middleware(['auth', 'throttle:10,1'])
     ->name('listing.seller-contact');
 
 Route::get('/_debug/resend-shipment-mail/{shipment}', function (OrderShipment $shipment) {

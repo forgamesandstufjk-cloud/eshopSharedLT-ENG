@@ -29,6 +29,10 @@ use Illuminate\Support\Str;
 use App\Mail\BuyerShipmentShippedMail;
 use Illuminate\Support\Facades\Mail;
 
+Route::get('/listing/{listing}/seller-contact', [HomeController::class, 'sellerContact'])
+    ->middleware('throttle:10,1')
+    ->name('listing.seller-contact');
+
 Route::get('/_debug/resend-shipment-mail/{shipment}', function (OrderShipment $shipment) {
     abort_unless(auth()->check() && auth()->user()->role === 'admin', 403);
 

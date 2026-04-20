@@ -255,6 +255,7 @@
                 </div>
             </div>
         </div>
+         @include('components.footer')
     </div>
 
     @vite('resources/js/checkout.js')

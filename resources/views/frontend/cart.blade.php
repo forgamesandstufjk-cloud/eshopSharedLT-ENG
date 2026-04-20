@@ -1,6 +1,6 @@
 <x-app-layout>
 
-<div class="min-h-screen w-full max-w-4xl mx-auto mt-6 sm:mt-10 px-3 sm:px-0 pb-10" style="background-color: rgb(234, 220, 200)">
+<div class="w-full max-w-4xl mx-auto mt-6 sm:mt-10 px-3 sm:px-0 pb-10" style="background-color: rgb(234, 220, 200)">
     <div class="container mx-auto relative z-10">
         
         <h1 class="text-2xl sm:text-3xl font-bold mb-4 sm:mb-6 text-black">Mano krepšelis</h1>

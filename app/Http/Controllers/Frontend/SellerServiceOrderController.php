@@ -215,7 +215,7 @@ class SellerServiceOrderController extends Controller
             'listing_id' => 'required|exists:listing,id',
             'is_anonymous' => 'nullable|boolean',
             'buyer_code' => 'nullable|string|max:7',
-            'final_price' => 'required|numeric|min:0.30',
+            'final_price' => 'required|numeric|min:0.20',
             'package_size' => 'required|in:S,M,L',
             'buyer_information' => 'nullable|string|max:2000',
             'agreed_specifications' => 'nullable|string|max:5000',

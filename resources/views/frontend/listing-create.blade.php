@@ -284,7 +284,7 @@
                    </div>
                
                    <small class="text-gray-600 block mt-2">
-                       Galite įkelti tik nuotraukas: JPG, JPEG, PNG, WEBP, GIF.
+                       Galite įkelti tik nuotraukas: JPG, JPEG, PNG.
                    </small>
                
                    <div

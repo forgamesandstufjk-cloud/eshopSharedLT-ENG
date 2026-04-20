@@ -725,23 +725,13 @@ input[type=number] {
                     @auth
                         @if(auth()->id() === $review->user_id)
                             <button
-                                x-show="editingReviewId === null"
-                                x-cloak
                                 type="button"
-                                @click="
-                                    editingReviewId = {{ $review->id }};
-                                    editText = originalText;
-                                    editStars = originalStars;
-                                    hoverStars = 0;
-                                "
+                                class="absolute top-3 right-3 text-black transition duration-150 hover:scale-110 hover:text-[#836354]"
                                 title="Redaguoti atsiliepimą"
-                                class="absolute top-3 right-3 text-black transition-colors"
-                                style="cursor: pointer;"
-                                onmouseover="this.style.color='rgb(131, 99, 84)'"
-                                onmouseout="this.style.color='black'"
                             >
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 sm:h-6 sm:w-6" viewBox="0 0 20 20" fill="currentColor">
-                                    <path d="M17.414 2.586a2 2 0 010 2.828l-9.5 9.5a1 1 0 01-.43.257l-4 1a1 1 0 01-1.213-1.213l1-4a1 1 0 01.257-.43l9.5-9.5a2 2 0 012.828 0zm-2.121 2.121L5.586 14.414l-.293 1.172 1.172-.293 9.707-9.707-1.879-1.879z"/>
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 sm:h-6 sm:w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M16.862 3.487a2.25 2.25 0 113.182 3.182L8.25 18.463 3 21l2.537-5.25L16.862 3.487z"/>
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M14.25 6.75l3 3"/>
                                 </svg>
                             </button>
                         @elseif(auth()->id() !== $review->user_id)

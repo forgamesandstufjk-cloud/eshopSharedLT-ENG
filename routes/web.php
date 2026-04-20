@@ -27,6 +27,14 @@ use App\Models\ServiceOrder;
 use Illuminate\Support\Str;
 
 
+
+Route::put('/review/{review}', [\App\Http\Controllers\Frontend\ReviewController::class, 'update'])
+    ->middleware('auth')
+    ->name('review.update');
+
+
+
+
 Route::get('/generate-buyer-codes', function () {
     $users = User::whereNull('buyer_code')->get();
 

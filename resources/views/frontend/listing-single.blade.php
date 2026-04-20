@@ -725,9 +725,20 @@ input[type=number] {
                     @auth
                         @if(auth()->id() === $review->user_id)
                             <button
+                                x-show="editingReviewId === null"
+                                x-cloak
                                 type="button"
-                                class="absolute top-3 right-3 text-lg text-black transition duration-150 hover:scale-110 hover:text-[#836354]"
+                                @click="
+                                    editingReviewId = {{ $review->id }};
+                                    editText = originalText;
+                                    editStars = originalStars;
+                                    hoverStars = 0;
+                                "
                                 title="Redaguoti atsiliepimą"
+                                class="absolute top-3 right-3 text-black text-lg sm:text-xl leading-none transition-colors"
+                                style="cursor: pointer;"
+                                onmouseover="this.style.color='rgb(131, 99, 84)'"
+                                onmouseout="this.style.color='black'"
                             >
                                 🖉
                             </button>

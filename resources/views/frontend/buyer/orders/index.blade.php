@@ -90,10 +90,7 @@
 
                         <div class="flex justify-between text-sm mb-1 text-black">
                             <span>
-                                {{ $item->Listing->pavadinimas }}
-                            </span>
-                            <span class="text-black">
-                                (Kiekis: {{ $item->kiekis }})
+                                {{ $item->Listing->pavadinimas }} (Kiekis: {{ $item->kiekis }})
                             </span>
                             <span>
                                 €{{ number_format($item->kaina * $item->kiekis, 2) }}

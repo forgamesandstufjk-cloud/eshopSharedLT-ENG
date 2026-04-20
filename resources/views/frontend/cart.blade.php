@@ -167,6 +167,7 @@
             </div>
         @endif
     </div>
+    @include('components.footer')
 </div>
 
 <script>
@@ -237,5 +238,4 @@
      };
 }
 </script>
-@include('components.footer')
 </x-app-layout>

@@ -131,7 +131,7 @@
                                 "
                                 class="block w-full px-3 py-2 text-black cursor-pointer hover:bg-[#cfae86]"
                             >
-                                Pasirinkite pristatymo būdą
+                                Pasirinkite pristatymo būdą.
                             </div>
 
                             <div

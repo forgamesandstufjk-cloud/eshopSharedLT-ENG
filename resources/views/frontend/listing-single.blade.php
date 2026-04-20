@@ -589,7 +589,6 @@ input[type=number] {
 </section>
 @endif
 
-        
 {{-- REVIEWS SECTION --}}
 <section class="mt-12 sm:mt-16">
 
@@ -622,312 +621,435 @@ input[type=number] {
     $totalReviews = $listing->review->count();
 @endphp
 
-    <div class="grid grid-cols-1 {{ $canLeaveReview ? 'md:grid-cols-2' : '' }} gap-6 sm:gap-8 items-start">
+<div
+    x-data="{ editingReviewId: null }"
+    class="grid grid-cols-1 {{ $canLeaveReview ? 'md:grid-cols-2' : '' }} gap-6 sm:gap-8 items-start"
+>
 
-        <div class="{{ $canLeaveReview ? '' : 'md:col-span-2' }}">
-            <h3 class="text-xl sm:text-2xl font-bold mb-4 sm:mb-6 text-black">Atsiliepimai</h3>
+    <div class="{{ $canLeaveReview ? '' : 'md:col-span-2' }}">
+        <h3 class="text-xl sm:text-2xl font-bold mb-4 sm:mb-6 text-black">Atsiliepimai</h3>
 
-            @if($totalReviews > 0)
-                <div class="mb-6">
-                    <div class="flex items-center gap-3 mb-3">
-                        <div class="text-2xl sm:text-3xl" style="color: rgb(131, 99, 84)">
-                            {{ str_repeat('★', floor($avgRating)) }}
+        @if($totalReviews > 0)
+            <div class="mb-6">
+                <div class="flex items-center gap-3 mb-3">
+                    <div class="text-2xl sm:text-3xl" style="color: rgb(131, 99, 84)">
+                        {{ str_repeat('★', floor($avgRating)) }}
+                    </div>
+                    <div class="text-black">
+                        <strong>{{ $avgRating }}</strong> / 5
+                        <span class="text-black text-sm">
+                            ({{ $totalReviews }} atsiliepimai)
+                        </span>
+                    </div>
+                </div>
+
+                <form method="GET" class="w-full sm:w-48" x-data="{ sortOpen: false, selectedSort: '{{ request('sort', 'newest') }}' }">
+                    <div class="relative">
+                        <input type="hidden" name="sort" :value="selectedSort">
+
+                        <button
+                            type="button"
+                            @click="sortOpen = !sortOpen"
+                            :class="sortOpen ? 'ring-1 ring-[#836354] border-[#836354]' : 'border-gray-500'"
+                            class="w-full rounded border py-2 px-3 text-left text-black focus:outline-none focus:ring-1 focus:ring-[#836354] focus:border-[#836354] flex justify-between items-center"
+                            style="background-color: rgb(215, 183, 142)"
+                        >
+                            <span x-text="
+                                selectedSort === 'newest' ? 'Naujausi' :
+                                selectedSort === 'oldest' ? 'Seniausi' :
+                                selectedSort === 'highest' ? 'Geriausi' :
+                                'Blogiausi'
+                            "></span>
+
+                            <svg class="h-5 w-5 text-black" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                                <path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 11.06l3.71-3.83a.75.75 0 111.08 1.04l-4.25 4.4a.75.75 0 01-1.08 0L5.21 8.27a.75.75 0 01.02-1.06z" clip-rule="evenodd" />
+                            </svg>
+                        </button>
+
+                        <div
+                            x-show="sortOpen"
+                            @click.outside="sortOpen = false"
+                            class="absolute left-0 right-0 mt-1 rounded border shadow overflow-hidden z-50"
+                            style="background-color: rgb(215, 183, 142); border-color: #836354"
+                        >
+                            <div
+                                @click="selectedSort = 'newest'; sortOpen = false; $nextTick(() => $el.closest('form').submit())"
+                                class="block w-full px-3 py-2 text-black cursor-pointer hover:bg-[#836354]"
+                            >
+                                Naujausi
+                            </div>
+
+                            <div
+                                @click="selectedSort = 'oldest'; sortOpen = false; $nextTick(() => $el.closest('form').submit())"
+                                class="block w-full px-3 py-2 text-black cursor-pointer hover:bg-[#836354]"
+                            >
+                                Seniausi
+                            </div>
+
+                            <div
+                                @click="selectedSort = 'highest'; sortOpen = false; $nextTick(() => $el.closest('form').submit())"
+                                class="block w-full px-3 py-2 text-black cursor-pointer hover:bg-[#836354]"
+                            >
+                                Geriausi
+                            </div>
+
+                            <div
+                                @click="selectedSort = 'lowest'; sortOpen = false; $nextTick(() => $el.closest('form').submit())"
+                                class="block w-full px-3 py-2 text-black cursor-pointer hover:bg-[#836354]"
+                            >
+                                Blogiausi
+                            </div>
                         </div>
-                        <div class="text-black">
-                            <strong>{{ $avgRating }}</strong> / 5
-                            <span class="text-black text-sm">
-                                ({{ $totalReviews }} atsiliepimai)
+                    </div>
+                </form>
+            </div>
+        @endif
+
+        {{-- LEFT: REVIEWS --}}
+        <div class="space-y-4">
+            @forelse($sortedReviews as $review)
+                <div
+                    x-data="{
+                        openReportReview: false,
+                        reasonOpen: false,
+                        selectedReason: '',
+                        editText: @js($review->komentaras ?? ''),
+                        originalText: @js($review->komentaras ?? ''),
+                        editStars: {{ (int) $review->ivertinimas }},
+                        originalStars: {{ (int) $review->ivertinimas }},
+                        hoverStars: 0
+                    }"
+                    class="p-4 rounded border relative"
+                    style="background-color: rgb(215, 183, 142); border-color: #836354"
+                >
+                    @auth
+                        @if(auth()->id() === $review->user_id)
+                            <button
+                                x-show="editingReviewId === null"
+                                x-cloak
+                                type="button"
+                                @click="
+                                    editingReviewId = {{ $review->id }};
+                                    editText = originalText;
+                                    editStars = originalStars;
+                                    hoverStars = 0;
+                                "
+                                title="Redaguoti atsiliepimą"
+                                class="absolute top-3 right-3 text-black transition-colors"
+                                style="cursor: pointer;"
+                                onmouseover="this.style.color='rgb(131, 99, 84)'"
+                                onmouseout="this.style.color='black'"
+                            >
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 sm:h-6 sm:w-6" viewBox="0 0 20 20" fill="currentColor">
+                                    <path d="M17.414 2.586a2 2 0 010 2.828l-9.5 9.5a1 1 0 01-.43.257l-4 1a1 1 0 01-1.213-1.213l1-4a1 1 0 01.257-.43l9.5-9.5a2 2 0 012.828 0zm-2.121 2.121L5.586 14.414l-.293 1.172 1.172-.293 9.707-9.707-1.879-1.879z"/>
+                                </svg>
+                            </button>
+                        @elseif(auth()->id() !== $review->user_id)
+                            <button
+                                type="button"
+                                @click="openReportReview = !openReportReview"
+                                title="Pranešti apie atsiliepimą"
+                                class="absolute top-3 right-3 text-black hover:text-red-600 text-lg leading-none"
+                            >
+                                ⚐
+                            </button>
+                        @endif
+                    @endauth
+
+                    {{-- VIEW MODE --}}
+                    <div x-show="editingReviewId !== {{ $review->id }}">
+                        <div class="flex items-center gap-2 mb-1 pr-8">
+                            <strong class="text-black">{{ $review->user->vardas }}</strong>
+                            <span class="text-sm" style="color: rgb(131, 99, 84)">
+                                {{ str_repeat('★', $review->ivertinimas) }}
                             </span>
+                        </div>
+
+                        <p class="text-black text-sm sm:text-base">
+                            {{ $review->komentaras }}
+                        </p>
+                    </div>
+
+                    {{-- EDIT MODE --}}
+                    @auth
+                        @if(auth()->id() === $review->user_id)
+                            <div x-show="editingReviewId === {{ $review->id }}" x-cloak>
+                                <form method="POST" action="{{ route('review.update', $review->id) }}" class="space-y-3">
+                                    @csrf
+                                    @method('PUT')
+
+                                    <input type="hidden" name="ivertinimas" :value="editStars">
+
+                                    <div class="flex items-center gap-2 mb-1">
+                                        <strong class="text-black">{{ $review->user->vardas }}</strong>
+                                    </div>
+
+                                    <div>
+                                        <div class="flex items-center gap-1 mb-2">
+                                            @for($n = 1; $n <= 5; $n++)
+                                                <button
+                                                    type="button"
+                                                    @mouseenter="hoverStars = {{ $n }}"
+                                                    @mouseleave="hoverStars = 0"
+                                                    @click="editStars = {{ $n }}"
+                                                    class="text-3xl leading-none focus:outline-none"
+                                                    :aria-label="'{{ $n }} žvaigždutės'"
+                                                >
+                                                    <span
+                                                        x-show="(hoverStars || editStars) >= {{ $n }}"
+                                                        style="color: rgb(131, 99, 84)">
+                                                        ★
+                                                    </span>
+                                                    <span
+                                                        x-show="(hoverStars || editStars) < {{ $n }}"
+                                                        class="text-gray-400"
+                                                    >
+                                                        ☆
+                                                    </span>
+                                                </button>
+                                            @endfor
+                                        </div>
+
+                                        <div class="text-sm text-black">
+                                            <span x-text="editStars + ' / 5'"></span>
+                                        </div>
+                                    </div>
+
+                                    <textarea
+                                        name="komentaras"
+                                        rows="4"
+                                        x-model="editText"
+                                        class="w-full border border-gray-500 rounded p-3 text-black focus:outline-none focus:ring-1 focus:ring-[#836354] focus:border-[#836354]"
+                                        style="background-color: rgb(234, 220, 200)"
+                                        placeholder="Parašykite atsiliepimą..."
+                                    ></textarea>
+
+                                    <div class="flex gap-2">
+                                        <button
+                                            type="submit"
+                                            class="text-white px-4 py-2 rounded hover:text-black"
+                                            style="background-color: rgb(131, 99, 84)"
+                                            :disabled="editStars === 0"
+                                            :class="editStars === 0 ? 'opacity-50 cursor-not-allowed' : ''"
+                                        >
+                                            Išsaugoti
+                                        </button>
+
+                                        <button
+                                            type="button"
+                                            @click="
+                                                editingReviewId = null;
+                                                editText = originalText;
+                                                editStars = originalStars;
+                                                hoverStars = 0;
+                                            "
+                                            class="text-white px-4 py-2 rounded hover:text-black"
+                                            style="background-color: rgb(184, 80, 54)"
+                                        >
+                                            Atšaukti
+                                        </button>
+                                    </div>
+                                </form>
+                            </div>
+                        @endif
+                    @endauth
+
+                    {{-- REPORT FORM --}}
+                    @auth
+                        @if(auth()->id() !== $review->user_id)
+                            <div
+                                x-show="openReportReview"
+                                x-cloak
+                                class="mt-4 pt-4 border-t"
+                                style="border-color: #836354"
+                            >
+                                <form method="POST" action="{{ route('review.report', $review->id) }}" class="space-y-3">
+                                    @csrf
+
+                                    <div>
+                                        <label class="block text-black font-medium mb-1">Priežastis</label>
+
+                                        <div class="relative">
+                                            <input type="hidden" name="reason" :value="selectedReason" required>
+
+                                            <button
+                                                type="button"
+                                                @click="reasonOpen = !reasonOpen"
+                                                class="w-full rounded border py-2 px-3 text-left text-black flex justify-between items-center focus:outline-none focus:ring-1 focus:ring-[#836354] focus:border-[#836354]"
+                                                style="background-color: rgb(234, 220, 200); border-color: #836354"
+                                            >
+                                                <span x-text="
+                                                    selectedReason === '' ? 'Pasirinkite priežastį' :
+                                                    selectedReason === 'abuse' ? 'Įžeidžiantis tekstas' :
+                                                    selectedReason === 'spam' ? 'Šlamštas' :
+                                                    selectedReason === 'fake_review' ? 'Netikras atsiliepimas' :
+                                                    selectedReason === 'harassment' ? 'Priekabiavimas' :
+                                                    'Kita'
+                                                "></span>
+
+                                                <svg class="h-5 w-5 text-black" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                                                    <path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 11.06l3.71-3.83a.75.75 0 111.08 1.04l-4.25 4.4a.75.75 0 01-1.08 0L5.21 8.27a.75.75 0 01.02-1.06z" clip-rule="evenodd" />
+                                                </svg>
+                                            </button>
+
+                                            <div
+                                                x-show="reasonOpen"
+                                                @click.outside="reasonOpen = false"
+                                                class="absolute left-0 right-0 mt-1 rounded border shadow overflow-hidden z-50"
+                                                style="background-color: rgb(215, 183, 142); border-color: #836354"
+                                            >
+                                                <div
+                                                    @click="selectedReason = 'abuse'; reasonOpen = false"
+                                                    class="block w-full px-3 py-2 text-black cursor-pointer hover:bg-[#836354] hover:text-white"
+                                                >
+                                                    Įžeidžiantis tekstas
+                                                </div>
+
+                                                <div
+                                                    @click="selectedReason = 'spam'; reasonOpen = false"
+                                                    class="block w-full px-3 py-2 text-black cursor-pointer hover:bg-[#836354] hover:text-white"
+                                                >
+                                                    Šlamštas
+                                                </div>
+
+                                                <div
+                                                    @click="selectedReason = 'fake_review'; reasonOpen = false"
+                                                    class="block w-full px-3 py-2 text-black cursor-pointer hover:bg-[#836354] hover:text-white"
+                                                >
+                                                    Netikras atsiliepimas
+                                                </div>
+
+                                                <div
+                                                    @click="selectedReason = 'harassment'; reasonOpen = false"
+                                                    class="block w-full px-3 py-2 text-black cursor-pointer hover:bg-[#836354] hover:text-white"
+                                                >
+                                                    Priekabiavimas
+                                                </div>
+
+                                                <div
+                                                    @click="selectedReason = 'other'; reasonOpen = false"
+                                                    class="block w-full px-3 py-2 text-black cursor-pointer hover:bg-[#836354] hover:text-white"
+                                                >
+                                                    Kita
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div>
+                                        <label class="block text-black font-medium mb-1">Papildoma informacija</label>
+                                        <textarea
+                                            name="details"
+                                            rows="3"
+                                            class="border p-2 rounded w-full text-black focus:outline-none focus:ring-1 focus:ring-[#836354] focus:border-[#836354]"
+                                            style="background-color: rgb(234, 220, 200); border-color: #836354"
+                                            placeholder="Aprašykite situaciją, jei reikia"
+                                        ></textarea>
+                                    </div>
+
+                                    <div class="flex gap-2">
+                                        <button
+                                            type="submit"
+                                            class="px-3 py-2 rounded text-white hover:text-black transition-colors"
+                                            style="background-color: rgb(131, 99, 84)"
+                                        >
+                                            Siųsti
+                                        </button>
+
+                                        <button
+                                            type="button"
+                                            @click="openReportReview = false; reasonOpen = false; selectedReason = ''"
+                                            class="px-3 py-2 rounded text-white hover:text-black transition-colors"
+                                            style="background-color: rgb(184, 80, 54)"
+                                        >
+                                            Atšaukti
+                                        </button>
+                                    </div>
+                                </form>
+                            </div>
+                        @endif
+                    @endauth
+                </div>
+            @empty
+                <p class="text-black italic">Atsiliepimų dar nėra.</p>
+            @endforelse
+        </div>
+    </div>
+
+    {{-- RIGHT: REVIEW FORM --}}
+    @if(auth()->check() && !$isOwner && $purchaseCount > 0 && !$canLeaveReview)
+        <div class="p-3 rounded text-black mb-4"
+             style="background-color: rgb(207, 174, 134); border: 1px solid #836354">
+            Jūs jau palikote atsiliepimą kiekvienam šio skelbimo pirkimui.
+        </div>
+    @endif
+        
+    @if($canLeaveReview)
+        <div x-show="editingReviewId === null">
+            <div x-data="{ selectedStars: 0, hoverStars: 0 }">
+                <h4 class="font-semibold mb-2 text-black">Palikti atsiliepimą</h4>
+
+                <form method="POST" action="{{ route('review.store', $listing->id) }}"
+                      class="space-y-3">
+                    @csrf
+
+                    <input type="hidden" name="ivertinimas" :value="selectedStars">
+
+                    <div>
+                        <div class="flex items-center gap-1 mb-2">
+                            @for($n = 1; $n <= 5; $n++)
+                                <button
+                                    type="button"
+                                    @mouseenter="hoverStars = {{ $n }}"
+                                    @mouseleave="hoverStars = 0"
+                                    @click="selectedStars = {{ $n }}"
+                                    class="text-3xl leading-none focus:outline-none"
+                                    :aria-label="'{{ $n }} žvaigždutės'"
+                                >
+                                    <span
+                                        x-show="(hoverStars || selectedStars) >= {{ $n }}"
+                                        style="color: rgb(131, 99, 84)">
+                                        ★
+                                    </span>
+                                    <span
+                                        x-show="(hoverStars || selectedStars) < {{ $n }}"
+                                        class="text-gray-400"
+                                    >
+                                        ☆
+                                    </span>
+                                </button>
+                            @endfor
+                        </div>
+
+                        <div class="text-sm text-black">
+                            <span x-show="selectedStars === 0">Pasirinkite įvertinimą</span>
+                            <span x-show="selectedStars > 0" x-text="selectedStars + ' / 5'"></span>
                         </div>
                     </div>
 
-                    <form method="GET" class="w-full sm:w-48" x-data="{ sortOpen: false, selectedSort: '{{ request('sort', 'newest') }}' }">
-                        <div class="relative">
-                            <input type="hidden" name="sort" :value="selectedSort">
+                    <textarea
+                        name="komentaras"
+                        rows="4"
+                        class="w-full border border-gray-500 rounded p-3 text-black focus:outline-none focus:ring-1 focus:ring-[#836354] focus:border-[#836354]"
+                        style="background-color: rgb(215, 183, 142)"
+                        placeholder="Parašykite atsiliepimą..."
+                    ></textarea>
 
-                            <button
-                                type="button"
-                                @click="sortOpen = !sortOpen"
-                                :class="sortOpen ? 'ring-1 ring-[#836354] border-[#836354]' : 'border-gray-500'"
-                                class="w-full rounded border py-2 px-3 text-left text-black focus:outline-none focus:ring-1 focus:ring-[#836354] focus:border-[#836354] flex justify-between items-center"
-                                style="background-color: rgb(215, 183, 142)"
-                            >
-                                <span x-text="
-                                    selectedSort === 'newest' ? 'Naujausi' :
-                                    selectedSort === 'oldest' ? 'Seniausi' :
-                                    selectedSort === 'highest' ? 'Geriausi' :
-                                    'Blogiausi'
-                                "></span>
-
-                                <svg class="h-5 w-5 text-black" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
-                                    <path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 11.06l3.71-3.83a.75.75 0 111.08 1.04l-4.25 4.4a.75.75 0 01-1.08 0L5.21 8.27a.75.75 0 01.02-1.06z" clip-rule="evenodd" />
-                                </svg>
-                            </button>
-
-                            <div
-                                x-show="sortOpen"
-                                @click.outside="sortOpen = false"
-                                class="absolute left-0 right-0 mt-1 rounded border shadow overflow-hidden z-50"
-                                style="background-color: rgb(215, 183, 142); border-color: #836354"
-                            >
-                                <div
-                                    @click="selectedSort = 'newest'; sortOpen = false; $nextTick(() => $el.closest('form').submit())"
-                                    class="block w-full px-3 py-2 text-black cursor-pointer hover:bg-[#836354]"
-                                >
-                                    Naujausi
-                                </div>
-
-                                <div
-                                    @click="selectedSort = 'oldest'; sortOpen = false; $nextTick(() => $el.closest('form').submit())"
-                                    class="block w-full px-3 py-2 text-black cursor-pointer hover:bg-[#836354]"
-                                >
-                                    Seniausi
-                                </div>
-
-                                <div
-                                    @click="selectedSort = 'highest'; sortOpen = false; $nextTick(() => $el.closest('form').submit())"
-                                    class="block w-full px-3 py-2 text-black cursor-pointer hover:bg-[#836354]"
-                                >
-                                    Geriausi
-                                </div>
-
-                                <div
-                                    @click="selectedSort = 'lowest'; sortOpen = false; $nextTick(() => $el.closest('form').submit())"
-                                    class="block w-full px-3 py-2 text-black cursor-pointer hover:bg-[#836354]"
-                                >
-                                    Blogiausi
-                                </div>
-                            </div>
-                        </div>
-                    </form>
-                </div>
-            @endif
-
-            {{-- LEFT: REVIEWS --}}
-            <div class="space-y-4">
-               @forelse($sortedReviews as $review)
-    <div
-        x-data="{ openReportReview: false, reasonOpen: false, selectedReason: '' }"
-        class="p-4 rounded border relative"
-        style="background-color: rgb(215, 183, 142); border-color: #836354;"
-    >
-        @auth
-            @if(auth()->id() !== $review->user_id)
-                <button
-                    type="button"
-                    @click="openReportReview = !openReportReview"
-                    title="Pranešti apie atsiliepimą"
-                    class="absolute top-3 right-3 text-black hover:text-red-600 text-lg leading-none"
-                >
-                    ⚐
-                </button>
-            @endif
-        @endauth
-
-        <div class="flex items-center gap-2 mb-1 pr-8">
-            <strong class="text-black">{{ $review->user->vardas }}</strong>
-            <span class="text-sm" style="color: rgb(131, 99, 84)">
-                {{ str_repeat('★', $review->ivertinimas) }}
-            </span>
-        </div>
-
-        <p class="text-black text-sm sm:text-base">
-            {{ $review->komentaras }}
-        </p>
-
-        @auth
-            @if(auth()->id() !== $review->user_id)
-                <div
-                    x-show="openReportReview"
-                    x-cloak
-                    class="mt-4 pt-4 border-t"
-                    style="border-color: #836354"
-                >
-                    <form method="POST" action="{{ route('review.report', $review->id) }}" class="space-y-3">
-                        @csrf
-
-                        <div>
-                            <label class="block text-black font-medium mb-1">Priežastis</label>
-
-                            <div class="relative">
-                                <input type="hidden" name="reason" :value="selectedReason" required>
-
-                                <button
-                                    type="button"
-                                    @click="reasonOpen = !reasonOpen"
-                                    class="w-full rounded border py-2 px-3 text-left text-black flex justify-between items-center focus:outline-none focus:ring-1 focus:ring-[#836354] focus:border-[#836354]"
-                                    style="background-color: rgb(234, 220, 200); border-color: #836354"
-                                >
-                                    <span x-text="
-                                        selectedReason === '' ? 'Pasirinkite priežastį' :
-                                        selectedReason === 'abuse' ? 'Įžeidžiantis tekstas' :
-                                        selectedReason === 'spam' ? 'Šlamštas' :
-                                        selectedReason === 'fake_review' ? 'Netikras atsiliepimas' :
-                                        selectedReason === 'harassment' ? 'Priekabiavimas' :
-                                        'Kita'
-                                    "></span>
-
-                                    <svg class="h-5 w-5 text-black" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
-                                        <path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 11.06l3.71-3.83a.75.75 0 111.08 1.04l-4.25 4.4a.75.75 0 01-1.08 0L5.21 8.27a.75.75 0 01.02-1.06z" clip-rule="evenodd" />
-                                    </svg>
-                                </button>
-
-                                <div
-                                    x-show="reasonOpen"
-                                    @click.outside="reasonOpen = false"
-                                    class="absolute left-0 right-0 mt-1 rounded border shadow overflow-hidden z-50"
-                                    style="background-color: rgb(215, 183, 142); border-color: #836354"
-                                >
-                                    <div
-                                        @click="selectedReason = 'abuse'; reasonOpen = false"
-                                        class="block w-full px-3 py-2 text-black cursor-pointer hover:bg-[#836354] hover:text-white"
-                                    >
-                                        Įžeidžiantis tekstas
-                                    </div>
-
-                                    <div
-                                        @click="selectedReason = 'spam'; reasonOpen = false"
-                                        class="block w-full px-3 py-2 text-black cursor-pointer hover:bg-[#836354] hover:text-white"
-                                    >
-                                        Šlamštas
-                                    </div>
-
-                                    <div
-                                        @click="selectedReason = 'fake_review'; reasonOpen = false"
-                                        class="block w-full px-3 py-2 text-black cursor-pointer hover:bg-[#836354] hover:text-white"
-                                    >
-                                        Netikras atsiliepimas
-                                    </div>
-
-                                    <div
-                                        @click="selectedReason = 'harassment'; reasonOpen = false"
-                                        class="block w-full px-3 py-2 text-black cursor-pointer hover:bg-[#836354] hover:text-white"
-                                    >
-                                        Priekabiavimas
-                                    </div>
-
-                                    <div
-                                        @click="selectedReason = 'other'; reasonOpen = false"
-                                        class="block w-full px-3 py-2 text-black cursor-pointer hover:bg-[#836354] hover:text-white"
-                                    >
-                                        Kita
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div>
-                            <label class="block text-black font-medium mb-1">Papildoma informacija</label>
-                            <textarea
-                                name="details"
-                                rows="3"
-                                class="border p-2 rounded w-full text-black focus:outline-none focus:ring-1 focus:ring-[#836354] focus:border-[#836354]"
-                                style="background-color: rgb(234, 220, 200); border-color: #836354"
-                                placeholder="Aprašykite situaciją, jei reikia"
-                            ></textarea>
-                        </div>
-
-                        <div class="flex gap-2">
-                            <button
-                                type="submit"
-                                class="px-3 py-2 rounded text-white hover:text-black transition-colors"
-                                style="background-color: rgb(131, 99, 84)"
-                            >
-                                Siųsti
-                            </button>
-
-                            <button
-                                type="button"
-                                @click="openReportReview = false; reasonOpen = false; selectedReason = ''"
-                                class="px-3 py-2 rounded text-white hover:text-black transition-colors"
-                                style="background-color: rgb(184, 80, 54)"
-                            >
-                                Atšaukti
-                            </button>
-                        </div>
-                    </form>
-                </div>
-            @endif
-        @endauth
-    </div>
-@empty
-    <p class="text-black italic">Atsiliepimų dar nėra.</p>
-@endforelse
+                    <button
+                        type="submit"
+                        class="text-white px-4 py-2 rounded w-full hover:text-black"
+                        style="background-color: rgb(131, 99, 84)"
+                        :disabled="selectedStars === 0"
+                        :class="selectedStars === 0 ? 'opacity-50 cursor-not-allowed' : ''"
+                    >
+                        Pateikti atsiliepimą
+                    </button>
+                </form>
             </div>
         </div>
+    @endif
 
-        {{-- RIGHT: REVIEW FORM --}}
-@if(auth()->check() && !$isOwner && $purchaseCount > 0 && !$canLeaveReview)
-    <div class="p-3 rounded text-black mb-4"
-         style="background-color: rgb(207, 174, 134); border: 1px solid #836354">
-        Jūs jau palikote atsiliepimą kiekvienam šio skelbimo pirkimui.
-    </div>
-@endif
-        
-@if($canLeaveReview)
-    <div x-data="{ selectedStars: 0, hoverStars: 0 }">
-        <h4 class="font-semibold mb-2 text-black">Palikti atsiliepimą</h4>
-
-        <form method="POST" action="{{ route('review.store', $listing->id) }}"
-              class="space-y-3">
-            @csrf
-
-            <input type="hidden" name="ivertinimas" :value="selectedStars">
-
-            <div>
-                <div class="flex items-center gap-1 mb-2">
-                    @for($n = 1; $n <= 5; $n++)
-                        <button
-                            type="button"
-                            @mouseenter="hoverStars = {{ $n }}"
-                            @mouseleave="hoverStars = 0"
-                            @click="selectedStars = {{ $n }}"
-                            class="text-3xl leading-none focus:outline-none"
-                            :aria-label="'{{ $n }} žvaigždutės'"
-                        >
-                            <span
-                                x-show="(hoverStars || selectedStars) >= {{ $n }}"
-                                style="color: rgb(131, 99, 84)">
-                                ★
-                            </span>
-                            <span
-                                x-show="(hoverStars || selectedStars) < {{ $n }}"
-                                class="text-gray-400"
-                            >
-                                ☆
-                            </span>
-                        </button>
-                    @endfor
-                </div>
-
-                <div class="text-sm text-black">
-                    <span x-show="selectedStars === 0">Pasirinkite įvertinimą</span>
-                    <span x-show="selectedStars > 0" x-text="selectedStars + ' / 5'"></span>
-                </div>
-            </div>
-
-            <textarea
-                name="komentaras"
-                rows="4"
-                class="w-full border border-gray-500 rounded p-3 text-black focus:outline-none focus:ring-1 focus:ring-[#836354] focus:border-[#836354]"
-                style="background-color: rgb(215, 183, 142)"
-                placeholder="Parašykite atsiliepimą..."
-            ></textarea>
-
-            <button
-                type="submit"
-                class="text-white px-4 py-2 rounded w-full hover:text-black"
-                style="background-color: rgb(131, 99, 84)"
-                :disabled="selectedStars === 0"
-                :class="selectedStars === 0 ? 'opacity-50 cursor-not-allowed' : ''"
-            >
-                Pateikti atsiliepimą
-            </button>
-        </form>
-    </div>
-@endif
-
-    </div>
+</div>
 </section>
                     </div>
   @include('components.footer')

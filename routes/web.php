@@ -26,6 +26,26 @@ use App\Http\Controllers\Frontend\SellerServiceOrderController;
 use App\Models\ServiceOrder;
 use Illuminate\Support\Str;
 
+use App\Mail\BuyerShipmentShippedMail;
+use App\Models\OrderShipment;
+use Illuminate\Support\Facades\Mail;
+
+Route::get('/_debug/resend-shipment-mail/{shipment}', function (OrderShipment $shipment) {
+    abort_unless(auth()->check() && auth()->user()->role === 'admin', 403);
+
+    $shipment->load([
+        'order.user',
+        'order.orderItem.listing.photos',
+        'order.orderItem.listing.user',
+        'seller',
+    ]);
+
+    Mail::to($shipment->order->user->el_pastas)
+        ->send(new BuyerShipmentShippedMail($shipment));
+
+    return 'Shipment email resent.';
+});
+
 
 
 Route::put('/review/{review}', [\App\Http\Controllers\Frontend\ReviewController::class, 'update'])

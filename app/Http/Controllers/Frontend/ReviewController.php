@@ -52,4 +52,30 @@ class ReviewController extends Controller
                 ->with('error', $e->getMessage());
         }
     }
+
+    public function update(Request $request, \App\Models\Review $review)
+    {
+        $user = auth()->user();
+    
+        if (!$user) {
+            abort(403);
+        }
+    
+        if ((int) $review->user_id !== (int) $user->id) {
+            abort(403);
+        }
+    
+        if ($user->isBannedUser()) {
+            return back()->with('error', 'Jūsų paskyra apribota. Negalite redaguoti atsiliepimų.');
+        }
+    
+        $data = $request->validate([
+            'ivertinimas' => 'required|integer|min:1|max:5',
+            'komentaras'  => 'nullable|string|max:2000',
+        ]);
+    
+        $review->update($data);
+    
+        return back()->with('success', 'Atsiliepimas atnaujintas.');
+    }
 }

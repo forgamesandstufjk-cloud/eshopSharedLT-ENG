@@ -91,9 +91,6 @@
                         <div class="flex justify-between text-sm mb-1 text-black">
                             <span>
                                 {{ $item->Listing->pavadinimas }}
-                                <span class="text-black">
-                                    (Pardavėjas: {{ $item->Listing->user->vardas }})
-                                </span>
                             </span>
                             <span>
                                 €{{ number_format($item->kaina * $item->kiekis, 2) }}
@@ -257,9 +254,6 @@
                               <div class="flex justify-between text-sm text-black">
                                   <span>
                                       {{ $serviceOrder->original_listing_title }}
-                                      <span class="text-black">
-                                          (Pardavėjas: {{ $serviceOrder->seller->vardas ?? $serviceOrder->seller->name }})
-                                      </span>
                                   </span>
                                   <span>
                                       €{{ number_format((float) $serviceOrder->final_price, 2) }}

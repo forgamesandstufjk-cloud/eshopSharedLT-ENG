@@ -102,11 +102,8 @@ class CheckoutController extends Controller
         'carrier' => 'nullable|in:omniva,venipak',
     ]);
 
-    /*
-    |--------------------------------------------------------------------------
-    | SERVICE ORDER CHECKOUT
-    |--------------------------------------------------------------------------
-    */
+    
+    // SERVICE ORDER 
     if ($request->filled('service_order_id')) {
     $serviceOrder = ServiceOrder::with(['seller'])
         ->where('id', $request->integer('service_order_id'))
@@ -219,12 +216,8 @@ class CheckoutController extends Controller
         ],
     ]);
 }
-
-    /*
-    |--------------------------------------------------------------------------
-    | NORMAL CART CHECKOUT
-    |--------------------------------------------------------------------------
-    */
+   
+    // NORMAL CART
     $hasServiceItems = Cart::where('user_id', auth()->id())
         ->whereHas('listing', fn ($q) => $q->where('tipas', 'paslauga'))
         ->exists();
@@ -456,7 +449,24 @@ class CheckoutController extends Controller
     public function success(Request $request)
     {
         $isService = $request->filled('service_order_id');
-
+    
+        if (auth()->check() && !$isService) {
+            \App\Models\Cart::where('user_id', auth()->id())->delete();
+            session()->forget('cart_count');
+            session()->put('cart_count', 0);
+        }
+    
+        if (
+            $request->filled('payment_intent') ||
+            $request->filled('payment_intent_client_secret') ||
+            $request->filled('redirect_status')
+        ) {
+            return redirect()->route('checkout.success', array_filter([
+                'order_id' => $request->query('order_id'),
+                'service_order_id' => $request->query('service_order_id'),
+            ]));
+        }
+    
         return view('frontend.checkout.success', [
             'isService' => $isService,
         ]);

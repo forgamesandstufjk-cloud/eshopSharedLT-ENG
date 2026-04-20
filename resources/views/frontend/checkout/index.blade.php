@@ -255,8 +255,7 @@
                 </div>
             </div>
         </div>
-         @include('components.footer')
     </div>
-
+         @include('components.footer')
     @vite('resources/js/checkout.js')
 </x-app-layout>

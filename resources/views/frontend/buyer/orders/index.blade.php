@@ -106,35 +106,8 @@
                                 </a>
                             </div>
                         @endif
-                      
-                              <div class="flex justify-between text-sm mb-1 text-black">
-                                  <span>
-                                      {{ $item->Listing->pavadinimas }}
-                                      <span class="text-black">
-                                          (Pardavėjas: {{ $item->Listing->user->vardas }})
-                                      </span>
-                                  </span>
-                                  <span>
-                                      €{{ number_format($item->kaina * $item->kiekis, 2) }}
-                                  </span>
-                              </div>
-                      
-                              @if($canReviewItem)
-                                  <div class="ml-2 mb-2 flex flex-wrap items-center gap-2 text-xs">
-                                      <span class="px-2 py-1 rounded text-black"
-                                            style="background-color: {{ $itemReviewLeft ? 'rgb(207, 174, 134)' : 'rgb(234, 220, 200)' }}">
-                                          {{ $itemReviewLeft ? 'Atsiliepimas paliktas' : 'Atsiliepimas nepaliktas' }}
-                                      </span>
-                      
-                                      <a href="{{ route('listing.single', $item->Listing->id) }}"
-                                         class="underline"
-                                         style="color: rgb(131, 99, 84)">
-                                          {{ $itemReviewLeft ? 'Peržiūrėti skelbimą' : 'Palikti atsiliepimą' }}
-                                      </a>
-                                  </div>
-                              @endif
-                          @endforeach
-                      </div>
+                      @endforeach
+                    </div>
 
                         <div class="border-t mt-3 pt-3 space-y-2" style="border-color: #836354">
                             @foreach($order->shipments as $shipment)

@@ -417,6 +417,6 @@
             </div>
 
         </div>
-         @include('components.footer')
     </div>
+    @include('components.footer')
 </x-app-layout>

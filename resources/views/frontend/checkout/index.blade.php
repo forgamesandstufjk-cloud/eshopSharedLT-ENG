@@ -119,20 +119,6 @@
                             class="absolute left-0 right-0 top-full mt-1 rounded border shadow overflow-hidden z-50"
                             style="background-color: rgb(234, 220, 200); border-color: #836354"
                         >
-                            <div
-                                @click="
-                                    selected = '';
-                                    open = false;
-                                    $nextTick(() => {
-                                        const input = document.getElementById('shipping-carrier');
-                                        input.dispatchEvent(new Event('input', { bubbles: true }));
-                                        input.dispatchEvent(new Event('change', { bubbles: true }));
-                                    });
-                                "
-                                class="block w-full px-3 py-2 text-black cursor-pointer hover:bg-[#cfae86]"
-                            >
-                                Pasirinkite pristatymo būdą.
-                            </div>
 
                             <div
                                 @click="

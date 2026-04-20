@@ -9,33 +9,31 @@ Sveiki, {{ $shipment->order->user->vardas }},
 
 ## Išsiųstos prekės
 @foreach($shipment->order->orderItem as $item)
-@if($item->listing->user_id === $shipment->seller_id)
-{!! '
-<table width="100%" cellpadding="0" cellspacing="0" style="margin-bottom:12px;">
-    <tr>
-        <td style="vertical-align:middle;">
-            <strong>'.e($item->listing->pavadinimas).'</strong><br>
-            <span style="color:#6b7280;">Kiekis: '.$item->kiekis.'</span>
-        </td>
-        <td align="right" width="70">
-            '.(
-                $item->listing->photos->isNotEmpty()
-                ? '<img src="' . (
-    $item->listing->photos->isNotEmpty()
-        ? \Illuminate\Support\Facades\Storage::disk('photos')->url($item->listing->photos->first()->failo_url)
-        : 'https://via.placeholder.com/60x60?text=No+Image'
-) . '"
-    width="60"
-    height="60"
-    style="border-radius:6px; object-fit:cover;"
-    alt="' . e($item->listing->pavadinimas) . '">'
-                : ''
-            ).'
-        </td>
-    </tr>
-</table>
-' !!}
-@endif
+    @if($item->listing->user_id === $shipment->seller_id)
+        @php
+            $photoUrl = $item->listing->photos->isNotEmpty()
+                ? \Illuminate\Support\Facades\Storage::disk('photos')->url($item->listing->photos->first()->failo_url)
+                : 'https://via.placeholder.com/60x60?text=No+Image';
+        @endphp
+
+        {!! '
+        <table width="100%" cellpadding="0" cellspacing="0" style="margin-bottom:12px;">
+            <tr>
+                <td style="vertical-align:middle;">
+                    <strong>' . e($item->listing->pavadinimas) . '</strong><br>
+                    <span style="color:#6b7280;">Kiekis: ' . e($item->kiekis) . '</span>
+                </td>
+                <td align="right" width="70" style="vertical-align:middle;">
+                    <img
+                        src="' . e($photoUrl) . '"
+                        alt="' . e($item->listing->pavadinimas) . '"
+                        style="display:block; max-width:60px; max-height:60px; width:auto; height:auto; margin:0 auto; border:0"
+                    >
+                </td>
+            </tr>
+        </table>
+        ' !!}
+    @endif
 @endforeach
 
 ---

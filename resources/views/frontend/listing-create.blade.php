@@ -252,43 +252,46 @@
               >
           </div>
 
-        {{-- PHOTOS WITH LIVE PREVIEW --}}
-        <div class="mb-6" x-data="{ fileNames: '' }">
-            <label class="block font-semibold mb-2">Nuotraukos</label>
-
-            <input 
-                type="file"
-                name="photos[]"
-                id="photoInput"
-                multiple
-                required
-                class="hidden"
-                @change="fileNames = Array.from($event.target.files).map(f => f.name).join(', ')"
-            >
-
-            <label
-                for="photoInput"
-                class="inline-flex items-center px-4 py-2 rounded cursor-pointer text-white hover:text-black transition-colors"
-                style="background-color: rgb(131, 99, 84)"
-            >
-                Pasirinkti nuotraukas
-            </label>
-
-            <div
-                class="mt-3 p-3 rounded border text-sm text-black"
-                style="background-color: rgb(234, 220, 200); border-color: #836354"
-            >
-                <span x-show="!fileNames">Nepasirinkta jokių failų</span>
-                <span x-show="fileNames" x-text="fileNames"></span>
-            </div>
-
-            <small class="text-gray-600 block mt-2">Įkelkite bent vieną nuotrauką.</small>
-
-            <div
-                id="previewContainer"
-                class="grid grid-cols-2 sm:grid-cols-3 gap-4 mt-4"
-            ></div>
-        </div>
+               {{-- PHOTOS WITH LIVE PREVIEW --}}
+               <div class="mb-6" x-data="{ fileNames: '' }">
+                   <label class="block font-semibold mb-2">Nuotraukos</label>
+               
+                   <input 
+                       type="file"
+                       name="photos[]"
+                       id="photoInput"
+                       multiple
+                       accept="image/jpeg,image/jpg,image/png,image/webp,image/gif"
+                       required
+                       class="hidden"
+                       @change="fileNames = Array.from($event.target.files).map(f => f.name).join(', ')"
+                   >
+               
+                   <label
+                       for="photoInput"
+                       class="inline-flex items-center px-4 py-2 rounded cursor-pointer text-white hover:text-black transition-colors"
+                       style="background-color: rgb(131, 99, 84)"
+                   >
+                       Pasirinkti nuotraukas
+                   </label>
+               
+                   <div
+                       class="mt-3 p-3 rounded border text-sm text-black"
+                       style="background-color: rgb(234, 220, 200); border-color: #836354"
+                   >
+                       <span x-show="!fileNames">Nepasirinkta jokių failų</span>
+                       <span x-show="fileNames" x-text="fileNames"></span>
+                   </div>
+               
+                   <small class="text-gray-600 block mt-2">
+                       Galite įkelti tik nuotraukas: JPG, JPEG, PNG, WEBP, GIF.
+                   </small>
+               
+                   <div
+                       id="previewContainer"
+                       class="grid grid-cols-2 sm:grid-cols-3 gap-4 mt-4"
+                   ></div>
+               </div>
 
         <div class="flex gap-4 mt-6">         
             <button
@@ -312,18 +315,38 @@
 
 {{-- LIVE PREVIEW --}}
 <script>
-document.getElementById('photoInput').addEventListener('change', function (e) {
+const photoInput = document.getElementById('photoInput');
+
+photoInput.addEventListener('change', function (e) {
     const preview = document.getElementById('previewContainer');
     preview.innerHTML = "";
 
-    Array.from(e.target.files).forEach((file, index) => {
+    const allowedTypes = [
+        'image/jpeg',
+        'image/jpg',
+        'image/png',
+    ];
+
+    let files = Array.from(e.target.files);
+    const validFiles = files.filter(file => allowedTypes.includes(file.type));
+
+    if (validFiles.length !== files.length) {
+        alert('Galite pasirinkti tik nuotraukas: JPG, JPEG, PNG.');
+
+        const dataTransfer = new DataTransfer();
+        validFiles.forEach(file => dataTransfer.items.add(file));
+        photoInput.files = dataTransfer.files;
+
+        photoInput.dispatchEvent(new Event('change'));
+        return;
+    }
+
+    validFiles.forEach((file, index) => {
         const reader = new FileReader();
 
         reader.onload = function (event) {
             const wrapper = document.createElement('div');
-            wrapper.classList.add(
-                "relative", "border", "rounded", "overflow-hidden"
-            );
+            wrapper.classList.add("relative", "border", "rounded", "overflow-hidden");
 
             wrapper.innerHTML = `
                 <img src="${event.target.result}" class="w-full h-32 object-cover">
@@ -353,9 +376,7 @@ function removeSelectedFile(index) {
     files.forEach(file => dataTransfer.items.add(file));
 
     input.files = dataTransfer.files;
-
     input.dispatchEvent(new Event('change'));
 }
 </script>
-
 </x-app-layout>

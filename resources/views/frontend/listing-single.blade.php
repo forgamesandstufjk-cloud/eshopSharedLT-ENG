@@ -735,10 +735,7 @@ input[type=number] {
                                     hoverStars = 0;
                                 "
                                 title="Redaguoti atsiliepimą"
-                                class="absolute top-3 right-3 text-black text-lg sm:text-xl leading-none transition-colors"
-                                style="cursor: pointer;"
-                                onmouseover="this.style.color='rgb(131, 99, 84)'"
-                                onmouseout="this.style.color='black'"
+                                class="absolute top-3 right-3 text-black hover:text-red-600 text-lg leading-none"
                             >
                                 🖉
                             </button>

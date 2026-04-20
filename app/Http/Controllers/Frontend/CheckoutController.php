@@ -434,100 +434,106 @@ class CheckoutController extends Controller
         return (int) ($prices[$size] ?? 0);
     }
 
-    public function previewShipping(Request $request)
+   public function previewShipping(Request $request)
     {
         $data = $request->validate([
             'order_id' => 'required|integer',
             'carrier' => 'required|in:omniva,venipak',
         ]);
-
+    
         $order = Order::with('orderItem.Listing.user')
             ->where('id', $data['order_id'])
             ->where('user_id', auth()->id())
             ->firstOrFail();
-
+    
         if ($order->statusas !== Order::STATUS_PENDING) {
             return response()->json(['error' => 'Order not pending'], 400);
         }
-
+    
         $splits = $order->payment_intents ?? [];
         $shippingTotalCents = 0;
-
+    
         foreach ($splits as &$split) {
             $size = $split['package_size'] ?? 'S';
             $price = $this->carrierPriceCents($data['carrier'], $size);
             $split['shipping_cents'] = $price;
             $shippingTotalCents += $price;
         }
-
         unset($split);
-
+    
         $newTotal = $order->amount_charged_cents + $shippingTotalCents;
-
+    
+        $shippingAddress = $order->shipping_address ?? [];
+        $shippingAddress['carrier'] = $data['carrier'];
+    
         $order->update([
             'payment_intents' => $splits,
             'shipping_total_cents' => $shippingTotalCents,
+            'shipping_address' => $shippingAddress,
         ]);
-
+    
         return response()->json([
             'shipping_total_cents' => $shippingTotalCents,
             'total_cents' => $newTotal,
         ]);
     }
-
+    
     public function shipping(Request $request)
     {
         $data = $request->validate([
             'order_id' => 'required|integer',
-            'carrier' => 'required|in:omniva,venipak',
+            'carrier'  => 'required|in:omniva,venipak',
         ]);
-
+    
         $order = Order::with('orderItem.Listing.user')
             ->where('id', $data['order_id'])
             ->where('user_id', auth()->id())
             ->firstOrFail();
-
+    
         if ($order->statusas !== Order::STATUS_PENDING) {
             return response()->json(['error' => 'Order is not pending.'], 400);
         }
-
+    
         $splits = $order->payment_intents ?? [];
-
+    
         if (!is_array($splits) || empty($splits)) {
             return response()->json(['error' => 'Missing split data.'], 500);
         }
-
+    
         $shippingTotalCents = 0;
-
+    
         foreach ($splits as &$split) {
             $size = $split['package_size'] ?? 'S';
             $priceCents = $this->carrierPriceCents($data['carrier'], $size);
             $split['shipping_cents'] = (int) $priceCents;
             $shippingTotalCents += (int) $priceCents;
         }
-
         unset($split);
-
+    
         $newTotalCents = (int) $order->amount_charged_cents + (int) $shippingTotalCents;
-
+    
         Stripe::setApiKey(config('services.stripe.secret'));
-
+    
         PaymentIntent::update($order->payment_intent_id, [
             'amount' => $newTotalCents,
         ]);
-
+    
+        $shippingAddress = $order->shipping_address ?? [];
+        $shippingAddress['carrier'] = $data['carrier'];
+    
         $order->update([
             'payment_intents' => $splits,
             'shipping_total_cents' => $shippingTotalCents,
             'amount_charged_cents' => $newTotalCents,
+            'shipping_address' => $shippingAddress,
         ]);
-
+    
         return response()->json([
             'shipping_total_cents' => $shippingTotalCents,
             'total_cents' => $newTotalCents,
         ]);
     }
-
+    
     public function success(Request $request)
     {
         $isService = $request->filled('service_order_id');

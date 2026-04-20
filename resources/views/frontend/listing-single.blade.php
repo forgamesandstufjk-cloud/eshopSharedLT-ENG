@@ -598,23 +598,16 @@ input[type=number] {
     $isOwner = $user && $user->id === $listing->user_id;
     $isBanned = $user && $user->isBannedUser();
 
-    $purchaseCount = $listing->tipas === 'preke'
-        ? $productPurchaseCount
-        : $servicePurchaseCount;
-
-    $reviewCount = auth()->check()
-        ? $listing->review()->where('user_id', auth()->id())->count()
-        : 0;
-
-    $reviewWindowOpen = $listing->tipas === 'preke'
-        ? ($listing->is_renewable || (int) $listing->kiekis >= 1)
-        : true;
+    $purchaseCount = $purchaseCount ?? 0;
+    $reviewCount = $reviewCount ?? 0;
+    $reviewsAllowed = $reviewsAllowed ?? false;
+    $hasReviewed = $hasReviewed ?? false;
 
     $canLeaveReview = auth()->check()
         && !$isOwner
         && !$isBanned
-        && $reviewWindowOpen
-        && $purchaseCount > $reviewCount;
+        && $reviewsAllowed
+        && ($purchaseCount > $reviewCount);
 
     $sort = request('sort', 'newest');
 

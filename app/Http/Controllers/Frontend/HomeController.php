@@ -44,18 +44,17 @@ class HomeController extends Controller
                 'back' => request('back'),
             ]);
         }
-
+    
         if ($listing->is_hidden) {
             abort(404);
         }
-
+    
         $listing->load([
             'photos',
             'user',
             'category',
-            'review.user',
         ]);
-
+    
         $similar = Listing::where('user_id', $listing->user_id)
             ->where('id', '!=', $listing->id)
             ->where('is_hidden', 0)
@@ -63,20 +62,20 @@ class HomeController extends Controller
             ->with('photos')
             ->take(4)
             ->get();
-
+    
         $purchaseCount = 0;
         $reviewCount = 0;
         $hasPurchased = false;
         $hasReviewed = false;
         $reviewsAllowed = false;
-
+    
         if (auth()->check()) {
             $userId = auth()->id();
-
+    
             $reviewCount = (int) $listing->review()
                 ->where('user_id', $userId)
                 ->count();
-
+    
             if ($listing->tipas === 'preke') {
                 $purchaseCount = (int) OrderItem::query()
                     ->where('listing_id', $listing->id)
@@ -89,10 +88,10 @@ class HomeController extends Controller
                           ->whereIn('status', ['approved', 'reimbursed']);
                     })
                     ->sum('kiekis');
-
+    
                 $reviewsAllowed = $listing->is_renewable || (int) $listing->kiekis >= 1;
             }
-
+    
             if ($listing->tipas === 'paslauga') {
                 $purchaseCount = (int) ServiceOrder::query()
                     ->where('listing_id', $listing->id)
@@ -105,14 +104,38 @@ class HomeController extends Controller
                           });
                     })
                     ->count();
-
+    
                 $reviewsAllowed = $purchaseCount > 0;
             }
-
+    
             $hasPurchased = $purchaseCount > 0;
             $hasReviewed = $hasPurchased && $reviewCount >= $purchaseCount;
         }
-
+    
+        $sort = request('sort', 'newest');
+    
+        $reviewsQuery = $listing->review()->with('user');
+    
+        switch ($sort) {
+            case 'oldest':
+                $reviewsQuery->orderBy('created_at', 'asc');
+                break;
+            case 'highest':
+                $reviewsQuery->orderBy('ivertinimas', 'desc')->orderBy('created_at', 'desc');
+                break;
+            case 'lowest':
+                $reviewsQuery->orderBy('ivertinimas', 'asc')->orderBy('created_at', 'desc');
+                break;
+            default:
+                $reviewsQuery->orderBy('created_at', 'desc');
+                break;
+        }
+    
+        $reviews = $reviewsQuery->paginate(5, ['*'], 'reviews_page');
+    
+        $avgRating = round((float) $listing->review()->avg('ivertinimas'), 1);
+        $totalReviews = (int) $listing->review()->count();
+    
         return view('frontend.listing-single', [
             'listing'        => $listing,
             'similar'        => $similar,
@@ -121,6 +144,10 @@ class HomeController extends Controller
             'reviewsAllowed' => $reviewsAllowed,
             'purchaseCount'  => $purchaseCount,
             'reviewCount'    => $reviewCount,
+            'reviews'        => $reviews,
+            'avgRating'      => $avgRating,
+            'totalReviews'   => $totalReviews,
+            'sort'           => $sort,
         ]);
     }
 }

@@ -255,14 +255,62 @@ input[type=number] {
                         </button>                 
                     </form>
                 @endif
-
 {{-- SELLER INFO --}}
 <div class="mt-8 sm:mt-10 border-t pt-6" style="border-color: #836354">
     <h3 class="font-semibold text-black mb-2">Pardavėjas</h3>
 
-    <div x-data="{ openReport: false, reasonOpen: false, selectedReason: '' }"
-         class="relative p-4 rounded border text-sm"
-         style="background-color: rgb(234, 220, 200); border-color: #836354">
+    <div
+        x-data="{
+            openReport: false,
+            reasonOpen: false,
+            selectedReason: '',
+            revealed: false,
+            loadingSeller: false,
+            sellerError: '',
+            seller: {
+                name: '',
+                email: '',
+                phone: '',
+                city: ''
+            },
+            async revealSeller() {
+                if (this.revealed || this.loadingSeller) return;
+
+                this.loadingSeller = true;
+                this.sellerError = '';
+
+                try {
+                    const res = await fetch(@js(route('listing.seller-contact', $listing->id)), {
+                        headers: {
+                            'Accept': 'application/json',
+                            'X-Requested-With': 'XMLHttpRequest'
+                        }
+                    });
+
+                    const data = await res.json();
+
+                    if (!res.ok) {
+                        throw new Error(data?.message || 'Nepavyko gauti pardavėjo informacijos.');
+                    }
+
+                    this.seller = {
+                        name: data.name ?? '',
+                        email: data.email ?? '',
+                        phone: data.phone ?? '',
+                        city: data.city ?? ''
+                    };
+
+                    this.revealed = true;
+                } catch (e) {
+                    this.sellerError = e.message || 'Nepavyko gauti pardavėjo informacijos.';
+                } finally {
+                    this.loadingSeller = false;
+                }
+            }
+        }"
+        class="relative p-4 rounded border text-sm"
+        style="background-color: rgb(234, 220, 200); border-color: #836354"
+    >
 
         @auth
             @if(auth()->id() !== $listing->user_id)
@@ -277,25 +325,78 @@ input[type=number] {
             @endif
         @endauth
 
-        <div class="text-black font-semibold text-base sm:text-lg pr-8">
-            {{ $listing->user->vardas }} {{ $listing->user->pavarde }}
-        </div>
-
-        @if($listing->user->business_email)
-            <div class="text-black mt-1">
-               El. paštas: {{ $listing->user->business_email }}
+        @if(auth()->check() && (auth()->id() === $listing->user_id || auth()->user()->role === 'admin'))
+            {{-- Owner/admin can still see everything directly --}}
+            <div class="text-black font-semibold text-base sm:text-lg pr-8">
+                {{ $listing->user->vardas }} {{ $listing->user->pavarde }}
             </div>
-        @endif
 
-        @if($listing->user->telefonas)
-            <div class="text-black mt-1">
-                Tel.: {{ $listing->user->telefonas }}
-            </div>
-        @endif
+            @if($listing->user->business_email)
+                <div class="text-black mt-1">
+                    El. paštas: {{ $listing->user->business_email }}
+                </div>
+            @endif
 
-        @if($listing->user->address?->city)
-            <div class="text-black mt-1">
-                Miestas: {{ $listing->user->address->city->pavadinimas }}
+            @if($listing->user->telefonas)
+                <div class="text-black mt-1">
+                    Tel.: {{ $listing->user->telefonas }}
+                </div>
+            @endif
+
+            @if($listing->user->address?->city)
+                <div class="text-black mt-1">
+                    Miestas: {{ $listing->user->address->city->pavadinimas }}
+                </div>
+            @endif
+        @else
+            {{-- Public/other users do NOT get the raw data in HTML --}}
+            <div class="pr-8">
+                <div class="text-black font-semibold text-base sm:text-lg">
+                    Pardavėjo informacija paslėpta
+                </div>
+
+                <div class="text-black mt-1">
+                    Kontaktai bus parodyti tik paspaudus mygtuką.
+                </div>
+
+                <button
+                    type="button"
+                    @click="revealSeller()"
+                    :disabled="loadingSeller"
+                    :class="loadingSeller ? 'opacity-50 cursor-not-allowed' : ''"
+                    class="mt-3 px-4 py-2 rounded text-white hover:text-black transition-colors"
+                    style="background-color: rgb(131, 99, 84)"
+                >
+                    <span x-show="!loadingSeller && !revealed">Rodyti pardavėjo kontaktus</span>
+                    <span x-show="loadingSeller">Kraunama...</span>
+                    <span x-show="revealed">Kontaktai parodyti</span>
+                </button>
+
+                <div x-show="sellerError" x-cloak class="mt-3 text-sm" style="color: rgb(184, 80, 54)">
+                    <span x-text="sellerError"></span>
+                </div>
+
+                <div x-show="revealed" x-cloak class="mt-4">
+                    <div class="text-black font-semibold text-base sm:text-lg pr-8" x-text="seller.name"></div>
+
+                    <template x-if="seller.email">
+                        <div class="text-black mt-1">
+                            El. paštas: <span x-text="seller.email"></span>
+                        </div>
+                    </template>
+
+                    <template x-if="seller.phone">
+                        <div class="text-black mt-1">
+                            Tel.: <span x-text="seller.phone"></span>
+                        </div>
+                    </template>
+
+                    <template x-if="seller.city">
+                        <div class="text-black mt-1">
+                            Miestas: <span x-text="seller.city"></span>
+                        </div>
+                    </template>
+                </div>
             </div>
         @endif
 
@@ -420,7 +521,6 @@ input[type=number] {
         @endauth
     </div>
 </div>
-
             </div>
         </div>
     </div>

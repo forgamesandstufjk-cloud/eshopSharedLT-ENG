@@ -83,39 +83,39 @@
 
                             <td class="p-3 block sm:table-cell text-black">
                                 <span class="font-semibold sm:hidden">Pristatymo adresas: </span>
-                            
+
                                 @php
                                     $shippingAddress = $s->order->shipping_address ?? [];
-                            
+
                                     $addressLine = trim(collect([
                                         $shippingAddress['address'] ?? null,
                                     ])->filter()->implode(' '));
-                            
+
                                     $cityLine = $shippingAddress['city']
                                         ?? ($s->order->address?->city?->pavadinimas ?? null);
-                            
+
                                     $countryLine = $shippingAddress['country']
                                         ?? ($s->order->address?->city?->country?->pavadinimas ?? null);
-                            
+
                                     $postalLine = $shippingAddress['postal_code'] ?? null;
                                 @endphp
-                            
+
                                 <div class="text-sm space-y-1">
                                     <div>
                                         <span class="font-medium">Adresas:</span>
                                         {{ $addressLine ?: '—' }}
                                     </div>
-                            
+
                                     <div>
                                         <span class="font-medium">Miestas:</span>
                                         {{ $cityLine ?: '—' }}
                                     </div>
-                            
+
                                     <div>
                                         <span class="font-medium">Šalis:</span>
                                         {{ $countryLine ?: '—' }}
                                     </div>
-                            
+
                                     <div>
                                         <span class="font-medium">Pašto kodas:</span>
                                         {{ $postalLine ?: '—' }}
@@ -163,14 +163,14 @@
                                     @php
                                         $showShipmentErrors = old('shipment_form_id') == $s->id && $errors->any();
                                     @endphp
-                                
+
                                     <form method="POST"
                                           action="{{ route('seller.shipments.update', $s) }}"
                                           enctype="multipart/form-data"
                                           class="space-y-2 mt-2">
                                         @csrf
                                         <input type="hidden" name="shipment_form_id" value="{{ $s->id }}">
-                                
+
                                         @if($showShipmentErrors)
                                             <div class="p-3 rounded text-sm text-black border" style="background-color: rgb(207, 174, 134); border-color: #836354">
                                                 <ul class="list-disc pl-5">
@@ -180,7 +180,7 @@
                                                 </ul>
                                             </div>
                                         @endif
-                                
+
                                         <input
                                             name="tracking_number"
                                             value="{{ old('shipment_form_id') == $s->id ? old('tracking_number') : '' }}"
@@ -188,14 +188,19 @@
                                             style="background-color: rgb(234, 220, 200); border-color: #6B7280"
                                             placeholder="Siuntos sekimo numeris"
                                         >
-                                
+
                                         <input
                                             type="file"
                                             name="proof"
+                                            accept=".jpg,.jpeg,.png,.pdf,.doc,.docx"
                                             class="border p-2 rounded w-full text-black focus:outline-none focus:ring-1 focus:ring-[#836354] focus:border-[#836354]"
                                             style="background-color: rgb(234, 220, 200); border-color: #6B7280"
                                         >
-                                
+
+                                        <p class="text-xs text-black">
+                                            Leidžiami failai: JPG, JPEG, PNG, PDF, DOC arba DOCX.
+                                        </p>
+
                                         <button
                                             class="text-white px-3 py-2 rounded w-full hover:text-black"
                                             style="background-color: rgb(131, 99, 84)">
@@ -219,18 +224,22 @@
             </div>
 
             <div class="mt-4 text-black">
-                {{ $shipments->links() }}
+                {{ $shipments->appends(request()->except('shipments_page'))->links() }}
             </div>
 
             {{-- PASLAUGŲ UŽSAKYMAI --}}
-            <h2 class="text-xl sm:text-2xl font-bold mb-4 sm:mb-6 text-black">Paslaugų užsakymai</h2>
-            <div class="mt-8 shadow rounded overflow-hidden" style="background-color: rgb(215, 183, 142)">
+            <div id="paslaugu-uzsakymai" class="pt-6">
+                <h2 class="text-xl sm:text-2xl font-bold mb-4 sm:mb-6 text-black">Paslaugų užsakymai</h2>
+            </div>
+
+            <div class="shadow rounded overflow-hidden" style="background-color: rgb(215, 183, 142)">
                 <table class="w-full text-sm text-black">
                     <thead class="border-b hidden sm:table-header-group" style="background-color: rgb(131, 99, 84); border-color: #836354">
                         <tr>
                             <th class="p-3 text-left text-white">Užsakymas</th>
                             <th class="p-3 text-left text-white">Skelbimas</th>
                             <th class="p-3 text-left text-white">Pirkėjas</th>
+                            <th class="p-3 text-left text-white">Pristatymo adresas</th>
                             <th class="p-3 text-left text-white">Būsena</th>
                             <th class="p-3 text-left text-white">Įrodymas / veiksmai</th>
                         </tr>
@@ -261,6 +270,48 @@
                                 @else
                                     Nepriskirtas
                                 @endif
+                            </td>
+
+                            <td class="p-3 block sm:table-cell text-black">
+                                <span class="font-semibold sm:hidden">Pristatymo adresas: </span>
+
+                                @php
+                                    $serviceShippingAddress = $so->convertedOrder?->shipping_address ?? [];
+
+                                    $serviceAddressLine = trim(collect([
+                                        $serviceShippingAddress['address'] ?? null,
+                                    ])->filter()->implode(' '));
+
+                                    $serviceCityLine = $serviceShippingAddress['city']
+                                        ?? ($so->convertedOrder?->address?->city?->pavadinimas ?? null);
+
+                                    $serviceCountryLine = $serviceShippingAddress['country']
+                                        ?? ($so->convertedOrder?->address?->city?->country?->pavadinimas ?? null);
+
+                                    $servicePostalLine = $serviceShippingAddress['postal_code'] ?? null;
+                                @endphp
+
+                                <div class="text-sm space-y-1">
+                                    <div>
+                                        <span class="font-medium">Adresas:</span>
+                                        {{ $serviceAddressLine ?: '—' }}
+                                    </div>
+
+                                    <div>
+                                        <span class="font-medium">Miestas:</span>
+                                        {{ $serviceCityLine ?: '—' }}
+                                    </div>
+
+                                    <div>
+                                        <span class="font-medium">Šalis:</span>
+                                        {{ $serviceCountryLine ?: '—' }}
+                                    </div>
+
+                                    <div>
+                                        <span class="font-medium">Pašto kodas:</span>
+                                        {{ $servicePostalLine ?: '—' }}
+                                    </div>
+                                </div>
                             </td>
 
                             <td class="p-3 block sm:table-cell text-black">
@@ -297,7 +348,7 @@
 
                             <td class="p-3 block sm:table-cell text-black">
                                 <span class="font-semibold sm:hidden">Veiksmai: </span>
-                            
+
                                 @if($so->status === \App\Models\ServiceOrder::STATUS_READY_TO_SHIP)
                                     @if($so->completion_method === null)
                                         <div class="space-y-2 mt-2">
@@ -309,7 +360,7 @@
                                                     Atsiskaitymas per svetainę
                                                 </button>
                                             </form>
-                            
+
                                             <form method="POST" action="{{ route('seller.service-orders.choose-private', $so) }}">
                                                 @csrf
                                                 <button
@@ -319,7 +370,7 @@
                                                 </button>
                                             </form>
                                         </div>
-                            
+
                                     @elseif(
                                         $so->completion_method === \App\Models\ServiceOrder::COMPLETION_PLATFORM &&
                                         $so->payment_status !== \App\Models\ServiceOrder::PAYMENT_PAID
@@ -327,7 +378,7 @@
                                         <div class="text-sm text-black">
                                             Laukiama, kol pirkėjas apmokės per svetainę.
                                         </div>
-                            
+
                                         <form method="POST" action="{{ route('seller.service-orders.choose-private', $so) }}" class="mt-2">
                                             @csrf
                                             <button
@@ -336,55 +387,60 @@
                                                 Perjungti į privatų
                                             </button>
                                         </form>
-                            
+
                                     @elseif(
-                                            $so->completion_method === \App\Models\ServiceOrder::COMPLETION_PLATFORM &&
-                                            $so->payment_status === \App\Models\ServiceOrder::PAYMENT_PAID &&
-                                            $so->shipment_status === \App\Models\ServiceOrder::SHIPMENT_PENDING
-                                        )
-                                            @php
-                                                $showServiceShipmentErrors = old('service_order_form_id') == $so->id && $errors->any();
-                                            @endphp
-                                        
-                                            <form method="POST"
-                                                  action="{{ route('seller.service-orders.shipment.submit', $so) }}"
-                                                  enctype="multipart/form-data"
-                                                  class="space-y-2 mt-2">
-                                                @csrf
-                                                <input type="hidden" name="service_order_form_id" value="{{ $so->id }}">
-                                        
-                                                @if($showServiceShipmentErrors)
-                                                    <div class="p-3 rounded text-sm text-black border" style="background-color: rgb(207, 174, 134); border-color: #836354">
-                                                        <ul class="list-disc pl-5">
-                                                            @foreach($errors->all() as $error)
-                                                                <li>{{ $error }}</li>
-                                                            @endforeach
-                                                        </ul>
-                                                    </div>
-                                                @endif
-                                        
-                                                <input
-                                                    name="tracking_number"
-                                                    value="{{ old('service_order_form_id') == $so->id ? old('tracking_number') : '' }}"
-                                                    class="border p-2 rounded w-full text-black focus:outline-none focus:ring-1 focus:ring-[#836354] focus:border-[#836354]"
-                                                    style="background-color: rgb(234, 220, 200); border-color: #6B7280"
-                                                    placeholder="Siuntos sekimo numeris"
-                                                >
-                                        
-                                                <input
-                                                    type="file"
-                                                    name="proof"
-                                                    class="border p-2 rounded w-full text-black focus:outline-none focus:ring-1 focus:ring-[#836354] focus:border-[#836354]"
-                                                    style="background-color: rgb(234, 220, 200); border-color: #6B7280"
-                                                >
-                                        
-                                                <button
-                                                    class="text-white px-3 py-2 rounded w-full hover:text-black"
-                                                    style="background-color: rgb(131, 99, 84)">
-                                                    Pateikti siuntos įrodymą
-                                                </button>
-                                            </form>
-                            
+                                        $so->completion_method === \App\Models\ServiceOrder::COMPLETION_PLATFORM &&
+                                        $so->payment_status === \App\Models\ServiceOrder::PAYMENT_PAID &&
+                                        $so->shipment_status === \App\Models\ServiceOrder::SHIPMENT_PENDING
+                                    )
+                                        @php
+                                            $showServiceShipmentErrors = old('service_order_form_id') == $so->id && $errors->any();
+                                        @endphp
+
+                                        <form method="POST"
+                                              action="{{ route('seller.service-orders.shipment.submit', $so) }}"
+                                              enctype="multipart/form-data"
+                                              class="space-y-2 mt-2">
+                                            @csrf
+                                            <input type="hidden" name="service_order_form_id" value="{{ $so->id }}">
+
+                                            @if($showServiceShipmentErrors)
+                                                <div class="p-3 rounded text-sm text-black border" style="background-color: rgb(207, 174, 134); border-color: #836354">
+                                                    <ul class="list-disc pl-5">
+                                                        @foreach($errors->all() as $error)
+                                                            <li>{{ $error }}</li>
+                                                        @endforeach
+                                                    </ul>
+                                                </div>
+                                            @endif
+
+                                            <input
+                                                name="tracking_number"
+                                                value="{{ old('service_order_form_id') == $so->id ? old('tracking_number') : '' }}"
+                                                class="border p-2 rounded w-full text-black focus:outline-none focus:ring-1 focus:ring-[#836354] focus:border-[#836354]"
+                                                style="background-color: rgb(234, 220, 200); border-color: #6B7280"
+                                                placeholder="Siuntos sekimo numeris"
+                                            >
+
+                                            <input
+                                                type="file"
+                                                name="proof"
+                                                accept=".jpg,.jpeg,.png,.pdf,.doc,.docx"
+                                                class="border p-2 rounded w-full text-black focus:outline-none focus:ring-1 focus:ring-[#836354] focus:border-[#836354]"
+                                                style="background-color: rgb(234, 220, 200); border-color: #6B7280"
+                                            >
+
+                                            <p class="text-xs text-black">
+                                                Leidžiami failai: JPG, JPEG, PNG, PDF, DOC arba DOCX.
+                                            </p>
+
+                                            <button
+                                                class="text-white px-3 py-2 rounded w-full hover:text-black"
+                                                style="background-color: rgb(131, 99, 84)">
+                                                Pateikti siuntos įrodymą
+                                            </button>
+                                        </form>
+
                                     @elseif($so->shipment_status === \App\Models\ServiceOrder::SHIPMENT_NEEDS_REVIEW && $so->proof_path)
                                         <a href="{{ \Illuminate\Support\Facades\Storage::disk('photos')->url($so->proof_path) }}"
                                            target="_blank"
@@ -392,7 +448,7 @@
                                            style="color: rgb(131, 99, 84)">
                                             Peržiūrėti įrodymą
                                         </a>
-                            
+
                                     @else
                                         —
                                     @endif
@@ -403,7 +459,7 @@
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="5" class="p-4 text-center text-black">
+                            <td colspan="6" class="p-4 text-center text-black">
                                 Paslaugų užsakymų šiame skyriuje nėra.
                             </td>
                         </tr>
@@ -413,7 +469,7 @@
             </div>
 
             <div class="mt-4 text-black">
-                {{ $serviceOrders->links() }}
+                {{ $serviceOrders->appends(request()->except('service_orders_page'))->fragment('paslaugu-uzsakymai')->links() }}
             </div>
 
         </div>

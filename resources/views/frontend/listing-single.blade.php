@@ -348,57 +348,57 @@ input[type=number] {
                     Miestas: {{ $listing->user->address->city->pavadinimas }}
                 </div>
             @endif
-        @else
-            {{-- Public/other users do NOT get the raw data in HTML --}}
-            <div class="pr-8">
-                <div class="text-black font-semibold text-base sm:text-lg">
-                    Pardavėjo informacija paslėpta
-                </div>
-
-                <div class="text-black mt-1">
-                    Kontaktai bus parodyti tik paspaudus mygtuką.
-                </div>
-
-                <button
-                    type="button"
-                    @click="revealSeller()"
-                    :disabled="loadingSeller"
-                    :class="loadingSeller ? 'opacity-50 cursor-not-allowed' : ''"
-                    class="mt-3 px-4 py-2 rounded text-white hover:text-black transition-colors"
-                    style="background-color: rgb(131, 99, 84)"
-                >
-                    <span x-show="!loadingSeller && !revealed">Rodyti pardavėjo kontaktus</span>
-                    <span x-show="loadingSeller">Kraunama...</span>
-                    <span x-show="revealed">Kontaktai parodyti</span>
-                </button>
-
-                <div x-show="sellerError" x-cloak class="mt-3 text-sm" style="color: rgb(184, 80, 54)">
-                    <span x-text="sellerError"></span>
-                </div>
-
-                <div x-show="revealed" x-cloak class="mt-4">
-                    <div class="text-black font-semibold text-base sm:text-lg pr-8" x-text="seller.name"></div>
-
-                    <template x-if="seller.email">
-                        <div class="text-black mt-1">
-                            El. paštas: <span x-text="seller.email"></span>
+       @else
+                    <div class="pr-8">
+                        <div x-show="!revealed" x-cloak>
+                            <div class="text-black font-semibold text-base sm:text-lg">
+                                Pardavėjo informacija paslėpta
+                            </div>
+                
+                            <div class="text-black mt-1">
+                                Kontaktai bus parodyti tik paspaudus mygtuką.
+                            </div>
+                
+                            <button
+                                type="button"
+                                @click="revealSeller()"
+                                :disabled="loadingSeller"
+                                :class="loadingSeller ? 'opacity-50 cursor-not-allowed' : ''"
+                                class="mt-3 px-4 py-2 rounded text-white hover:text-black transition-colors"
+                                style="background-color: rgb(131, 99, 84)"
+                            >
+                                <span x-show="!loadingSeller">Rodyti pardavėjo kontaktus</span>
+                                <span x-show="loadingSeller">Kraunama...</span>
+                            </button>
                         </div>
-                    </template>
-
-                    <template x-if="seller.phone">
-                        <div class="text-black mt-1">
-                            Tel.: <span x-text="seller.phone"></span>
+                
+                        <div x-show="sellerError" x-cloak class="mt-3 text-sm" style="color: rgb(184, 80, 54)">
+                            <span x-text="sellerError"></span>
                         </div>
-                    </template>
-
-                    <template x-if="seller.city">
-                        <div class="text-black mt-1">
-                            Miestas: <span x-text="seller.city"></span>
+                
+                        <div x-show="revealed" x-cloak class="mt-4">
+                            <div class="text-black font-semibold text-base sm:text-lg pr-8" x-text="seller.name"></div>
+                
+                            <template x-if="seller.email">
+                                <div class="text-black mt-1">
+                                    El. paštas: <span x-text="seller.email"></span>
+                                </div>
+                            </template>
+                
+                            <template x-if="seller.phone">
+                                <div class="text-black mt-1">
+                                    Tel.: <span x-text="seller.phone"></span>
+                                </div>
+                            </template>
+                
+                            <template x-if="seller.city">
+                                <div class="text-black mt-1">
+                                    Miestas: <span x-text="seller.city"></span>
+                                </div>
+                            </template>
                         </div>
-                    </template>
-                </div>
-            </div>
-        @endif
+                    </div>
+                @endif
 
         @auth
             @if(auth()->id() !== $listing->user_id)

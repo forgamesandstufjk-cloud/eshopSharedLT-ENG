@@ -64,7 +64,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     if (!intentRes.ok || !intentData.client_secret || !intentData.order_id) {
       throw new Error(
-        intentData?.error || "Nepavyko inicijuoti mokėjimo, nes nevisa informacija užpildyta. Užpildę visus laukelius, iš naujo pasirinkite kurjerį."
+        intentData?.error || "Nepavyko inicijuoti mokėjimo, nes nevisa informacija užpildyta. Užpildę visus laukelius, iš naujo pasirinkite pristatymo būdą."
       );
     }
 

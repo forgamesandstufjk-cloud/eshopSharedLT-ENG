@@ -175,43 +175,55 @@ class ServiceOrderService
         if ((int) $serviceOrder->seller_id !== (int) $seller->id) {
             abort(403);
         }
-
+    
         if ($serviceOrder->status !== ServiceOrder::STATUS_READY_TO_SHIP) {
             throw ValidationException::withMessages([
                 'status' => 'Siuntos įrodymą galima pateikti tik kai užsakymas yra paruoštas išsiuntimui.',
             ]);
         }
-
+    
         if (!$serviceOrder->canUsePlatformFlow()) {
             throw ValidationException::withMessages([
                 'buyer' => 'Per svetainę galima tęsti tik tada, kai užsakymui priskirtas registruotas pirkėjas.',
             ]);
         }
-
+    
         if ($serviceOrder->payment_status !== ServiceOrder::PAYMENT_PAID) {
             throw ValidationException::withMessages([
                 'payment_status' => 'Siuntos įrodymą galima pateikti tik po to, kai pirkėjas apmoka užsakymą.',
             ]);
         }
-
-        if ($serviceOrder->completion_method === ServiceOrder::COMPLETION_PRIVATE) {
+    
+        if ($serviceOrder->completion_method !== ServiceOrder::COMPLETION_PLATFORM) {
             throw ValidationException::withMessages([
-                'status' => 'Šis užsakymas jau užbaigtas privačiai.',
+                'completion_method' => 'Siuntos įrodymą galima pateikti tik užsakymams, kurie vykdomi per svetainę.',
             ]);
         }
-
+    
+        if (!$serviceOrder->carrier) {
+            throw ValidationException::withMessages([
+                'carrier' => 'Pirkėjas dar nepasirinko siuntos vežėjo.',
+            ]);
+        }
+    
+        if (!$serviceOrder->package_size) {
+            throw ValidationException::withMessages([
+                'package_size' => 'Pardavėjas dar nepasirinko siuntos dydžio.',
+            ]);
+        }
+    
         $proofPath = $data['proof']->store('service_order_proofs', 'photos');
-
+    
         $serviceOrder->update([
             'tracking_number' => $data['tracking_number'],
-            'carrier' => $data['carrier'] ?? 'omniva',
-            'package_size' => $data['package_size'] ?? 'S',
+            'carrier' => $serviceOrder->carrier,
+            'package_size' => $serviceOrder->package_size,
             'proof_path' => $proofPath,
             'shipment_status' => ServiceOrder::SHIPMENT_NEEDS_REVIEW,
             'shipment_submitted_at' => now(),
             'completion_method' => ServiceOrder::COMPLETION_PLATFORM,
         ]);
-
+    
         return $serviceOrder->fresh();
     }
 
@@ -220,17 +232,17 @@ class ServiceOrderService
         if ((int) $serviceOrder->seller_id !== (int) $seller->id) {
             abort(403);
         }
-
+    
         if ($serviceOrder->status !== ServiceOrder::STATUS_READY_TO_SHIP) {
             throw ValidationException::withMessages([
                 'status' => 'Privatus užbaigimas leidžiamas tik iš būsenos "Paruošta išsiuntimui".',
             ]);
         }
-
+    
         if ($serviceOrder->proof_path) {
             Storage::disk('photos')->delete($serviceOrder->proof_path);
         }
-
+    
         $serviceOrder->update([
             'status' => ServiceOrder::STATUS_COMPLETED,
             'completion_method' => ServiceOrder::COMPLETION_PRIVATE,
@@ -238,13 +250,19 @@ class ServiceOrderService
             'last_status_change_at' => now(),
             'tracking_number' => null,
             'proof_path' => null,
+            'carrier' => null,
+            'shipping_cents' => null,
             'shipment_status' => null,
             'shipment_submitted_at' => null,
             'shipment_approved_at' => null,
             'payment_status' => null,
+            'payment_provider' => null,
+            'payment_intent_id' => null,
+            'amount_charged_cents' => null,
             'paid_at' => null,
+            'reimbursement_transfer_id' => null,
         ]);
-
+    
         return $serviceOrder->fresh();
     }
 
@@ -419,72 +437,90 @@ class ServiceOrderService
     }
 
     public function choosePlatformFlow(ServiceOrder $serviceOrder, User $seller): ServiceOrder
-{
-    if ((int) $serviceOrder->seller_id !== (int) $seller->id) {
-        abort(403);
-    }
-
-    if ($serviceOrder->status !== ServiceOrder::STATUS_READY_TO_SHIP) {
-        throw ValidationException::withMessages([
-            'status' => 'Pasirinkti apmokėjimą per svetainę galima tik būsenoje "Paruošta išsiuntimui".',
+    {
+        if ((int) $serviceOrder->seller_id !== (int) $seller->id) {
+            abort(403);
+        }
+    
+        if ($serviceOrder->status !== ServiceOrder::STATUS_READY_TO_SHIP) {
+            throw ValidationException::withMessages([
+                'status' => 'Pasirinkti apmokėjimą per svetainę galima tik būsenoje "Paruošta išsiuntimui".',
+            ]);
+        }
+    
+        if (!$serviceOrder->canUsePlatformFlow()) {
+            throw ValidationException::withMessages([
+                'buyer' => 'Per svetainę galima tęsti tik tada, kai užsakymui priskirtas registruotas pirkėjas.',
+            ]);
+        }
+    
+        if ($serviceOrder->payment_status === ServiceOrder::PAYMENT_PAID) {
+            return $serviceOrder->fresh();
+        }
+    
+        if ($serviceOrder->proof_path) {
+            Storage::disk('photos')->delete($serviceOrder->proof_path);
+        }
+    
+        $serviceOrder->update([
+            'completion_method' => ServiceOrder::COMPLETION_PLATFORM,
+            'payment_status' => ServiceOrder::PAYMENT_PENDING,
+            'payment_provider' => null,
+            'payment_intent_id' => null,
+            'amount_charged_cents' => null,
+            'paid_at' => null,
+            'shipment_status' => ServiceOrder::SHIPMENT_PENDING,
+            'shipment_submitted_at' => null,
+            'shipment_approved_at' => null,
+            'tracking_number' => null,
+            'proof_path' => null,
+            'reimbursement_transfer_id' => null,
+            'last_status_change_at' => now(),
         ]);
-    }
-
-    if (!$serviceOrder->canUsePlatformFlow()) {
-        throw ValidationException::withMessages([
-            'buyer' => 'Per svetainę galima tęsti tik tada, kai užsakymui priskirtas registruotas pirkėjas.',
-        ]);
-    }
-
-    if ($serviceOrder->payment_status === ServiceOrder::PAYMENT_PAID) {
+    
         return $serviceOrder->fresh();
     }
 
-    $serviceOrder->update([
-        'completion_method' => ServiceOrder::COMPLETION_PLATFORM,
-        'payment_status' => ServiceOrder::PAYMENT_PENDING,
-        'shipment_status' => ServiceOrder::SHIPMENT_PENDING,
-        'last_status_change_at' => now(),
-    ]);
-
-    return $serviceOrder->fresh();
-}
-
-public function choosePrivateFlow(ServiceOrder $serviceOrder, User $seller): ServiceOrder
-{
-    if ((int) $serviceOrder->seller_id !== (int) $seller->id) {
-        abort(403);
-    }
-
-    if ($serviceOrder->status !== ServiceOrder::STATUS_READY_TO_SHIP) {
-        throw ValidationException::withMessages([
-            'status' => 'Privatų užbaigimą galima pasirinkti tik būsenoje "Paruošta išsiuntimui".',
+    public function choosePrivateFlow(ServiceOrder $serviceOrder, User $seller): ServiceOrder
+    {
+        if ((int) $serviceOrder->seller_id !== (int) $seller->id) {
+            abort(403);
+        }
+    
+        if ($serviceOrder->status !== ServiceOrder::STATUS_READY_TO_SHIP) {
+            throw ValidationException::withMessages([
+                'status' => 'Privatų užbaigimą galima pasirinkti tik būsenoje "Paruošta išsiuntimui".',
+            ]);
+        }
+    
+        if ($serviceOrder->payment_status === ServiceOrder::PAYMENT_PAID) {
+            throw ValidationException::withMessages([
+                'payment_status' => 'Negalima perjungti į privatų užbaigimą, nes pirkėjas jau apmokėjo per svetainę.',
+            ]);
+        }
+    
+        if ($serviceOrder->proof_path) {
+            Storage::disk('photos')->delete($serviceOrder->proof_path);
+        }
+    
+        $serviceOrder->update([
+            'completion_method' => ServiceOrder::COMPLETION_PRIVATE,
+            'payment_status' => null,
+            'payment_provider' => null,
+            'payment_intent_id' => null,
+            'amount_charged_cents' => null,
+            'paid_at' => null,
+            'shipment_status' => null,
+            'shipment_submitted_at' => null,
+            'shipment_approved_at' => null,
+            'tracking_number' => null,
+            'proof_path' => null,
+            'carrier' => null,
+            'shipping_cents' => null,
+            'reimbursement_transfer_id' => null,
+            'last_status_change_at' => now(),
         ]);
+    
+        return $serviceOrder->fresh();
     }
-
-    if ($serviceOrder->payment_status === ServiceOrder::PAYMENT_PAID) {
-        throw ValidationException::withMessages([
-            'payment_status' => 'Negalima perjungti į privatų užbaigimą, nes pirkėjas jau apmokėjo per svetainę.',
-        ]);
-    }
-
-    $serviceOrder->update([
-        'completion_method' => ServiceOrder::COMPLETION_PRIVATE,
-        'payment_status' => null,
-        'payment_provider' => null,
-        'payment_intent_id' => null,
-        'amount_charged_cents' => null,
-        'paid_at' => null,
-        'shipment_status' => null,
-        'shipment_submitted_at' => null,
-        'shipment_approved_at' => null,
-        'tracking_number' => null,
-        'proof_path' => null,
-        'carrier' => null,
-        'shipping_cents' => null,
-        'last_status_change_at' => now(),
-    ]);
-
-    return $serviceOrder->fresh();
-}
 }

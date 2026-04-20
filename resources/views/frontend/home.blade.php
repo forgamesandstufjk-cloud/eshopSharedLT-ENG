@@ -90,7 +90,6 @@
                                     <span class="font-bold text-base sm:text-lg" style="color: rgb(131, 99, 84)">
                                         {{ $item->kaina }} €
                                     </span>
-
                                     <div class="flex items-center gap-3">
                                         @if(auth()->check() && auth()->id() === $item->user_id)
                                             <span
@@ -98,16 +97,25 @@
                                                 style="background-color: rgb(207, 174, 134)"
                                                 title="Tai jūsų skelbimas">
                                                 Jūsų skelbimas
-                                            </span>    
-
+                                            </span>
+                                    
+                                        @elseif(auth()->check() && auth()->user()->role === 'admin')
+                                            <a
+                                                href="{{ route('listing.single', ['listing' => $item->id, 'back' => request()->fullUrl()]) }}"
+                                                class="font-semibold text-sm"
+                                                style="color: rgb(131, 99, 84)"
+                                            >
+                                                Plačiau →
+                                            </a>
+                                    
                                         @elseif($item->tipas === 'paslauga')
-                                             <span
+                                            <span
                                                 class="px-2 py-1 rounded text-xs text-black"
                                                 style="background-color: rgb(207, 174, 134)"
                                                 title="Paslaugos nėra perkamos per krepšelį">
                                                 Paslauga
                                             </span>
-
+                                    
                                         @elseif(
                                             $item->statusas !== 'parduotas' &&
                                             !$item->is_hidden
@@ -166,6 +174,7 @@
                                             @endauth
                                         @endif
                                     </div>
+                                   
                                 </div>
                             </div>
                         </div>

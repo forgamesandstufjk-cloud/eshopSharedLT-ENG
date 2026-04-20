@@ -4,12 +4,6 @@
             <h1 class="text-xl sm:text-2xl font-bold text-black">
                 Paslaugos užsakymas #{{ $serviceOrder->id }}
             </h1>
-
-            <a href="{{ route('seller.service-orders.index') }}"
-               class="text-white px-4 py-2 rounded"
-               style="background-color: rgb(131, 99, 84)">
-                Grįžti į lentą
-            </a>
         </div>
 
         @if(session('success'))

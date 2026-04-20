@@ -590,7 +590,7 @@ input[type=number] {
 @endif
 
 {{-- REVIEWS SECTION --}}
-<section class="mt-12 sm:mt-16">
+<section id="reviews-section" class="mt-12 sm:mt-16">
 
 @php
     $user = auth()->user();
@@ -601,24 +601,13 @@ input[type=number] {
     $reviewCount = $reviewCount ?? 0;
     $reviewsAllowed = $reviewsAllowed ?? false;
     $hasReviewed = $hasReviewed ?? false;
+    $sort = $sort ?? request('sort', 'newest');
 
     $canLeaveReview = auth()->check()
         && !$isOwner
         && !$isBanned
         && $reviewsAllowed
         && ($purchaseCount > $reviewCount);
-
-    $sort = request('sort', 'newest');
-
-    $sortedReviews = match($sort) {
-        'oldest'  => $listing->review->sortBy('created_at'),
-        'highest' => $listing->review->sortByDesc('ivertinimas'),
-        'lowest'  => $listing->review->sortBy('ivertinimas'),
-        default   => $listing->review->sortByDesc('created_at'),
-    };
-
-    $avgRating = round($listing->review->avg('ivertinimas'), 1);
-    $totalReviews = $listing->review->count();
 @endphp
 
 <div
@@ -643,7 +632,12 @@ input[type=number] {
                     </div>
                 </div>
 
-                <form method="GET" class="w-full sm:w-48" x-data="{ sortOpen: false, selectedSort: '{{ request('sort', 'newest') }}' }">
+                <form
+                    method="GET"
+                    action="{{ route('listing.single', $listing->id) }}#reviews-section"
+                    class="w-full sm:w-48"
+                    x-data="{ sortOpen: false, selectedSort: '{{ $sort }}' }"
+                >
                     <div class="relative">
                         <input type="hidden" name="sort" :value="selectedSort">
 
@@ -705,9 +699,8 @@ input[type=number] {
             </div>
         @endif
 
-        {{-- LEFT: REVIEWS --}}
         <div class="space-y-4">
-            @forelse($sortedReviews as $review)
+            @forelse($reviews as $review)
                 <div
                     x-data="{
                         openReportReview: false,
@@ -751,7 +744,6 @@ input[type=number] {
                         @endif
                     @endauth
 
-                    {{-- VIEW MODE --}}
                     <div x-show="editingReviewId !== {{ $review->id }}">
                         <div class="flex items-center gap-2 mb-1 pr-8">
                             <strong class="text-black">{{ $review->user->vardas }}</strong>
@@ -765,7 +757,6 @@ input[type=number] {
                         </p>
                     </div>
 
-                    {{-- EDIT MODE --}}
                     @auth
                         @if(auth()->id() === $review->user_id)
                             <div x-show="editingReviewId === {{ $review->id }}" x-cloak>
@@ -849,7 +840,6 @@ input[type=number] {
                         @endif
                     @endauth
 
-                    {{-- REPORT FORM --}}
                     @auth
                         @if(auth()->id() !== $review->user_id)
                             <div
@@ -969,9 +959,14 @@ input[type=number] {
                 <p class="text-black italic">Atsiliepimų dar nėra.</p>
             @endforelse
         </div>
+
+        @if($reviews->hasPages())
+            <div class="mt-6 text-black">
+                {{ $reviews->appends(request()->except('reviews_page'))->fragment('reviews-section')->links() }}
+            </div>
+        @endif
     </div>
 
-    {{-- RIGHT: REVIEW FORM --}}
     @if(auth()->check() && !$isOwner && $purchaseCount > 0 && !$canLeaveReview)
         <div class="p-3 rounded text-black mb-4"
              style="background-color: rgb(207, 174, 134); border: 1px solid #836354">

@@ -55,7 +55,8 @@ class CheckoutController extends Controller
                 'checkoutMode' => 'service',
             ]);
         }
-
+     }
+        
 public function intent(Request $request, OrderService $orderService)
 {
     $request->validate([

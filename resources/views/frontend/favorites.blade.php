@@ -107,7 +107,7 @@
                                 </div>
 
                                 <button
-                                    @click.stop.prevent="
+                                    x-on:click.stop.prevent="
                                         Alpine.store('favorites').toggle(item.id);
                                         load();
                                     "
@@ -141,14 +141,14 @@
                                             <span
                                                 class="px-2 py-1 rounded text-xs text-black"
                                                 style="background-color: rgb(207, 174, 134)"
-                                                @click.stop
+                                                x-on:click.stop
                                             >
                                                 Paslauga
                                             </span>
                                         </template>
 
                                         <template x-if="item.tipas !== 'paslauga' && item.statusas !== 'parduotas' && !item.is_hidden && item.user_id !== {{ auth()->id() ?? 'null' }} && remainingToAdd(item) > 0">
-                                            <form :action="'/cart/add/' + item.id" method="POST" @click.stop>
+                                            <form :action="'/cart/add/' + item.id" method="POST" x-on:click.stop>
                                                 @csrf
                                                 <button
                                                     type="submit"
@@ -176,7 +176,7 @@
                                                 class="p-2 rounded text-[#eadcc8] cursor-not-allowed"
                                                 aria-label="Maksimalus kiekis jau krepšelyje"
                                                 title="Maksimalus kiekis jau krepšelyje"
-                                                @click.stop
+                                                x-on:click.stop
                                             >
                                                 <svg xmlns="http://www.w3.org/2000/svg"
                                                      fill="none"
@@ -197,7 +197,7 @@
                                                 class="p-2 rounded text-gray-400 cursor-not-allowed"
                                                 aria-label="Nepasiekiama"
                                                 title="Nepasiekiama"
-                                                @click.stop
+                                                x-on:click.stop
                                             >
                                                 <svg xmlns="http://www.w3.org/2000/svg"
                                                      fill="none"

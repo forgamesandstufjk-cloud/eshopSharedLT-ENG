@@ -1,4 +1,5 @@
 <x-guest-layout>
+     <x-slot name="title">slaptažodžio patvirtinimas</x-slot>
     <div class="mb-4 text-sm text-black">
         {{ __('Tai saugi programos skiltis. Prieš tęsdami, patvirtinkite savo slaptažodį.') }}
     </div>

@@ -1,5 +1,5 @@
 <x-app-layout>
-
+ <x-slot name="title">Konkretus skelbimas</x-slot>
 <style>
 /* Remove number input arrows (Chrome, Safari, Edge) */
 input[type=number]::-webkit-inner-spin-button,

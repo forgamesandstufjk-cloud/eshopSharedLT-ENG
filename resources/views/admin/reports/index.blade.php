@@ -1,4 +1,5 @@
 <x-app-layout>
+    <x-slot name="title">Pranešti skelbimai</x-slot>
     <div class="max-w-7xl mx-auto mt-6 sm:mt-10 px-3 sm:px-0">
         <h1 class="text-xl sm:text-2xl font-bold mb-6">Pranešti skelbimai</h1>
 

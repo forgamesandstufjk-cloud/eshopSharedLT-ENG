@@ -64,7 +64,9 @@
                                         class="w-20 h-20 sm:w-24 sm:h-24 bg-white rounded flex items-center justify-center overflow-hidden shrink-0">
                                     <img
                                         :src="item.photo"
+                                        :alt="item.pavadinimas ? item.pavadinimas + ' nuotrauka' : 'Skelbimo nuotrauka'"
                                         class="max-w-full max-h-full object-contain"
+                                        
                                     >
                                     </div>
                                         <div class="min-w-0 flex-1 text-center sm:text-left">

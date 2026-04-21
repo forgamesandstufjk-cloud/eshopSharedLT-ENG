@@ -59,6 +59,7 @@
 
                             <a
                                 href="{{ route('search.listings') }}?{{ $query }}"
+                                 aria-label="Skelbimų paieška"
                                 class="px-3 py-1 rounded-full flex items-center gap-2 text-sm text-black"
                                 style="background-color: rgb(215, 183, 142)"
                             >
@@ -69,6 +70,7 @@
 
                         <a
                             href="{{ route('search.listings') }}"
+                            aria-label="Išvalyti filtrus"
                             class="px-3 py-1 rounded-full font-bold text-sm text-white"
                             style="background-color: rgb(184, 80, 54)"
                         >

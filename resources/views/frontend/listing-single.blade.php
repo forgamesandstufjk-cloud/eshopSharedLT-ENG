@@ -60,7 +60,7 @@ input[type=number] {
                         @if(auth()->id() !== $listing->user_id && auth()->user()->role !== 'admin')
                             <button
                                 type="button"
-                                @click.stop.prevent="Alpine.store('favorites').toggle({{ $listing->id }})"
+                                x-on:click.stop.prevent="Alpine.store('favorites').toggle({{ $listing->id }})"
                                 class="absolute top-2 right-2 z-30 w-10 h-10 sm:w-9 sm:h-9 flex items-center justify-center overflow-hidden"
                                 aria-label="Pažymėti kaip mėgstamą"
                             >
@@ -214,7 +214,7 @@ input[type=number] {
 <div class="flex items-center gap-1" x-data="{ qty: 1, max: {{ max(1, $remainingToAdd) }} }">
     <button
         type="button"
-        @click="qty = Math.max(1, qty - 1)"
+        x-on:click="qty = Math.max(1, qty - 1)"
         :disabled="qty <= 1"
         :class="qty <= 1 ? 'opacity-50 cursor-not-allowed' : 'hover:text-white cursor-pointer'"
         class="w-10 h-10 border rounded flex items-center justify-center text-black transition-colors"
@@ -238,7 +238,7 @@ input[type=number] {
 
     <button
         type="button"
-        @click="if (qty < max) qty++"
+        x-on:click="if (qty < max) qty++"
         :disabled="qty >= max"
         :class="qty >= max ? 'opacity-50 cursor-not-allowed' : 'hover:text-white cursor-pointer'"
         class="w-10 h-10 border rounded flex items-center justify-center text-black transition-colors"
@@ -318,7 +318,7 @@ input[type=number] {
             @if(auth()->id() !== $listing->user_id)
                 <button
                     type="button"
-                    @click="openReport = !openReport"
+                    x-on:click="openReport = !openReport"
                     title="Pranešti apie pardavėją"
                     class="absolute top-3 right-3 text-black hover:text-red-600 text-lg sm:text-xl leading-none"
                 >
@@ -365,7 +365,7 @@ input[type=number] {
                     @auth
                         <button
                             type="button"
-                            @click="revealSeller()"
+                            x-on:click="revealSeller()"
                             :disabled="loadingSeller"
                             :class="loadingSeller ? 'opacity-50 cursor-not-allowed' : ''"
                             class="mt-3 px-4 py-2 rounded text-white hover:text-black transition-colors"
@@ -427,7 +427,7 @@ input[type=number] {
 
                                 <button
                                     type="button"
-                                    @click="reasonOpen = !reasonOpen"
+                                    x-on:click="reasonOpen = !reasonOpen"
                                     :class="reasonOpen ? 'ring-1 ring-[#836354] border-[#836354]' : 'border-gray-500'"
                                     class="w-full rounded border py-2 px-3 text-left text-black focus:outline-none focus:ring-1 focus:ring-[#836354] focus:border-[#836354] flex justify-between items-center"
                                     style="background-color: #d7b78e; border-color: #836354"
@@ -449,48 +449,48 @@ input[type=number] {
 
                                 <div
                                     x-show="reasonOpen"
-                                    @click.outside="reasonOpen = false"
+                                    x-on:click.outside="reasonOpen = false"
                                     class="absolute left-0 right-0 mt-1 rounded border shadow overflow-hidden z-50"
                                     style="background-color: rgb(215, 183, 142); border-color: #836354"
                                 >
 
                                     <div
-                                        @click="selectedReason = 'fraud'; reasonOpen = false"
+                                        x-on:click="selectedReason = 'fraud'; reasonOpen = false"
                                         class="block w-full px-3 py-2 text-black cursor-pointer hover:bg-[#836354] hover:text-white"
                                     >
                                         Sukčiavimas
                                     </div>
 
                                     <div
-                                        @click="selectedReason = 'fake_item'; reasonOpen = false"
+                                        x-on:click="selectedReason = 'fake_item'; reasonOpen = false"
                                         class="block w-full px-3 py-2 text-black cursor-pointer hover:bg-[#836354] hover:text-white"
                                     >
                                         Netikra prekė
                                     </div>
 
                                     <div
-                                        @click="selectedReason = 'abuse'; reasonOpen = false"
+                                        x-on:click="selectedReason = 'abuse'; reasonOpen = false"
                                         class="block w-full px-3 py-2 text-black cursor-pointer hover:bg-[#836354] hover:text-white"
                                     >
                                         Įžeidžiantis elgesys
                                     </div>
 
                                     <div
-                                        @click="selectedReason = 'spam'; reasonOpen = false"
+                                        x-on:click="selectedReason = 'spam'; reasonOpen = false"
                                         class="block w-full px-3 py-2 text-black cursor-pointer hover:bg-[#836354] hover:text-white"
                                     >
                                         Šlamštas
                                     </div>
 
                                     <div
-                                        @click="selectedReason = 'prohibited_items'; reasonOpen = false"
+                                        x-on:click="selectedReason = 'prohibited_items'; reasonOpen = false"
                                         class="block w-full px-3 py-2 text-black cursor-pointer hover:bg-[#836354] hover:text-white"
                                     >
                                         Draudžiamos prekės
                                     </div>
 
                                     <div
-                                        @click="selectedReason = 'other'; reasonOpen = false"
+                                        x-on:click="selectedReason = 'other'; reasonOpen = false"
                                         class="block w-full px-3 py-2 text-black cursor-pointer hover:bg-[#836354] hover:text-white"
                                     >
                                         Kita
@@ -521,7 +521,7 @@ input[type=number] {
 
                             <button
                                 type="button"
-                                @click="openReport = false"
+                                x-on:click="openReport = false"
                                 class="px-4 py-2 rounded text-white hover:text-black transition-colors"
                                 style="background-color: rgb(184, 80, 54)"
                             >
@@ -574,7 +574,7 @@ input[type=number] {
                                 @if(auth()->id() !== $s->user_id && auth()->user()->role !== 'admin')
                                     <button
                                         type="button"
-                                        @click.stop.prevent="Alpine.store('favorites').toggle({{ $s->id }})"
+                                        x-on:click.stop.prevent="Alpine.store('favorites').toggle({{ $s->id }})"
                                         class="absolute top-2 right-2 z-30 w-9 h-9 flex items-center justify-center overflow-hidden"
                                         aria-label="Pažymėti kaip mėgstamą"
                                     >
@@ -757,7 +757,7 @@ input[type=number] {
 
                         <button
                             type="button"
-                            @click="sortOpen = !sortOpen"
+                            x-on:click="sortOpen = !sortOpen"
                             :class="sortOpen ? 'ring-1 ring-[#836354] border-[#836354]' : 'border-gray-500'"
                             class="w-full rounded border py-2 px-3 text-left text-black focus:outline-none focus:ring-1 focus:ring-[#836354] focus:border-[#836354] flex justify-between items-center"
                             style="background-color: rgb(215, 183, 142)"
@@ -776,33 +776,33 @@ input[type=number] {
 
                         <div
                             x-show="sortOpen"
-                            @click.outside="sortOpen = false"
+                            x-on:click.outside="sortOpen = false"
                             class="absolute left-0 right-0 mt-1 rounded border shadow overflow-hidden z-50"
                             style="background-color: rgb(215, 183, 142); border-color: #836354"
                         >
                             <div
-                                @click="selectedSort = 'newest'; sortOpen = false; $nextTick(() => $el.closest('form').submit())"
+                                x-on:click="selectedSort = 'newest'; sortOpen = false; $nextTick(() => $el.closest('form').submit())"
                                 class="block w-full px-3 py-2 text-black cursor-pointer hover:bg-[#836354]"
                             >
                                 Naujausi
                             </div>
 
                             <div
-                                @click="selectedSort = 'oldest'; sortOpen = false; $nextTick(() => $el.closest('form').submit())"
+                                x-on:click="selectedSort = 'oldest'; sortOpen = false; $nextTick(() => $el.closest('form').submit())"
                                 class="block w-full px-3 py-2 text-black cursor-pointer hover:bg-[#836354]"
                             >
                                 Seniausi
                             </div>
 
                             <div
-                                @click="selectedSort = 'highest'; sortOpen = false; $nextTick(() => $el.closest('form').submit())"
+                                x-on:click="selectedSort = 'highest'; sortOpen = false; $nextTick(() => $el.closest('form').submit())"
                                 class="block w-full px-3 py-2 text-black cursor-pointer hover:bg-[#836354]"
                             >
                                 Geriausi
                             </div>
 
                             <div
-                                @click="selectedSort = 'lowest'; sortOpen = false; $nextTick(() => $el.closest('form').submit())"
+                                x-on:click="selectedSort = 'lowest'; sortOpen = false; $nextTick(() => $el.closest('form').submit())"
                                 class="block w-full px-3 py-2 text-black cursor-pointer hover:bg-[#836354]"
                             >
                                 Blogiausi
@@ -835,7 +835,7 @@ input[type=number] {
                                 x-show="editingReviewId === null"
                                 x-cloak
                                 type="button"
-                                @click="
+                                x-on:click="
                                     editingReviewId = {{ $review->id }};
                                     editText = originalText;
                                     editStars = originalStars;
@@ -849,7 +849,7 @@ input[type=number] {
                         @elseif(auth()->id() !== $review->user_id)
                             <button
                                 type="button"
-                                @click="openReportReview = !openReportReview"
+                                x-on:click="openReportReview = !openReportReview"
                                 title="Pranešti apie atsiliepimą"
                                 class="absolute top-3 right-3 text-black hover:text-red-600 text-lg leading-none"
                             >
@@ -891,7 +891,7 @@ input[type=number] {
                                                     type="button"
                                                     @mouseenter="hoverStars = {{ $n }}"
                                                     @mouseleave="hoverStars = 0"
-                                                    @click="editStars = {{ $n }}"
+                                                    x-on:click="editStars = {{ $n }}"
                                                     class="text-3xl leading-none focus:outline-none"
                                                     :aria-label="'{{ $n }} žvaigždutės'"
                                                 >
@@ -937,7 +937,7 @@ input[type=number] {
 
                                         <button
                                             type="button"
-                                            @click="
+                                            x-on:click="
                                                 editingReviewId = null;
                                                 editText = originalText;
                                                 editStars = originalStars;
@@ -973,7 +973,7 @@ input[type=number] {
 
                                             <button
                                                 type="button"
-                                                @click="reasonOpen = !reasonOpen"
+                                                x-on:click="reasonOpen = !reasonOpen"
                                                 class="w-full rounded border py-2 px-3 text-left text-black flex justify-between items-center focus:outline-none focus:ring-1 focus:ring-[#836354] focus:border-[#836354]"
                                                 style="background-color: rgb(234, 220, 200); border-color: #836354"
                                             >
@@ -993,40 +993,40 @@ input[type=number] {
 
                                             <div
                                                 x-show="reasonOpen"
-                                                @click.outside="reasonOpen = false"
+                                                x-on:click.outside="reasonOpen = false"
                                                 class="absolute left-0 right-0 mt-1 rounded border shadow overflow-hidden z-50"
                                                 style="background-color: rgb(215, 183, 142); border-color: #836354"
                                             >
                                                 <div
-                                                    @click="selectedReason = 'abuse'; reasonOpen = false"
+                                                    x-on:click="selectedReason = 'abuse'; reasonOpen = false"
                                                     class="block w-full px-3 py-2 text-black cursor-pointer hover:bg-[#836354] hover:text-white"
                                                 >
                                                     Įžeidžiantis tekstas
                                                 </div>
 
                                                 <div
-                                                    @click="selectedReason = 'spam'; reasonOpen = false"
+                                                    x-on:click="selectedReason = 'spam'; reasonOpen = false"
                                                     class="block w-full px-3 py-2 text-black cursor-pointer hover:bg-[#836354] hover:text-white"
                                                 >
                                                     Šlamštas
                                                 </div>
 
                                                 <div
-                                                    @click="selectedReason = 'fake_review'; reasonOpen = false"
+                                                    x-on:click="selectedReason = 'fake_review'; reasonOpen = false"
                                                     class="block w-full px-3 py-2 text-black cursor-pointer hover:bg-[#836354] hover:text-white"
                                                 >
                                                     Netikras atsiliepimas
                                                 </div>
 
                                                 <div
-                                                    @click="selectedReason = 'harassment'; reasonOpen = false"
+                                                    x-on:click="selectedReason = 'harassment'; reasonOpen = false"
                                                     class="block w-full px-3 py-2 text-black cursor-pointer hover:bg-[#836354] hover:text-white"
                                                 >
                                                     Priekabiavimas
                                                 </div>
 
                                                 <div
-                                                    @click="selectedReason = 'other'; reasonOpen = false"
+                                                    x-on:click="selectedReason = 'other'; reasonOpen = false"
                                                     class="block w-full px-3 py-2 text-black cursor-pointer hover:bg-[#836354] hover:text-white"
                                                 >
                                                     Kita
@@ -1057,7 +1057,7 @@ input[type=number] {
 
                                         <button
                                             type="button"
-                                            @click="openReportReview = false; reasonOpen = false; selectedReason = ''"
+                                            x-on:click="openReportReview = false; reasonOpen = false; selectedReason = ''"
                                             class="px-3 py-2 rounded text-white hover:text-black transition-colors"
                                             style="background-color: rgb(184, 80, 54)"
                                         >
@@ -1106,7 +1106,7 @@ input[type=number] {
                                     type="button"
                                     @mouseenter="hoverStars = {{ $n }}"
                                     @mouseleave="hoverStars = 0"
-                                    @click="selectedStars = {{ $n }}"
+                                    x-on:click="selectedStars = {{ $n }}"
                                     class="text-3xl leading-none focus:outline-none"
                                     :aria-label="'{{ $n }} žvaigždutės'"
                                 >

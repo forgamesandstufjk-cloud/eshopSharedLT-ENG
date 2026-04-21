@@ -1,8 +1,5 @@
 <x-app-layout>
-    <x-slot name="head">
-        <title>Skelbimai | Prekės ir paslaugos</title>
-        <meta name="description" content="Peržiūrėkite prekių ir paslaugų skelbimus, raskite norimus pasiūlymus, išsisaugokite mėgstamus ir pirkite vienoje vietoje.">
-    </x-slot>
+    <x-slot name="title">Pagrindinis puslapis</x-slot>
     <div class="min-h-screen flex flex-col" style="background-color: rgb(234, 220, 200)">
         <div
             x-data

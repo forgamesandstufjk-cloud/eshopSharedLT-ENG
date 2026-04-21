@@ -1,5 +1,5 @@
 <x-app-layout>
-
+<x-slot name="title">Krepšelis</x-slot>
 <div class="min-h-screen flex flex-col" style="background-color: rgb(234, 220, 200)">
     <div class="w-full max-w-4xl mx-auto mt-6 sm:mt-10 px-3 sm:px-0 pb-10 flex-1">
         <div class="container mx-auto relative z-10">

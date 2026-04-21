@@ -13,4 +13,10 @@
     per svetainę arba privačiai.
 </p>
 
+<p>
+    Saugumo sumetimais nespauskite nuorodų iš el. laiškų ir neveskite mokėjimo duomenų
+    atsidarę nuorodą iš žinutės. Visada patys atsidarykite svetainę naršyklėje,
+    prisijunkite prie savo paskyros ir apmokėjimą atlikite tik ten.
+</p>
+
 <p>Ačiū.</p>

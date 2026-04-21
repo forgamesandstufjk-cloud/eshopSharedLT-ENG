@@ -1,4 +1,8 @@
 <x-app-layout>
+    <x-slot name="head">
+        <title>Apie mus | Prekybos ir paslaugų platforma</title>
+        <meta name="description" content="Sužinokite daugiau apie mūsų platformą, skirtą kūrėjams, amatininkams, tautodailininkams ir smulkiesiems paslaugų teikėjams prekiauti bei teikti paslaugas internete.">
+    </x-slot>
     <div class="min-h-screen flex flex-col" style="background-color: rgb(234, 220, 200)">
         <div class="relative flex-1 w-full px-3 sm:px-4 mt-6 sm:mt-10 pb-10">
             <div

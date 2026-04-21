@@ -1,4 +1,8 @@
 <x-app-layout>
+    <x-slot name="head">
+        <title>Skelbimų paieška | Prekės ir paslaugos</title>
+        <meta name="description" content="Naršykite prekes ir paslaugas pagal kategoriją, kainą, miestą ir kitus filtrus. Greitai raskite tai, ko ieškote.">
+    </x-slot>
     <div class="min-h-screen flex flex-col" style="background-color: rgb(234, 220, 200)">
         <div x-data
             x-init="if ({{ auth()->check() ? 'true' : 'false' }}) Alpine.store('favorites').load()"

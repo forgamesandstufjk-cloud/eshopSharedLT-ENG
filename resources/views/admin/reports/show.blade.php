@@ -1,4 +1,5 @@
 <x-app-layout>
+    <x-slot name="title">Pranešti skelbimai</x-slot>
 <style>
 input[type=number]::-webkit-inner-spin-button,
 input[type=number]::-webkit-outer-spin-button {

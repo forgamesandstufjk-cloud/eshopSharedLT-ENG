@@ -1,4 +1,5 @@
 <x-app-layout>
+     <x-slot name="title">Praneštas skelbimas</x-slot>
     <div
         x-data
         x-init="Alpine.store('favorites').load()"

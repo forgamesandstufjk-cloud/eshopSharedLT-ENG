@@ -226,12 +226,14 @@ input[type=number] {
     </button>
 
     <input
+        id="listing-quantity"
         type="number"
         name="quantity"
         x-model="qty"
         value="1"
         min="1"
         max="{{ max(1, $remainingToAdd) }}"
+        aria-label="Kiekis"
         class="w-12 h-10 text-center border rounded text-black focus:outline-none focus:ring-1 focus:ring-[#836354] focus:border-[#836354]"
         style="background-color: rgb(234, 220, 200); border-color: #836354"
     >

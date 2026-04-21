@@ -8,10 +8,6 @@
                 ->toArray()
             : [];
     @endphp
-<head>
- <title>Išsaugoti skelbimai | Mano mėgstami pasiūlymai</title>
-    <meta name="description" content="Peržiūrėkite savo išsaugotus skelbimus. Greitai raskite patikusias prekes ir paslaugas, grįžkite prie jų vėliau arba pridėkite prekes į krepšelį.">
-</head>
 
     <div class="min-h-screen flex flex-col" style="background-color: rgb(234, 220, 200)">
         <div

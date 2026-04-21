@@ -423,7 +423,7 @@ input[type=number] {
                             <label class="block text-black font-medium mb-1">Priežastis</label>
 
                             <div class="relative">
-                                <input type="hidden" name="reason" :value="selectedReason" required>
+                                <input type="hidden" name="reason" x-bind:value="selectedReason" required>
 
                                 <button
                                     type="button"
@@ -753,7 +753,7 @@ input[type=number] {
                     x-data="{ sortOpen: false, selectedSort: '{{ $sort }}' }"
                 >
                     <div class="relative">
-                        <input type="hidden" name="sort" :value="selectedSort">
+                        <input type="hidden" name="sort" x-bind:value="selectedSort">
 
                         <button
                             type="button"
@@ -878,7 +878,7 @@ input[type=number] {
                                     @csrf
                                     @method('PUT')
 
-                                    <input type="hidden" name="ivertinimas" :value="editStars">
+                                    <input type="hidden" name="ivertinimas" x-bind:value="editStars">
 
                                     <div class="flex items-center gap-2 mb-1">
                                         <strong class="text-black">{{ $review->user->vardas }}</strong>
@@ -969,7 +969,7 @@ input[type=number] {
                                         <label class="block text-black font-medium mb-1">Priežastis</label>
 
                                         <div class="relative">
-                                            <input type="hidden" name="reason" :value="selectedReason" required>
+                                            <input type="hidden" name="reason" x-bind:value="selectedReason" required>
 
                                             <button
                                                 type="button"
@@ -1097,7 +1097,7 @@ input[type=number] {
                       class="space-y-3">
                     @csrf
 
-                    <input type="hidden" name="ivertinimas" :value="selectedStars">
+                    <input type="hidden" name="ivertinimas" x-bind:value="selectedStars">
 
                     <div>
                         <div class="flex items-center gap-1 mb-2">

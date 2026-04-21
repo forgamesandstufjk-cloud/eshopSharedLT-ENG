@@ -8,7 +8,7 @@
     >
         <div
             class="fixed inset-0 pointer-events-none bg-no-repeat bg-center bg-contain"
-            style="background-image: url('{{ asset('images/vytis.png') }}'); background-size: 500px 500px; background-position: center calc(50% + 60px); opacity: 0.3;"
+            style="background-image: url('{{ asset('images/vytis.png') }}'); background-size: 500px 500px; background-position: center calc(50% + 60px); opacity: 0.3"
         ></div>
 
         <div class="container mx-auto relative z-10">

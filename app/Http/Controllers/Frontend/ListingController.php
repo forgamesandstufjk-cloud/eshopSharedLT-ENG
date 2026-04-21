@@ -27,8 +27,8 @@ class ListingController extends Controller
             ->with(
                 'success',
                 $result === 'hidden'
-                    ? 'Listing has sales history and was hidden from users.'
-                    : 'Listing permanently deleted.'
+                    ? 'Skelbimas panaikintas.'
+                    : 'Skelbimas ištrintas.'
             );
     }
 }

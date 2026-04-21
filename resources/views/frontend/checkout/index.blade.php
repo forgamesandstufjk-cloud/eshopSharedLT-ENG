@@ -2,6 +2,8 @@
     <meta name="stripe-key" content="{{ config('services.stripe.key') }}">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <meta name="service-order-id" content="{{ $serviceOrder?->id ?? '' }}">
+    <title>{{ $checkoutMode === 'service' ? 'Paslaugos atsiskaitymas | keblu.lt' : 'Atsiskaitymas | keblu.lt' }}</title>
+    <meta name="description" content="{{ $checkoutMode === 'service' ? 'Saugiai apmokėkite individualų paslaugos užsakymą, pasirinkite pristatymo būdą ir peržiūrėkite galutinę užsakymo sumą.' : 'Užbaikite pirkimą, pasirinkite pristatymo būdą, peržiūrėkite užsakymo suvestinę ir saugiai apmokėkite prekes.' }}">
 
     <style>
         [x-cloak] { display: none !important; }

@@ -149,7 +149,7 @@
 
                 <!-- MOBILE MENU BUTTON -->
                 <button
-                    @click="open = !open"
+                    x-on:click="open = !open"
                     class="md:hidden inline-flex items-center justify-center p-2 rounded text-black"
                     type="button"
                 >
@@ -280,7 +280,7 @@
 <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:flex sm:gap-3 justify-center">
     <button
         type="button"
-        @click.stop="filtersOpen = !filtersOpen"
+        x-on:click.stop="filtersOpen = !filtersOpen"
         class="px-4 py-2 rounded hover:text-black text-white w-full sm:w-auto"
         style="background-color: rgb(131, 99, 84)"
     >
@@ -297,7 +297,7 @@
 
             <button
                 type="button"
-                @click.stop="sortOpen = !sortOpen"
+                x-on:click.stop="sortOpen = !sortOpen"
                 :class="sortOpen ? 'ring-1 ring-[#836354] border-[#836354]' : 'border-[#836354]'"
                 class="px-3 py-2 rounded border text-black focus:outline-none focus:ring-1 focus:ring-[#836354] focus:border-[#836354] flex justify-between items-center w-full sm:w-auto sm:min-w-[220px]"
                 style="background-color: rgba(234, 220, 200, 0.8)"
@@ -319,40 +319,40 @@
                 x-show="sortOpen"
                 x-cloak
                 x-transition
-                @click.outside="sortOpen = false"
+                x-on:click.outside="sortOpen = false"
                 class="absolute left-0 right-0 mt-1 rounded border shadow overflow-hidden z-50"
                 style="background-color: rgb(234, 220, 200); border-color: #836354"
             >
                 <div
-                    @click="selectedSort = ''; sortOpen = false; $nextTick(() => $el.closest('form').submit())"
+                    x-on:click="selectedSort = ''; sortOpen = false; $nextTick(() => $el.closest('form').submit())"
                     class="block w-full px-3 py-2 text-black cursor-pointer hover:bg-[#836354]"
                 >
                     Rūšiuoti
                 </div>
 
                 <div
-                    @click="selectedSort = 'newest'; sortOpen = false; $nextTick(() => $el.closest('form').submit())"
+                    x-on:click="selectedSort = 'newest'; sortOpen = false; $nextTick(() => $el.closest('form').submit())"
                     class="block w-full px-3 py-2 text-black cursor-pointer hover:bg-[#836354]"
                 >
                     Naujausi pirmiausia
                 </div>
 
                 <div
-                    @click="selectedSort = 'oldest'; sortOpen = false; $nextTick(() => $el.closest('form').submit())"
+                    x-on:click="selectedSort = 'oldest'; sortOpen = false; $nextTick(() => $el.closest('form').submit())"
                     class="block w-full px-3 py-2 text-black cursor-pointer hover:bg-[#836354]"
                 >
                     Seniausi pirmiausia
                 </div>
 
                 <div
-                    @click="selectedSort = 'price_asc'; sortOpen = false; $nextTick(() => $el.closest('form').submit())"
+                    x-on:click="selectedSort = 'price_asc'; sortOpen = false; $nextTick(() => $el.closest('form').submit())"
                     class="block w-full px-3 py-2 text-black cursor-pointer hover:bg-[#836354]"
                 >
                     Kaina: nuo mažiausios
                 </div>
 
                 <div
-                    @click="selectedSort = 'price_desc'; sortOpen = false; $nextTick(() => $el.closest('form').submit())"
+                    x-on:click="selectedSort = 'price_desc'; sortOpen = false; $nextTick(() => $el.closest('form').submit())"
                     class="block w-full px-3 py-2 text-black cursor-pointer hover:bg-[#836354]"
                 >
                     Kaina: nuo didžiausios
@@ -393,7 +393,7 @@
 
                 <button
                     type="button"
-                    @click.stop="open = !open"
+                    x-on:click.stop="open = !open"
                     :class="open ? 'ring-1 ring-[#836354] border-[#836354]' : 'border-gray-500'"
                     class="w-full rounded border py-2 px-3 text-left focus:outline-none focus:ring-1 focus:ring-[#836354] focus:border-[#836354] flex justify-between items-center"
                     style="background-color: rgb(234, 220, 200)"
@@ -418,12 +418,12 @@
                     x-show="open"
                     x-cloak
                     x-transition
-                    @click.outside="open = false"
+                    x-on:click.outside="open = false"
                     class="absolute left-0 right-0 mt-1 rounded border shadow overflow-hidden z-50 max-h-60 overflow-y-auto"
                     style="background-color: rgb(234, 220, 200); border-color: #836354"
                 >
                     <div
-                        @click="selected = ''; open = false"
+                        x-on:click="selected = ''; open = false"
                         class="block w-full px-3 py-2 text-black cursor-pointer hover:bg-[#cfae86]"
                     >
                         Kategorija
@@ -431,7 +431,7 @@
 
                     @foreach(\App\Models\Category::all() as $cat)
                         <div
-                            @click="selected = '{{ $cat->id }}'; open = false"
+                            x-on:click="selected = '{{ $cat->id }}'; open = false"
                             class="block w-full px-3 py-2 text-black cursor-pointer hover:bg-[#cfae86]"
                         >
                             {{ $cat->pavadinimas }}
@@ -446,7 +446,7 @@
 
                 <button
                     type="button"
-                    @click.stop="open = !open"
+                    x-on:click.stop="open = !open"
                     :class="open ? 'ring-1 ring-[#836354] border-[#836354]' : 'border-gray-500'"
                     class="w-full rounded border py-2 px-3 text-left focus:outline-none focus:ring-1 focus:ring-[#836354] focus:border-[#836354] flex justify-between items-center"
                     style="background-color: rgb(234, 220, 200)"
@@ -462,26 +462,26 @@
                     x-show="open"
                     x-cloak
                     x-transition
-                    @click.outside="open = false"
+                    x-on:click.outside="open = false"
                     class="absolute left-0 right-0 mt-1 rounded border shadow overflow-hidden z-50"
                     style="background-color: rgb(234, 220, 200); border-color: #836354"
                 >
                     <div
-                        @click="selected = ''; open = false"
+                        x-on:click="selected = ''; open = false"
                         class="block w-full px-3 py-2 text-black cursor-pointer hover:bg-[#cfae86]"
                     >
                         Tipas
                     </div>
 
                     <div
-                        @click="selected = 'preke'; open = false"
+                        x-on:click="selected = 'preke'; open = false"
                         class="block w-full px-3 py-2 text-black cursor-pointer hover:bg-[#cfae86]"
                     >
                         Prekė
                     </div>
 
                     <div
-                        @click="selected = 'paslauga'; open = false"
+                        x-on:click="selected = 'paslauga'; open = false"
                         class="block w-full px-3 py-2 text-black cursor-pointer hover:bg-[#cfae86]"
                     >
                         Paslauga
@@ -521,7 +521,7 @@
 
                 <button
                     type="button"
-                    @click.stop="open = !open"
+                    x-on:click.stop="open = !open"
                     :class="open ? 'ring-1 ring-[#836354] border-[#836354]' : 'border-gray-500'"
                     class="w-full rounded border py-2 px-3 text-left focus:outline-none focus:ring-1 focus:ring-[#836354] focus:border-[#836354] flex justify-between items-center"
                     style="background-color: rgb(234, 220, 200)"
@@ -546,12 +546,12 @@
                     x-show="open"
                     x-cloak
                     x-transition
-                    @click.outside="open = false"
+                    x-on:click.outside="open = false"
                     class="absolute left-0 right-0 mt-1 rounded border shadow overflow-hidden z-50 max-h-60 overflow-y-auto"
                     style="background-color: rgb(234, 220, 200); border-color: #836354"
                 >
                     <div
-                        @click="selected = ''; open = false"
+                        x-on:click="selected = ''; open = false"
                         class="block w-full px-3 py-2 text-black cursor-pointer hover:bg-[#cfae86]"
                     >
                         Miestas
@@ -559,7 +559,7 @@
 
                     @foreach(\App\Models\City::orderBy('pavadinimas')->get() as $city)
                         <div
-                            @click="selected = '{{ $city->id }}'; open = false"
+                            x-on:click="selected = '{{ $city->id }}'; open = false"
                             class="block w-full px-3 py-2 text-black cursor-pointer hover:bg-[#cfae86]"
                         >
                             {{ $city->pavadinimas }}

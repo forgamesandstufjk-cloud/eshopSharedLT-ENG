@@ -296,24 +296,31 @@
             <input type="hidden" name="sort" :value="selectedSort">
 
             <button
-                type="button"
-                x-on:click.stop="sortOpen = !sortOpen"
-                :class="sortOpen ? 'ring-1 ring-[#836354] border-[#836354]' : 'border-[#836354]'"
-                class="px-3 py-2 rounded border text-black focus:outline-none focus:ring-1 focus:ring-[#836354] focus:border-[#836354] flex justify-between items-center w-full sm:w-auto sm:min-w-[220px]"
-                style="background-color: rgba(234, 220, 200, 0.8)"
-            >
-                <span class="truncate" x-text="
-                    selectedSort === '' ? 'Rūšiuoti' :
-                    selectedSort === 'newest' ? 'Naujausi pirmiausia' :
-                    selectedSort === 'oldest' ? 'Seniausi pirmiausia' :
-                    selectedSort === 'price_asc' ? 'Kaina: nuo mažiausios' :
-                    'Kaina: nuo didžiausios'
-                "></span>
-
-                <svg class="h-5 w-5 text-black ml-2 shrink-0" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
-                    <path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 11.06l3.71-3.83a.75.75 0 111.08 1.04l-4.25 4.4a.75.75 0 01-1.08 0L5.21 8.27a.75.75 0 01.02-1.06z" clip-rule="evenodd" />
-                </svg>
-            </button>
+                    type="button"
+                    x-on:click.stop="sortOpen = !sortOpen"
+                    x-bind:aria-label="
+                        selectedSort === '' ? 'Rūšiuoti' :
+                        selectedSort === 'newest' ? 'Naujausi pirmiausia' :
+                        selectedSort === 'oldest' ? 'Seniausi pirmiausia' :
+                        selectedSort === 'price_asc' ? 'Kaina nuo mažiausios' :
+                        'Kaina nuo didžiausios'
+                    "
+                    :class="sortOpen ? 'ring-1 ring-[#836354] border-[#836354]' : 'border-[#836354]'"
+                    class="px-3 py-2 rounded border text-black focus:outline-none focus:ring-1 focus:ring-[#836354] focus:border-[#836354] flex justify-between items-center w-full sm:w-auto sm:min-w-[220px]"
+                    style="background-color: rgba(234, 220, 200, 0.8)"
+                >
+                    <span class="truncate" x-text="
+                        selectedSort === '' ? 'Rūšiuoti' :
+                        selectedSort === 'newest' ? 'Naujausi pirmiausia' :
+                        selectedSort === 'oldest' ? 'Seniausi pirmiausia' :
+                        selectedSort === 'price_asc' ? 'Kaina: nuo mažiausios' :
+                        'Kaina: nuo didžiausios'
+                    "></span>
+                
+                    <svg class="h-5 w-5 text-black ml-2 shrink-0" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                        <path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 11.06l3.71-3.83a.75.75 0 111.08 1.04l-4.25 4.4a.75.75 0 01-1.08 0L5.21 8.27a.75.75 0 01.02-1.06z" clip-rule="evenodd" />
+                    </svg>
+                </button>
 
             <div
                 x-show="sortOpen"

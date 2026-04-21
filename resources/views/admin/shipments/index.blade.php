@@ -1,4 +1,5 @@
 <x-app-layout>
+    <x-slot name="title">Siuntų moderavimas</x-slot>
     <div class="min-h-screen w-full max-w-6xl mx-auto mt-6 sm:mt-10 px-3 sm:px-0 pb-10" style="background-color: rgb(234, 220, 200)">
         <h1 class="text-xl sm:text-2xl font-bold mb-4 sm:mb-6 text-black">Siuntų moderavimas</h1>
 

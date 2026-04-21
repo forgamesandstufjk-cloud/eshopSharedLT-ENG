@@ -1,4 +1,5 @@
 <x-app-layout>
+     <x-slot name="title">Sėkmingas pirkimas</x-slot>
     <div class="min-h-screen w-full px-4 mt-10 pb-10 relative" style="background-color: rgb(234, 220, 200)">
         <div class="max-w-2xl mx-auto relative z-10">
             <div class="shadow rounded p-8 text-center" style="background-color: rgb(215, 183, 142)">

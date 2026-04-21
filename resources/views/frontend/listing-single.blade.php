@@ -52,6 +52,7 @@ input[type=number] {
                             ? \Illuminate\Support\Facades\Storage::disk('photos')->url($listing->photos->first()->failo_url)
                             : 'https://via.placeholder.com/600x450?text=No+Image'
                         }}"
+                        alt="{{ $listing->pavadinimas }} nuotrauka"
                         class="w-full h-full object-contain"
                     />
 
@@ -89,6 +90,7 @@ input[type=number] {
                                  style="border-color: #836354;">
                                 <img
                                     src="{{ \Illuminate\Support\Facades\Storage::disk('photos')->url($photo->failo_url) }}"
+                                    alt="{{ $listing->pavadinimas }} papildoma nuotrauka"
                                     class="w-full h-full object-contain cursor-pointer"
                                     onclick="document.getElementById('mainImage').src=this.src"
                                 >
@@ -564,6 +566,7 @@ input[type=number] {
                                     ? \Illuminate\Support\Facades\Storage::disk('photos')->url($s->photos->first()->failo_url)
                                     : 'https://via.placeholder.com/300'
                                 }}"
+                                alt="{{ $s->pavadinimas }} nuotrauka"
                                 class="w-full h-full object-contain"
                             >
 

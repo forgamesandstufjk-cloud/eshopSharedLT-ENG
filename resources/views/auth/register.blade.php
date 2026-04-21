@@ -1,4 +1,5 @@
 <x-guest-layout>
+    <x-slot name="title">Registracija</x-slot>
     <form method="POST" action="{{ route('register') }}">
         @csrf
         <div class="mb-6">

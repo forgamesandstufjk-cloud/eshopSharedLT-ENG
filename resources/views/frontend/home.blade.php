@@ -80,7 +80,7 @@
 
                                     <a href="{{ route('listing.single', ['listing' => $item->id, 'back' => request()->fullUrl()]) }}"
                                        class="block text-black hover:underline">
-                                        <p class="text-black text-sm break-words whitespace-normal line-clamp-1">
+                                        <p class="text-black text-base break-words whitespace-normal line-clamp-1">
                                             {{ $item->aprasymas }}
                                         </p>
                                     </a>

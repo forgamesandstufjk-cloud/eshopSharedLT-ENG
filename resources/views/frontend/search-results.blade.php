@@ -120,7 +120,7 @@
                                     @if(auth()->id() !== $item->user_id && auth()->user()->role !== 'admin')
                                         <button
                                             type="button"
-                                            @click.stop.prevent="Alpine.store('favorites').toggle({{ $item->id }})"
+                                            x-on:click.stop.prevent="Alpine.store('favorites').toggle({{ $item->id }})"
                                             class="absolute top-2 right-2 z-30 w-10 h-10 sm:w-9 sm:h-9 flex items-center justify-center overflow-hidden"
                                             aria-label="Pažymėti kaip mėgstamą"
                                         >
@@ -185,7 +185,7 @@
                                         )
                                             @auth
                                                 @if($remainingToAdd > 0)
-                                                    <form method="POST" action="{{ route('cart.add', $item->id) }}" @click.stop>
+                                                    <form method="POST" action="{{ route('cart.add', $item->id) }}" x-on:click.stop>
                                                         @csrf
                                                         <button type="submit"
                                                             class="p-2 rounded text-black hover:text-white transition"
@@ -224,7 +224,7 @@
                                                    class="p-2 rounded text-black hover:text-white transition"
                                                    aria-label="Prisijunkite, kad pridėtumėte į krepšelį"
                                                    title="Prisijunkite, kad pridėtumėte į krepšelį"
-                                                   @click.stop>
+                                                   x-on:click.stop>
                                                     <svg xmlns="http://www.w3.org/2000/svg"
                                                          fill="none"
                                                          viewBox="0 0 24 24"

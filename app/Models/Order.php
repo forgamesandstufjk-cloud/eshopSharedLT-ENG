@@ -61,4 +61,9 @@ class Order extends Model
     {
         return $this->belongsTo(Address::class);
     }
+
+    public function serviceOrder()
+    {
+        return $this->hasOne(\App\Models\ServiceOrder::class, 'converted_order_id');
+    }
 }

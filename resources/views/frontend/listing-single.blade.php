@@ -606,12 +606,10 @@ input[type=number] {
 
                     <div class="p-4 mt-auto min-h-[88px] flex flex-col justify-end">
                         <a href="{{ route('listing.single', $s->id) }}"
-                          aria-label="Peržiūrėkite skelbimą"
                            class="font-semibold break-words whitespace-normal line-clamp-1">
                             {{ $s->pavadinimas }}
                         </a>
                         <a href="{{ route('listing.single', $s->id) }}"
-                           aria-label="Peržiūrėkite skelbimą"
                            class="hover:underline line-clamp-1">
                             {{ $s->aprasymas }}
                         </a>

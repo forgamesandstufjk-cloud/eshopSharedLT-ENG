@@ -24,16 +24,12 @@
                                     @if($item->photos->isNotEmpty())
                                         <img
                                             src="{{ \Illuminate\Support\Facades\Storage::disk('photos')->url($item->photos->first()->failo_url) }}"
-                                            width="300"
-                                            height="256"
                                             class="max-w-full max-h-full object-contain"
                                             alt="{{ $item->pavadinimas ?? 'Produkto nuotrauka' }}"
                                         >
                                     @else
                                         <img
                                             src="https://via.placeholder.com/300"
-                                            width="300"
-                                            height="256"
                                             class="max-w-full max-h-full object-contain"
                                             alt="Nuotraukos nėra"
                                         >

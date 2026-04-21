@@ -1,5 +1,5 @@
 <x-app-layout>
-
+ <x-slot name="title">Redaguoti skelbimą</x-slot>
     <div class="max-w-4xl mx-auto mt-10 shadow p-6 rounded"
          style="background-color: rgb(215, 183, 142)"
          x-data="{ type: '{{ old('tipas', $listing->tipas) }}' }">

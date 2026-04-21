@@ -149,7 +149,7 @@
                                         {{ $item['pavadinimas'] }}
                                     </h2>
 
-                                    <p class="text-black text-sm break-words whitespace-normal line-clamp-1 hover:underline">
+                                    <p class="text-black text-base break-words whitespace-normal line-clamp-1 hover:underline">
                                         {{ $item['aprasymas'] }}
                                     </p>
                                 </div>

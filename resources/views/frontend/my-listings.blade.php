@@ -35,6 +35,7 @@
                                         :src="item.photos?.[0]
                                             ? @js(\Illuminate\Support\Facades\Storage::disk('photos')->url('')) + item.photos[0].failo_url
                                             : 'https://via.placeholder.com/300'"
+                                         :alt="item.pavadinimas ? item.pavadinimas + ' nuotrauka' : 'Skelbimo nuotrauka'"
                                         class="max-w-full max-h-full object-contain"
                                     />
                                 </div>

@@ -1,4 +1,8 @@
 <x-app-layout>
+     <x-slot name="head">
+        <title>Mano skelbimai</title>
+        <meta name="description" content="Peržiūrėkite, redaguokite ir tvarkykite savo paskelbtus skelbimus." />
+    </x-slot>
     <div class="min-h-screen flex flex-col" style="background-color: rgb(234, 220, 200)">
         <div class="relative flex-1 w-full px-3 sm:px-4 mt-6 sm:mt-8 pb-10">
             <div

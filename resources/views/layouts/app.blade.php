@@ -6,7 +6,7 @@
         <meta name="csrf-token" content="{{ csrf_token() }}">
         <meta name="stripe-key" content="{{ config('services.stripe.key') }}">
 
-        <title>@yield('title', config('app.name', 'Laravel'))</title>
+       <title>{{ isset($title) && trim((string) $title) !== '' ? $title : config('app.name', 'Laravel') }}</title>
 
         <link rel="preconnect" href="https://fonts.bunny.net">
         <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />

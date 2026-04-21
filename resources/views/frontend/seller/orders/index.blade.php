@@ -49,6 +49,7 @@
                                                         ? \Illuminate\Support\Facades\Storage::disk('photos')->url($item->listing->photos->first()->failo_url)
                                                         : 'https://via.placeholder.com/60x60?text=No+Image'
                                                     }}"
+                                                    alt="{{ $item->listing->pavadinimas }} nuotrauka"
                                                     class="max-w-full max-h-full object-contain"
                                                 >
                                             </div>

@@ -159,6 +159,7 @@ input[type=number] {
                   @if($listing->tipas === 'paslauga')
                         <div class="mt-4 mb-3">
                             <a href="{{ route('seller.service-orders.create.from-listing', $listing->id) }}"
+                               aria-label="Sukurti paslaugos užsakymą"
                                class="inline-block px-6 py-3 text-white rounded hover:text-black transition text-center w-full sm:w-auto"
                                style="background-color: rgb(131, 99, 84)">
                                 Sukurti paslaugos užsakymą
@@ -168,6 +169,7 @@ input[type=number] {
 
                     <div class="flex flex-col sm:flex-row gap-3 sm:gap-4 mt-4">
                         <a href="{{ route('listing.edit', $listing->id) }}"
+                          aria-label="Redaguoti"
                            class="px-6 py-3 text-white rounded hover:text-black transition text-center w-full sm:w-40 whitespace-nowrap"
                            style="background-color: rgb(131, 99, 84)">
                             Redaguoti
@@ -379,6 +381,7 @@ input[type=number] {
                     @else
                         <a
                             href="{{ route('login') }}"
+                             aria-label=" Prisijunkite, kad matytumėte kontaktus"
                             class="inline-block mt-3 px-4 py-2 rounded text-white hover:text-black transition-colors"
                             style="background-color: rgb(131, 99, 84)"
                         >
@@ -561,7 +564,8 @@ input[type=number] {
                 <div class="shadow rounded overflow-hidden flex flex-col h-full"
                      style="background-color: rgb(215, 183, 142)">
 
-                    <a href="{{ route('listing.single', $s->id) }}">
+                    <a href="{{ route('listing.single', $s->id) }}"
+                      aria-label=" Pereižrėkite skelbimą">
                         <div class="w-full h-56 sm:h-64 bg-white relative overflow-hidden">
                             <img
                                 src="{{ $s->photos->isNotEmpty()
@@ -602,10 +606,12 @@ input[type=number] {
 
                     <div class="p-4 mt-auto min-h-[88px] flex flex-col justify-end">
                         <a href="{{ route('listing.single', $s->id) }}"
+                          aria-label="Peržiūrėkite skelbimą"
                            class="font-semibold break-words whitespace-normal line-clamp-1">
                             {{ $s->pavadinimas }}
                         </a>
                         <a href="{{ route('listing.single', $s->id) }}"
+                           aria-label="Peržiūrėkite skelbimą"
                            class="hover:underline line-clamp-1">
                             {{ $s->aprasymas }}
                         </a>

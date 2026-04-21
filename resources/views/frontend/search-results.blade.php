@@ -102,16 +102,21 @@
                                     @if($item->photos->isNotEmpty())
                                         <img
                                             src="{{ \Illuminate\Support\Facades\Storage::disk('photos')->url($item->photos->first()->failo_url) }}"
+                                            width="300"
+                                            height="200"
                                             class="max-w-full max-h-full object-contain"
+                                            alt="{{ $item->pavadinimas }}"
                                         >
                                     @else
                                         <img
                                             src="https://via.placeholder.com/300x200?text=No+Image"
+                                            width="300"
+                                            height="200"
                                             class="max-w-full max-h-full object-contain"
+                                            alt="No image"
                                         >
                                     @endif
                                 </div>
-
                                 @auth
                                     @if(auth()->id() !== $item->user_id && auth()->user()->role !== 'admin')
                                         <button

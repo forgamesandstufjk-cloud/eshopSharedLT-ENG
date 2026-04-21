@@ -101,6 +101,7 @@
                                         :src="item.photos?.length
                                             ? item.photos[0].url
                                             : 'https://via.placeholder.com/400x350?text=No+Image'"
+                                            :alt="item.pavadinimas ? item.pavadinimas + ' nuotrauka' : 'Skelbimo nuotrauka'"
                                         class="max-w-full max-h-full object-contain"
                                     >
                                 </div>

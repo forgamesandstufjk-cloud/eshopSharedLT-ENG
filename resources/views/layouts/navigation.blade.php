@@ -293,7 +293,7 @@
         @endforeach
 
         <div class="relative" x-data="{ sortOpen: false, selectedSort: '{{ request('sort', '') }}' }" @keydown.escape.window="sortOpen = false">
-            <input type="hidden" name="sort" :value="selectedSort">
+            <input type="hidden" name="sort" x-bind:value="selectedSort">
 
             <button
                     type="button"
@@ -396,7 +396,7 @@
 
             <!-- Category -->
             <div class="relative" x-data="{ open: false, selected: '{{ request('category_id', '') }}' }" @keydown.escape.window="open = false">
-                <input type="hidden" name="category_id" :value="selected">
+                <input type="hidden" name="category_id" x-bind:value="selected">
 
                 <button
                     type="button"
@@ -449,7 +449,7 @@
 
             <!-- Type -->
             <div class="relative" x-data="{ open: false, selected: '{{ request('tipas', '') }}' }" @keydown.escape.window="open = false">
-                <input type="hidden" name="tipas" :value="selected">
+                <input type="hidden" name="tipas" x-bind:value="selected">
 
                 <button
                     type="button"
@@ -524,7 +524,7 @@
 
             <!-- City -->
             <div class="relative" x-data="{ open: false, selected: '{{ request('city_id', '') }}' }" @keydown.escape.window="open = false">
-                <input type="hidden" name="city_id" :value="selected">
+                <input type="hidden" name="city_id" x-bind:value="selected">
 
                 <button
                     type="button"

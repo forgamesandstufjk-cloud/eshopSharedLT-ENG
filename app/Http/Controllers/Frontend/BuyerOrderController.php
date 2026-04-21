@@ -21,12 +21,14 @@ class BuyerOrderController extends Controller
             ])
             ->where('user_id', $userId)
             ->where('statusas', Order::STATUS_PAID)
+            ->whereDoesntHave('convertedServiceOrder')
             ->latest()
             ->paginate(8, ['*'], 'orders_page');
 
         $serviceOrders = ServiceOrder::with([
                 'seller',
                 'listing.review',
+                'convertedOrder',                           
             ])
             ->where('buyer_id', $userId)
             ->where('status', '!=', ServiceOrder::STATUS_CANCELLED)
@@ -53,6 +55,7 @@ class BuyerOrderController extends Controller
             ->whereHas('order', function ($q) use ($userId) {
                 $q->where('user_id', $userId)
                   ->where('statusas', Order::STATUS_PAID);
+                  ->whereDoesntHave('convertedServiceOrder');
             })
             ->get()
             ->sortByDesc(function ($item) {

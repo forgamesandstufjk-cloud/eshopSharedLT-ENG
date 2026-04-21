@@ -1,4 +1,5 @@
 <x-guest-layout>
+    <x-slot name="title">Pamiršai slaptažodį ?</x-slot>
     <div class="mb-4 text-sm text-black">
         {{ __('Pamiršote slaptažodį? Jokių problemų. Įveskite savo el. pašto adresą ir mes atsiųsime slaptažodžio atkūrimo nuorodą, kuri leis pasirinkti naują slaptažodį.') }}
     </div>

@@ -33,7 +33,7 @@
                     <label class="block text-sm font-medium text-black mb-1">Skelbimas</label>
 
                     @if(!$serviceOrder)
-                        <input type="hidden" name="listing_id" :value="selected">
+                        <input type="hidden" name="listing_id" x-bind:value="selected">
 
                         <button
                             type="button"
@@ -142,7 +142,7 @@
                      x-data="{ open: false, selected: '{{ old('package_size', $serviceOrder?->package_size ?? 'S') }}' }">
                     <label class="block text-sm font-medium text-black mb-1">Siuntos dydis</label>
 
-                    <input type="hidden" name="package_size" :value="selected">
+                    <input type="hidden" name="package_size" x-bind:value="selected">
 
                     <button
                         type="button"

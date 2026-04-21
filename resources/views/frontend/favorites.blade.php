@@ -1,4 +1,5 @@
 <x-app-layout>
+    <x-slot name="title">Mano mėgstamiausi</x-slot>
     
     @php
         $cartCounts = auth()->check()

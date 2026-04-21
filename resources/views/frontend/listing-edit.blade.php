@@ -123,7 +123,7 @@
                 >
                     <label class="font-semibold text-black">Kategorija</label>
                 
-                    <input type="hidden" name="category_id" :value="selected" required>
+                    <input type="hidden" name="category_id" x-bind:value="selected" required>
                 
                     <button
                         type="button"
@@ -167,7 +167,7 @@
                     <input
                         type="hidden"
                         name="package_size"
-                        :value="selected"
+                        x-bind:value="selected"
                         x-bind:required="type === 'preke'"
                         x-bind:disabled="type !== 'preke'"
                     >

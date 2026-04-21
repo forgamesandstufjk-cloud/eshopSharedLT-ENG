@@ -1,4 +1,5 @@
 <x-app-layout> 
+      <x-slot name="title">Skelbimo kūrimas</x-slot>
 <div class="min-h-screen w-full py-10" style="background-color: rgb(234, 220, 200)">
 <div class="max-w-3xl mx-auto shadow p-6 rounded mt-10 mb-10"
      style="background-color: rgb(215, 183, 142)"

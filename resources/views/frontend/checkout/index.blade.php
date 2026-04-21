@@ -98,7 +98,7 @@
                     </h2>
 
                     <div class="mb-4 relative" x-data="{ open: false, selected: '' }">
-                        <input type="hidden" id="shipping-carrier" name="shipping_carrier" :value="selected">
+                        <input type="hidden" id="shipping-carrier" name="shipping_carrier" x-bind:value="selected">
 
                         <button
                             type="button"

@@ -54,7 +54,7 @@ class BuyerOrderController extends Controller
             ])
             ->whereHas('order', function ($q) use ($userId) {
                 $q->where('user_id', $userId)
-                  ->where('statusas', Order::STATUS_PAID);
+                  ->where('statusas', Order::STATUS_PAID)
                   ->whereDoesntHave('convertedServiceOrder');
             })
             ->get()

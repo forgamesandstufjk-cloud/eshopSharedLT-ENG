@@ -1,7 +1,7 @@
 <x-app-layout>
     <x-slot name="title">Pranešti komentarai</x-slot>
 
-    <div class="max-w-6xl mx-auto mt-6 sm:mt-10 px-3 sm:px-0" style="background-color: rgb(234, 220, 200)">
+    <div class="min-h-screen w-full max-w-6xl mx-auto mt-6 sm:mt-10 px-3 sm:px-0" style="background-color: rgb(234, 220, 200)">
         <h1 class="text-xl sm:text-2xl font-bold mb-2 text-black">
             @if(($mode ?? null) === 'reported_only')
                 Pranešti atsiliepimai

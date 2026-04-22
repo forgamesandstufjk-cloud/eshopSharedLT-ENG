@@ -2,8 +2,7 @@
 
 use App\Http\Controllers\Api\{
     CountryController, CityController, AddressController,
-    CategoryController, ListingPhotoController,
-    ReviewController, CartController,
+    CategoryController, ListingPhotoController, CartController,
     FavoriteController, OrderController, OrderItemController,
     UserController, ListingController, StripeWebhookController
 };
@@ -69,7 +68,7 @@ Route::get('/favorites/my', [FavoriteController::class, 'my']);
         'address'     => AddressController::class,
         'category'    => CategoryController::class,
         'listingPhoto'=> ListingPhotoController::class,
-        'review'      => ReviewController::class,
+//        'review'      => ReviewController::class,
         'cart'        => CartController::class,
         'order'       => OrderController::class,
         'orderItem'   => OrderItemController::class,

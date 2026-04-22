@@ -1,6 +1,6 @@
 <x-app-layout>
     <div class="max-w-6xl mx-auto mt-6 sm:mt-10 px-3 sm:px-0">
-        <h1 class="text-xl sm:text-2xl font-bold mb-2">
+        <h1 class="text-xl sm:text-2xl font-bold mb-2 text-black">
             Atsiliepimų palyginimas
         </h1>
 
@@ -11,7 +11,7 @@
         <div class="mb-6">
             <a
                 href="{{ route('admin.reported-listings.user-comments', $user->id) }}"
-                class="inline-block px-4 py-2 rounded text-white"
+                class="inline-block px-4 py-2 rounded text-white hover:text-black"
                 style="background-color: rgb(131, 99, 84)">
                 ← Atgal į komentarus
             </a>
@@ -76,7 +76,7 @@
                             <strong>Prieinama: </strong>
                             <span
                                 class="{{ $listing->kiekis == 0 ? 'font-bold' : '' }}"
-                                style="{{ $listing->kiekis == 0 ? 'color: rgb(184, 80, 54);' : '' }}">
+                                style="{{ $listing->kiekis == 0 ? 'color: rgb(184, 80, 54)' : '' }}">
                                 {{ $listing->kiekis }}
                             </span>
                         </div>
@@ -85,7 +85,7 @@
                     @if ($listing->is_renewable)
                         <div class="mb-4">
                             <span
-                                class="inline-block px-3 py-1 rounded text-sm text-black"
+                                class="inline-block px-3 py-1 rounded text-sm text-white"
                                 style="background-color: rgb(131, 99, 84)">
                                 Atsinaujinanti prekė – pardavėjas papildo atsargas
                             </span>
@@ -122,14 +122,14 @@
                             <div class="flex flex-col sm:flex-row gap-2 mt-4">
                                 <a
                                     href="{{ route('admin.reported-listings.user-listings', $seller) }}"
-                                    class="px-4 py-2 rounded text-white text-center"
+                                    class="px-4 py-2 rounded text-white text-center hover:text-black"
                                     style="background-color: rgb(131, 99, 84)">
                                     Visi pardavėjo skelbimai
                                 </a>
 
                                 <a
                                     href="{{ route('admin.reported-listings.user-comments', $seller) }}"
-                                    class="px-4 py-2 rounded text-white text-center"
+                                    class="px-4 py-2 rounded text-white text-center hover:text-black"
                                     style="background-color: rgb(131, 99, 84)">
                                     Visi komentarai
                                 </a>
@@ -142,29 +142,92 @@
                             method="POST"
                             action="{{ route('admin.reported-listings.remove', $listing) }}"
                             onsubmit="return confirm('Ar tikrai norite pašalinti šį skelbimą?');"
-                            x-data="{ removalReason: '' }">
+                            x-data="{ open: false, removalReason: '{{ old('removal_reason', '') }}' }"
+                            @keydown.escape.window="open = false">
                             @csrf
 
-                            <select
-                                name="removal_reason"
-                                x-model="removalReason"
-                                class="border p-2 rounded w-full mb-2"
-                                required>
-                                <option value="">Pasirinkite pašalinimo priežastį</option>
-                                <option value="fraud">Sukčiavimas</option>
-                                <option value="fake_item">Netikra prekė</option>
-                                <option value="abuse">Įžeidžiantis elgesys</option>
-                                <option value="spam">Šlamštas</option>
-                                <option value="prohibited_items">Draudžiamos prekės</option>
-                                <option value="other">Kita</option>
-                            </select>
+                            <input type="hidden" name="removal_reason" x-bind:value="removalReason">
+
+                            <div class="relative mb-2">
+                                <button
+                                    type="button"
+                                    x-on:click.stop="open = !open"
+                                    :class="open ? 'ring-1 ring-[#836354] border-[#836354]' : 'border-gray-500'"
+                                    class="w-full rounded border py-2 px-3 text-left focus:outline-none focus:ring-1 focus:ring-[#836354] focus:border-[#836354] flex justify-between items-center text-black"
+                                    style="background-color: rgb(234, 220, 200)">
+                                    <span x-text="
+                                        removalReason === '' ? 'Pasirinkite pašalinimo priežastį' :
+                                        removalReason === 'fraud' ? 'Sukčiavimas' :
+                                        removalReason === 'fake_item' ? 'Netikra prekė' :
+                                        removalReason === 'abuse' ? 'Įžeidžiantis elgesys' :
+                                        removalReason === 'spam' ? 'Šlamštas' :
+                                        removalReason === 'prohibited_items' ? 'Draudžiamos prekės' :
+                                        'Kita'
+                                    "></span>
+
+                                    <svg class="h-5 w-5 text-black" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                                        <path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 11.06l3.71-3.83a.75.75 0 111.08 1.04l-4.25 4.4a.75.75 0 01-1.08 0L5.21 8.27a.75.75 0 01.02-1.06z" clip-rule="evenodd" />
+                                    </svg>
+                                </button>
+
+                                <div
+                                    x-show="open"
+                                    x-cloak
+                                    x-transition
+                                    x-on:click.outside="open = false"
+                                    class="absolute left-0 right-0 mt-1 rounded border shadow overflow-hidden z-50"
+                                    style="background-color: rgb(234, 220, 200); border-color: #836354">
+                                    <div
+                                        x-on:click="removalReason = ''; open = false"
+                                        class="block w-full px-3 py-2 text-black cursor-pointer hover:bg-[#cfae86]">
+                                        Pasirinkite pašalinimo priežastį
+                                    </div>
+
+                                    <div
+                                        x-on:click="removalReason = 'fraud'; open = false"
+                                        class="block w-full px-3 py-2 text-black cursor-pointer hover:bg-[#cfae86]">
+                                        Sukčiavimas
+                                    </div>
+
+                                    <div
+                                        x-on:click="removalReason = 'fake_item'; open = false"
+                                        class="block w-full px-3 py-2 text-black cursor-pointer hover:bg-[#cfae86]">
+                                        Netikra prekė
+                                    </div>
+
+                                    <div
+                                        x-on:click="removalReason = 'abuse'; open = false"
+                                        class="block w-full px-3 py-2 text-black cursor-pointer hover:bg-[#cfae86]">
+                                        Įžeidžiantis elgesys
+                                    </div>
+
+                                    <div
+                                        x-on:click="removalReason = 'spam'; open = false"
+                                        class="block w-full px-3 py-2 text-black cursor-pointer hover:bg-[#cfae86]">
+                                        Šlamštas
+                                    </div>
+
+                                    <div
+                                        x-on:click="removalReason = 'prohibited_items'; open = false"
+                                        class="block w-full px-3 py-2 text-black cursor-pointer hover:bg-[#cfae86]">
+                                        Draudžiamos prekės
+                                    </div>
+
+                                    <div
+                                        x-on:click="removalReason = 'other'; open = false"
+                                        class="block w-full px-3 py-2 text-black cursor-pointer hover:bg-[#cfae86]">
+                                        Kita
+                                    </div>
+                                </div>
+                            </div>
 
                             <div x-show="removalReason === 'other'" x-cloak>
                                 <textarea
                                     name="admin_note"
-                                    class="border p-2 rounded w-full mb-2"
+                                    class="w-full border border-gray-500 rounded p-3 text-black mb-2 focus:outline-none focus:ring-1 focus:ring-[#836354] focus:border-[#836354]"
                                     rows="3"
-                                    placeholder="Administratoriaus pastaba. Įrašykite pašalinimo priežastį."></textarea>
+                                    style="background-color: rgb(234, 220, 200)"
+                                    placeholder="Administratoriaus pastaba. Įrašykite pašalinimo priežastį.">{{ old('admin_note') }}</textarea>
                             </div>
 
                             <button
@@ -183,12 +246,16 @@
 
                             <textarea
                                 name="admin_note"
-                                class="border p-2 rounded w-full mb-2"
+                                class="w-full border border-gray-500 rounded p-3 text-black mb-2 focus:outline-none focus:ring-1 focus:ring-[#836354] focus:border-[#836354]"
                                 rows="3"
+                                style="background-color: rgb(234, 220, 200)"
                                 placeholder="Administratoriaus pastaba"
-                                required></textarea>
+                                required>{{ old('admin_note') }}</textarea>
 
-                            <button class="bg-red-600 text-white px-3 py-2 rounded w-full">
+                            <button
+                                type="submit"
+                                class="text-white px-4 py-2 rounded w-full hover:text-black"
+                                style="background-color: rgb(184, 80, 54)">
                                 Užblokuoti naudotoją
                             </button>
                         </form>
@@ -197,7 +264,7 @@
             </div>
         </div>
 
-        <h3 class="text-lg sm:text-xl font-bold mb-4 text-black">
+        <h3 class="text-lg sm:text-xl font-bold mb-4 mt-10 sm:mt-12 text-black">
             Visi šio skelbimo atsiliepimai
         </h3>
 
@@ -216,8 +283,8 @@
                         <strong class="text-black">
                             {{ $review->user->vardas ?? '—' }} {{ $review->user->pavarde ?? '' }}
                         </strong>
-                        <span class="text-yellow-500 text-sm">
-                            {{ str_repeat('⭐', $review->ivertinimas) }}
+                        <span class="text-sm" style="color: rgb(131, 99, 84)">
+                            {{ str_repeat('★', $review->ivertinimas) }}
                         </span>
                     </div>
 
@@ -240,14 +307,16 @@
 
                             <textarea
                                 name="admin_note"
-                                class="border p-2 rounded w-full mb-2"
+                                class="w-full border border-gray-500 rounded p-3 text-black mb-2 focus:outline-none focus:ring-1 focus:ring-[#836354] focus:border-[#836354]"
                                 rows="2"
+                                style="background-color: rgb(234, 220, 200)"
                                 placeholder="Administratoriaus pastaba"
                                 required></textarea>
 
                             <button
                                 type="submit"
-                                class="bg-red-600 text-white px-4 py-2 rounded">
+                                class="text-white px-4 py-2 rounded hover:text-black"
+                                style="background-color: rgb(184, 80, 54)">
                                 Pašalinti komentarą
                             </button>
                         </form>

@@ -3,243 +3,123 @@
         $isAdmin = auth()->check() && auth()->user()->role === 'admin';
     @endphp
 
-    <!-- TOP BAR -->
+    <!-- TOP BAR — Logo + Main Links -->
     <div style="background-color: rgb(215, 183, 142)">
-        <div class="w-full px-4 sm:px-6 lg:px-8">
+        <div class="w-full px-4 sm:px-6 lg:px-8 min-h-16 flex items-center justify-between gap-3">
 
-            <!-- MOBILE: 320-767 -->
-            <div class="flex md:hidden min-h-16 items-center justify-between gap-3">
-                <a href="{{ auth()->check() && auth()->user()->role === 'admin' ? route('admin.reported-listings.index') : route('home') }}"
-                   class="text-xl font-bold text-black shrink-0 hover:text-white">
+            <!-- LEFT -->
+            <div class="flex items-center gap-4 lg:gap-8 min-w-0">
+                <!-- LOGO -->
+                <a href="{{ auth()->check() && auth()->user()->role === 'admin' ? route('admin.reported-listings.index'): route('home') }}"
+                   class="text-xl sm:text-2xl font-bold text-black shrink-0 hover:text-white">
                     Keblu.lt
                 </a>
 
-                <div class="flex items-center gap-2 shrink-0">
-                    @auth
-                        @unless($isAdmin)
-                            <a href="{{ route('cart.index') }}" class="relative text-black hover:text-white inline-flex items-center" aria-label="Krepšelis">
-                                <svg xmlns="http://www.w3.org/2000/svg"
-                                     fill="none"
-                                     viewBox="0 0 24 24"
-                                     stroke="currentColor"
-                                     stroke-width="1.8"
-                                     class="w-6 h-6">
-                                    <path stroke-linecap="round" stroke-linejoin="round"
-                                          d="M2.25 3h1.386c.51 0 .955.343 1.087.836l.383 1.437m0 0L6.75 11.25m-1.644-5.977h13.239c.917 0 1.593.862 1.375 1.752l-1.273 5.25a1.125 1.125 0 01-1.094.86H6.75m-1.644-7.837L6.75 11.25m0 0L5.94 14.49a1.125 1.125 0 001.09 1.385h10.72M9 19.5a.75.75 0 100 1.5.75.75 0 000-1.5zm9 0a.75.75 0 100 1.5.75.75 0 000-1.5z" />
-                                </svg>
+                <!-- DESKTOP MAIN NAVIGATION -->
+                <div class="hidden lg:flex items-center space-x-4 xl:space-x-6 text-black font-medium">
+                    <a href="{{ route('home', ['tipas' => 'preke']) }}" class="hover:text-white">
+                        Prekės
+                    </a>
 
-                                @if(session('cart_count', 0) > 0)
-                                    <span class="absolute -top-2 -right-2 text-white text-xs rounded-full min-w-[18px] h-[18px] flex items-center justify-center px-1"
-                                          style="background-color: rgb(131, 99, 84)">
-                                        {{ session('cart_count') }}
-                                    </span>
-                                @endif
-                            </a>
-                        @endunless
-                    @endauth
+                    <a href="{{ route('home', ['tipas' => 'paslauga']) }}" class="hover:text-white">
+                        Paslaugos
+                    </a>
 
-                    <button
-                        x-on:click="open = !open"
-                        class="inline-flex items-center justify-center p-2 rounded text-black"
-                        type="button"
-                        aria-label="Meniu"
-                    >
-                        <svg x-show="!open" class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                  d="M4 6h16M4 12h16M4 18h16"/>
-                        </svg>
-                        <svg x-show="open" class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                  d="M6 18L18 6M6 6l12 12"/>
-                        </svg>
-                    </button>
-                </div>
-            </div>
-
-            <!-- TABLET NAVIGATION: 768–1023px -->
-            <div class="hidden md:flex lg:hidden flex-1 min-w-0 items-center justify-center px-4">
-                <div class="flex items-center justify-center gap-4 lg:gap-5 text-black font-medium text-sm text-center min-w-0">
                     @auth
                         @if($isAdmin)
-                            <a href="{{ route('admin.shipments.index') }}"
-                               class="hover:text-white shrink min-w-0 max-w-[92px] break-words leading-tight">
+                            <a href="{{ route('admin.shipments.index') }}" class="hover:text-white">
                                 Siuntų peržiūra
                             </a>
-            
-                            <a href="{{ route('admin.reported-listings.index') }}"
-                               class="hover:text-white shrink min-w-0 max-w-[96px] break-words leading-tight">
+
+                            <a href="{{ route('admin.reported-listings.index') }}" class="hover:text-white">
                                 Pranešti skelbimai
                             </a>
-            
-                            <a href="{{ route('admin.reported-listings.reported-comments') }}"
-                               class="hover:text-white shrink min-w-0 max-w-[96px] break-words leading-tight">
+
+                            <a href="{{ route('admin.reported-listings.reported-comments') }}" class="text-black hover:text-white">
                                 Pranešti atsiliepimai
                             </a>
                         @else
-                            <a href="{{ route('favorites.page') }}"
-                               class="hover:text-white shrink min-w-0 max-w-[72px] break-words leading-tight">
+                            <a href="{{ route('favorites.page') }}" class="hover:text-white">
                                 Išsaugoti
                             </a>
-            
+
                             @if(auth()->user()->role === 'seller' && auth()->user()->canUseSellerFeatures())
-                                <a href="{{ route('my.listings') }}"
-                                   class="hover:text-white shrink min-w-0 max-w-[86px] break-words leading-tight">
+                                <a href="{{ route('my.listings') }}" class="text-black hover:text-white">
                                     Mano skelbimai
                                 </a>
                             @endif
-            
+
                             @if(auth()->user()->canUseSellerFeatures())
-                                <a href="{{ route('listing.create') }}"
-                                   class="hover:text-white shrink min-w-0 max-w-[88px] break-words leading-tight">
+                                <a href="{{ route('listing.create') }}" class="text-black hover:text-white">
                                     Įkelti skelbimą
                                 </a>
                             @endif
-            
-                            <a href="{{ route('buyer.orders') }}"
-                               class="hover:text-white shrink min-w-0 max-w-[86px] break-words leading-tight">
+
+                            <a href="{{ route('buyer.orders') }}" class="hover:text-white">
                                 Mano pirkimai
                             </a>
-            
+
                             @if(auth()->user()->role === 'seller')
-                                <a href="{{ route('seller.orders') }}"
-                                   class="hover:text-white shrink min-w-0 max-w-[92px] break-words leading-tight">
+                                <a href="{{ route('seller.orders') }}" class="hover:text-white">
                                     Mano pardavimai
                                 </a>
-            
-                                <a href="{{ route('seller.service-orders.index') }}"
-                                   class="hover:text-white shrink min-w-0 max-w-[94px] break-words leading-tight">
+                            @endif
+
+                            @if(auth()->user()->role === 'seller')
+                                <a href="{{ route('seller.service-orders.index') }}" class="hover:text-white">
                                     Paslaugų užsakymai
                                 </a>
                             @endif
                         @endif
                     @else
-                        <a href="{{ route('login') }}"
-                           class="hover:text-white shrink min-w-0 max-w-[72px] break-words leading-tight">
+                        <a href="{{ route('login') }}" class="hover:text-white">
                             Išsaugoti
                         </a>
-            
-                        <a href="{{ route('login') }}"
-                           class="hover:text-white shrink min-w-0 max-w-[86px] break-words leading-tight">
+
+                        <a href="{{ route('login') }}" class="hover:text-white">
                             Mano skelbimai
                         </a>
-            
-                        <a href="{{ route('login') }}"
-                           class="hover:text-white shrink min-w-0 max-w-[88px] break-words leading-tight">
+
+                        <a href="{{ route('login') }}" class="hover:text-white">
                             Įkelti skelbimą
                         </a>
                     @endauth
                 </div>
             </div>
 
+            <!-- RIGHT SIDE -->
+            <div class="flex items-center gap-2 sm:gap-4 shrink-0">
+                @auth
+                    @unless($isAdmin)
+                        <!-- CART LINK -->
+                        <a href="{{ route('cart.index') }}" class="relative text-black hover:text-white inline-flex items-center shrink-0" aria-label="Krepšelis">
+                            <svg xmlns="http://www.w3.org/2000/svg"
+                                 fill="none"
+                                 viewBox="0 0 24 24"
+                                 stroke="currentColor"
+                                 stroke-width="1.8"
+                                 class="w-6 h-6">
+                                <path stroke-linecap="round" stroke-linejoin="round"
+                                      d="M2.25 3h1.386c.51 0 .955.343 1.087.836l.383 1.437m0 0L6.75 11.25m-1.644-5.977h13.239c.917 0 1.593.862 1.375 1.752l-1.273 5.25a1.125 1.125 0 01-1.094.86H6.75m-1.644-7.837L6.75 11.25m0 0L5.94 14.49a1.125 1.125 0 001.09 1.385h10.72M9 19.5a.75.75 0 100 1.5.75.75 0 000-1.5zm9 0a.75.75 0 100 1.5.75.75 0 000-1.5z" />
+                            </svg>
 
-            <!-- LAPTOP / DESKTOP: 1024+ -->
-            <div class="hidden lg:flex min-h-16 items-center justify-between gap-3">
-                <div class="flex items-center gap-4 lg:gap-8 min-w-0">
-                    <a href="{{ auth()->check() && auth()->user()->role === 'admin' ? route('admin.reported-listings.index'): route('home') }}"
-                       class="text-xl sm:text-2xl font-bold text-black shrink-0 hover:text-white">
-                        Keblu.lt
-                    </a>
-
-                    <div class="flex items-center space-x-4 lg:space-x-6 text-black font-medium">
-                        <a href="{{ route('home', ['tipas' => 'preke']) }}" class="hover:text-white">
-                            Prekės
-                        </a>
-
-                        <a href="{{ route('home', ['tipas' => 'paslauga']) }}" class="hover:text-white">
-                            Paslaugos
-                        </a>
-
-                        @auth
-                            @if($isAdmin)
-                                <a href="{{ route('admin.shipments.index') }}" class="hover:text-white">
-                                    Siuntų peržiūra
-                                </a>
-
-                                <a href="{{ route('admin.reported-listings.index') }}" class="hover:text-white">
-                                    Pranešti skelbimai
-                                </a>
-
-                                <a href="{{ route('admin.reported-listings.reported-comments') }}" class="text-black hover:text-white">
-                                    Pranešti atsiliepimai
-                                </a>
-                            @else
-                                <a href="{{ route('favorites.page') }}" class="hover:text-white">
-                                    Išsaugoti
-                                </a>
-
-                                @if(auth()->user()->role === 'seller' && auth()->user()->canUseSellerFeatures())
-                                    <a href="{{ route('my.listings') }}" class="text-black hover:text-white">
-                                        Mano skelbimai
-                                    </a>
-                                @endif
-
-                                @if(auth()->user()->canUseSellerFeatures())
-                                    <a href="{{ route('listing.create') }}" class="text-black hover:text-white">
-                                        Įkelti skelbimą
-                                    </a>
-                                @endif
-
-                                <a href="{{ route('buyer.orders') }}" class="hover:text-white">
-                                    Mano pirkimai
-                                </a>
-
-                                @if(auth()->user()->role === 'seller')
-                                    <a href="{{ route('seller.orders') }}" class="hover:text-white">
-                                        Mano pardavimai
-                                    </a>
-                                @endif
-
-                                @if(auth()->user()->role === 'seller')
-                                    <a href="{{ route('seller.service-orders.index') }}" class="hover:text-white">
-                                        Paslaugų užsakymai
-                                    </a>
-                                @endif
+                            @if(session('cart_count', 0) > 0)
+                                <span class="absolute -top-2 -right-2 text-white text-xs rounded-full min-w-[18px] h-[18px] flex items-center justify-center px-1"
+                                      style="background-color: rgb(131, 99, 84)">
+                                    {{ session('cart_count') }}
+                                </span>
                             @endif
-                        @else
-                            <a href="{{ route('login') }}" class="hover:text-white">
-                                Išsaugoti
-                            </a>
+                        </a>
+                    @endunless
 
-                            <a href="{{ route('login') }}" class="hover:text-white">
-                                Mano skelbimai
-                            </a>
-
-                            <a href="{{ route('login') }}" class="hover:text-white">
-                                Įkelti skelbimą
-                            </a>
-                        @endauth
-                    </div>
-                </div>
-
-                <div class="flex items-center gap-2 sm:gap-4 shrink-0">
-                    @auth
-                        @unless($isAdmin)
-                            <a href="{{ route('cart.index') }}" class="relative text-black hover:text-white inline-flex items-center" aria-label="Krepšelis">
-                                <svg xmlns="http://www.w3.org/2000/svg"
-                                     fill="none"
-                                     viewBox="0 0 24 24"
-                                     stroke="currentColor"
-                                     stroke-width="1.8"
-                                     class="w-6 h-6">
-                                    <path stroke-linecap="round" stroke-linejoin="round"
-                                          d="M2.25 3h1.386c.51 0 .955.343 1.087.836l.383 1.437m0 0L6.75 11.25m-1.644-5.977h13.239c.917 0 1.593.862 1.375 1.752l-1.273 5.25a1.125 1.125 0 01-1.094.86H6.75m-1.644-7.837L6.75 11.25m0 0L5.94 14.49a1.125 1.125 0 001.09 1.385h10.72M9 19.5a.75.75 0 100 1.5.75.75 0 000-1.5zm9 0a.75.75 0 100 1.5.75.75 0 000-1.5z" />
-                                </svg>
-
-                                @if(session('cart_count', 0) > 0)
-                                    <span class="absolute -top-2 -right-2 text-white text-xs rounded-full min-w-[18px] h-[18px] flex items-center justify-center px-1"
-                                          style="background-color: rgb(131, 99, 84)">
-                                        {{ session('cart_count') }}
-                                    </span>
-                                @endif
-                            </a>
-                        @endunless
-
+                    <!-- USER DROPDOWN DESKTOP -->
+                    <div class="hidden lg:block shrink-0">
                         <x-dropdown align="right" width="48">
                             <x-slot name="trigger">
-                                <button class="inline-flex items-center px-3 py-2 text-sm font-medium text-black font-bold"
+                                <button class="inline-flex items-center px-3 py-2 text-sm font-medium text-black font-bold max-w-[140px]"
                                         style="background-color: rgb(215, 183, 142)">
-                                    <span>{{ Auth::user()->vardas }}</span>
-                                    <svg class="ms-1 h-4 w-4" fill="currentColor" viewBox="0 0 20 20">
+                                    <span class="truncate">{{ Auth::user()->vardas }}</span>
+                                    <svg class="ms-1 h-4 w-4 shrink-0" fill="currentColor" viewBox="0 0 20 20">
                                         <path fill-rule="evenodd"
                                               d="M5.23 7.21a.75.75 0 011.06.02L10 11.06l3.71-3.83a.75.75 0 111.08 1.04l-4.25 4.4a.75.75 0 01-1.08 0L5.21 8.27a.75.75 0 01.02-1.06z"
                                               clip-rule="evenodd" />
@@ -261,17 +141,34 @@
                                 </form>
                             </x-slot>
                         </x-dropdown>
-                    @else
-                        <div class="flex items-center gap-4">
-                            <a href="{{ route('login') }}" class="text-black font-medium hover:text-white">Prisijungti</a>
-                        </div>
-                    @endauth
-                </div>
+                    </div>
+                @else
+                    <div class="hidden lg:flex items-center gap-4 shrink-0">
+                        <a href="{{ route('login') }}" class="text-black font-medium hover:text-white">Prisijungti</a>
+                    </div>
+                @endauth
+
+                <!-- MOBILE + TABLET MENU BUTTON -->
+                <button
+                    x-on:click="open = !open"
+                    class="lg:hidden inline-flex items-center justify-center p-2 rounded text-black shrink-0"
+                    type="button"
+                    aria-label="Atidaryti meniu"
+                >
+                    <svg x-show="!open" class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                              d="M4 6h16M4 12h16M4 18h16"/>
+                    </svg>
+                    <svg x-show="open" class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                              d="M6 18L18 6M6 6l12 12"/>
+                    </svg>
+                </button>
             </div>
         </div>
 
-        <!-- MOBILE MENU ONLY -->
-        <div x-show="open" x-cloak class="md:hidden px-4 pb-4 space-y-3 text-black font-medium">
+        <!-- MOBILE + TABLET MENU -->
+        <div x-show="open" class="lg:hidden px-4 pb-4 space-y-3 text-black font-medium">
             <a href="{{ route('home', ['tipas' => 'preke']) }}" class="block hover:text-white">
                 Prekės
             </a>
@@ -293,29 +190,16 @@
                     <a href="{{ route('admin.reported-listings.reported-comments') }}" class="block hover:text-white">
                         Pranešti atsiliepimai
                     </a>
-
-                    <a href="{{ route('profile.edit') }}" class="block hover:text-white">
-                        Profilis
-                    </a>
-
-                    <form method="POST" action="{{ route('logout') }}">
-                        @csrf
-                        <button type="submit" class="block hover:text-white text-left w-full">
-                            Atsijungti
-                        </button>
-                    </form>
                 @else
                     <a href="{{ route('favorites.page') }}" class="block hover:text-white">
                         Išsaugoti
                     </a>
 
-                    @if(auth()->user()->role === 'seller' && auth()->user()->canUseSellerFeatures())
+                    @if(auth()->user()->canUseSellerFeatures())
                         <a href="{{ route('my.listings') }}" class="block hover:text-white">
                             Mano skelbimai
                         </a>
-                    @endif
 
-                    @if(auth()->user()->canUseSellerFeatures())
                         <a href="{{ route('listing.create') }}" class="block hover:text-white">
                             Įkelti skelbimą
                         </a>
@@ -329,7 +213,6 @@
                         <a href="{{ route('seller.orders') }}" class="block hover:text-white">
                             Mano pardavimai
                         </a>
-
                         <a href="{{ route('seller.service-orders.index') }}" class="block hover:text-white">
                             Paslaugų užsakymai
                         </a>
@@ -488,6 +371,7 @@
                         </div>
                     </form>
                 </div>
+
             </div>
         </div>
     </div>
@@ -711,6 +595,7 @@
                         Išvalyti
                     </a>
                 </div>
+
             </form>
         </div>
     </div>

@@ -333,7 +333,7 @@
 
                         <div class="space-y-3">
                             @foreach($reports as $report)
-                                <div class="p-4 rounded border bg-white" style="border-color: #836354">
+                                <div class="p-4 rounded border" style="background-color: rgb(131, 99, 84); border-color: #836354">
                                     <div class="flex items-center justify-between gap-3 mb-2">
                                         <strong class="text-black">
                                             {{ $report->reporterUser->vardas ?? '—' }} {{ $report->reporterUser->pavarde ?? '' }}

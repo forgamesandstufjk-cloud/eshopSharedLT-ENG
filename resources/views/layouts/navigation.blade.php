@@ -91,28 +91,28 @@
                 @auth
                     @unless($isAdmin)
                         <!-- CART LINK -->
-<a href="{{ route('cart.index') }}" class="relative text-black hover:text-white inline-flex items-center" aria-label="Krepšelis">
-    <svg xmlns="http://www.w3.org/2000/svg"
-         fill="none"
-         viewBox="0 0 24 24"
-         stroke="currentColor"
-         stroke-width="1.8"
-         class="w-6 h-6">
-        <path stroke-linecap="round" stroke-linejoin="round"
-              d="M2.25 3h1.386c.51 0 .955.343 1.087.836l.383 1.437m0 0L6.75 11.25m-1.644-5.977h13.239c.917 0 1.593.862 1.375 1.752l-1.273 5.25a1.125 1.125 0 01-1.094.86H6.75m-1.644-7.837L6.75 11.25m0 0L5.94 14.49a1.125 1.125 0 001.09 1.385h10.72M9 19.5a.75.75 0 100 1.5.75.75 0 000-1.5zm9 0a.75.75 0 100 1.5.75.75 0 000-1.5z" />
-    </svg>
-
-    @if(session('cart_count', 0) > 0)
-        <span class="absolute -top-2 -right-2 text-white text-xs rounded-full min-w-[18px] h-[18px] flex items-center justify-center px-1"
-              style="background-color: rgb(131, 99, 84)">
-            {{ session('cart_count') }}
-        </span>
-    @endif
-</a>
+                        <a href="{{ route('cart.index') }}" class="relative text-black hover:text-white inline-flex items-center" aria-label="Krepšelis">
+                            <svg xmlns="http://www.w3.org/2000/svg"
+                                 fill="none"
+                                 viewBox="0 0 24 24"
+                                 stroke="currentColor"
+                                 stroke-width="1.8"
+                                 class="w-6 h-6">
+                                <path stroke-linecap="round" stroke-linejoin="round"
+                                      d="M2.25 3h1.386c.51 0 .955.343 1.087.836l.383 1.437m0 0L6.75 11.25m-1.644-5.977h13.239c.917 0 1.593.862 1.375 1.752l-1.273 5.25a1.125 1.125 0 01-1.094.86H6.75m-1.644-7.837L6.75 11.25m0 0L5.94 14.49a1.125 1.125 0 001.09 1.385h10.72M9 19.5a.75.75 0 100 1.5.75.75 0 000-1.5zm9 0a.75.75 0 100 1.5.75.75 0 000-1.5z" />
+                            </svg>
+            
+                            @if(session('cart_count', 0) > 0)
+                                <span class="absolute -top-2 -right-2 text-white text-xs rounded-full min-w-[18px] h-[18px] flex items-center justify-center px-1"
+                                      style="background-color: rgb(131, 99, 84)">
+                                    {{ session('cart_count') }}
+                                </span>
+                            @endif
+                        </a>
                     @endunless
-
+            
                     <!-- USER DROPDOWN DESKTOP -->
-                    <div class="hidden md:block">
+                    <div class="hidden lg:block">
                         <x-dropdown align="right" width="48">
                             <x-slot name="trigger">
                                 <button class="inline-flex items-center px-3 py-2 text-sm font-medium text-black font-bold"
@@ -125,12 +125,12 @@
                                     </svg>
                                 </button>
                             </x-slot>
-
+            
                             <x-slot name="content">
                                 <x-dropdown-link :href="route('profile.edit')">
                                     Profilis
                                 </x-dropdown-link>
-
+            
                                 <form method="POST" action="{{ route('logout') }}">
                                     @csrf
                                     <x-dropdown-link :href="route('logout')"
@@ -142,16 +142,17 @@
                         </x-dropdown>
                     </div>
                 @else
-                    <div class="hidden md:flex items-center gap-4">
+                    <div class="hidden lg:flex items-center gap-4">
                         <a href="{{ route('login') }}" class="text-black font-medium hover:text-white">Prisijungti</a>
                     </div>
                 @endauth
-
+            
                 <!-- MOBILE MENU BUTTON -->
                 <button
                     x-on:click="open = !open"
-                    class="md:hidden inline-flex items-center justify-center p-2 rounded text-black"
+                    class="lg:hidden inline-flex items-center justify-center p-2 rounded text-black"
                     type="button"
+                    aria-label="Meniu"
                 >
                     <svg x-show="!open" class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -163,92 +164,106 @@
                     </svg>
                 </button>
             </div>
-        </div>
-
-        <!-- MOBILE MENU -->
-        <div x-show="open" class="md:hidden px-4 pb-4 space-y-3 text-black font-medium">
-            <a href="{{ route('home', ['tipas' => 'preke']) }}" class="block hover:text-white">
-                Prekės
-            </a>
-
-            <a href="{{ route('home', ['tipas' => 'paslauga']) }}" class="block hover:text-white">
-                Paslaugos
-            </a>
-
-            @auth
-                @if($isAdmin)
-                    <a href="{{ route('admin.shipments.index') }}" class="block hover:text-white">
-                        Siuntų peržiūra
-                    </a>
-
-                    <a href="{{ route('admin.reported-listings.index') }}" class="block hover:text-white">
-                        Pranešti skelbimai
-                    </a>
-
-                    <a href="{{ route('admin.reported-listings.reported-comments') }}" class="block hover:text-white">
-                        Pranešti atsiliepimai
-                    </a>
+            
+            <!-- MOBILE / TABLET MENU -->
+            <div x-show="open" x-cloak class="lg:hidden px-4 pb-4 space-y-3 text-black font-medium">
+                <a href="{{ route('home', ['tipas' => 'preke']) }}" class="block hover:text-white">
+                    Prekės
+                </a>
+            
+                <a href="{{ route('home', ['tipas' => 'paslauga']) }}" class="block hover:text-white">
+                    Paslaugos
+                </a>
+            
+                @auth
+                    @if($isAdmin)
+                        <a href="{{ route('admin.shipments.index') }}" class="block hover:text-white">
+                            Siuntų peržiūra
+                        </a>
+            
+                        <a href="{{ route('admin.reported-listings.index') }}" class="block hover:text-white">
+                            Pranešti skelbimai
+                        </a>
+            
+                        <a href="{{ route('admin.reported-listings.reported-comments') }}" class="block hover:text-white">
+                            Pranešti atsiliepimai
+                        </a>
+            
+                        <a href="{{ route('profile.edit') }}" class="block hover:text-white">
+                            Profilis
+                        </a>
+            
+                        <form method="POST" action="{{ route('logout') }}">
+                            @csrf
+                            <button type="submit" class="block hover:text-white text-left w-full">
+                                Atsijungti
+                            </button>
+                        </form>
+                    @else
+                        <a href="{{ route('favorites.page') }}" class="block hover:text-white">
+                            Išsaugoti
+                        </a>
+            
+                        @if(auth()->user()->role === 'seller' && auth()->user()->canUseSellerFeatures())
+                            <a href="{{ route('my.listings') }}" class="block hover:text-white">
+                                Mano skelbimai
+                            </a>
+                        @endif
+            
+                        @if(auth()->user()->canUseSellerFeatures())
+                            <a href="{{ route('listing.create') }}" class="block hover:text-white">
+                                Įkelti skelbimą
+                            </a>
+                        @endif
+            
+                        <a href="{{ route('buyer.orders') }}" class="block hover:text-white">
+                            Mano pirkimai
+                        </a>
+            
+                        @if(auth()->user()->role === 'seller')
+                            <a href="{{ route('seller.orders') }}" class="block hover:text-white">
+                                Mano pardavimai
+                            </a>
+            
+                            <a href="{{ route('seller.service-orders.index') }}" class="block hover:text-white">
+                                Paslaugų užsakymai
+                            </a>
+                        @endif
+            
+                        <a href="{{ route('profile.edit') }}" class="block hover:text-white">
+                            Profilis
+                        </a>
+            
+                        <form method="POST" action="{{ route('logout') }}">
+                            @csrf
+                            <button type="submit" class="block hover:text-white text-left w-full">
+                                Atsijungti
+                            </button>
+                        </form>
+                    @endif
                 @else
-                    <a href="{{ route('favorites.page') }}" class="block hover:text-white">
+                    <a href="{{ route('login') }}" class="block hover:text-white">
                         Išsaugoti
                     </a>
-
-                    @if(auth()->user()->canUseSellerFeatures())
-                        <a href="{{ route('my.listings') }}" class="block hover:text-white">
-                            Mano skelbimai
-                        </a>
-
-                        <a href="{{ route('listing.create') }}" class="block hover:text-white">
-                            Įkelti skelbimą
-                        </a>
-                    @endif
-
-                    <a href="{{ route('buyer.orders') }}" class="block hover:text-white">
-                        Mano pirkimai
+            
+                    <a href="{{ route('login') }}" class="block hover:text-white">
+                        Mano skelbimai
                     </a>
-
-                    @if(auth()->user()->role === 'seller')
-                        <a href="{{ route('seller.orders') }}" class="block hover:text-white">
-                            Mano pardavimai
-                        </a>
-                        <a href="{{ route('seller.service-orders.index') }}" class="block hover:text-white">
-                            Paslaugų užsakymai
-                        </a>
-                    @endif
-
-                    <a href="{{ route('profile.edit') }}" class="block hover:text-white">
-                        Profilis
+            
+                    <a href="{{ route('login') }}" class="block hover:text-white">
+                        Įkelti skelbimą
                     </a>
-
-                    <form method="POST" action="{{ route('logout') }}">
-                        @csrf
-                        <button type="submit" class="block hover:text-white text-left w-full">
-                            Atsijungti
-                        </button>
-                    </form>
-                @endif
-            @else
-                <a href="{{ route('login') }}" class="block hover:text-white">
-                    Išsaugoti
-                </a>
-
-                <a href="{{ route('login') }}" class="block hover:text-white">
-                    Mano skelbimai
-                </a>
-
-                <a href="{{ route('login') }}" class="block hover:text-white">
-                    Įkelti skelbimą
-                </a>
-
-                <a href="{{ route('login') }}" class="block hover:text-white">
-                    Prisijungti
-                </a>
-
-                <a href="{{ route('register') }}" class="block hover:text-white">
-                    Registruotis
-                </a>
-            @endauth
-        </div>
+            
+                    <a href="{{ route('login') }}" class="block hover:text-white">
+                        Prisijungti
+                    </a>
+            
+                    <a href="{{ route('register') }}" class="block hover:text-white">
+                        Registruotis
+                    </a>
+                @endauth
+            </div>           
+        </div>   
     </div>
 
     @php
@@ -256,7 +271,7 @@
     @endphp
 
     @if($showSearchNav)
-    <!-- BOTTOM BAR — Search + Filters -->
+    <!-- BOTTOM BAR Search + Filters -->
     <div class="bg-repeat-x bg-top" style="background-image: url('{{ asset('images/nav.png') }}'); background-size: auto 100%">
         <div class="px-4 sm:px-6 lg:px-8 py-3">
             <div class="max-w-6xl mx-auto flex flex-col sm:flex-row gap-3 sm:items-center justify-center">

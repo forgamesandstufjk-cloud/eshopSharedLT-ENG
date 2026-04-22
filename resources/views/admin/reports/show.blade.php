@@ -22,14 +22,6 @@
             </div>
         @endif
 
-        @if(session('error'))
-            <div class="mb-6 px-0 sm:px-4">
-                <div class="px-4 py-3 rounded text-black" style="background-color: rgb(230, 190, 190); border: 1px solid #836354">
-                    {{ session('error') }}
-                </div>
-            </div>
-        @endif
-
         @if($errors->any())
             <div class="mb-6 px-0 sm:px-4">
                 <div class="px-4 py-3 rounded text-black" style="background-color: rgb(230, 190, 190); border: 1px solid #836354">
@@ -39,10 +31,9 @@
         @endif
 
         <div class="mb-4">
-            <a
-                href="{{ request('back') ?: route('admin.reported-listings.index') }}"
-                class="inline-block px-4 py-2 rounded text-white hover:text-black"
-                style="background-color: rgb(131, 99, 84)">
+            <a href="{{ request('back') ?: route('admin.reported-listings.index') }}"
+               class="inline-block px-4 py-2 rounded text-white hover:text-black"
+               style="background-color: rgb(131, 99, 84)">
                 ← Atgal
             </a>
         </div>
@@ -73,9 +64,8 @@
 
                 <div class="flex flex-col">
                     <div class="mb-3">
-                        <span
-                            class="inline-block px-3 py-1 rounded text-sm text-white"
-                            style="background-color: rgb(131, 99, 84)">
+                        <span class="inline-block px-3 py-1 rounded text-sm text-white"
+                              style="background-color: rgb(131, 99, 84)">
                             {{ $listing->Category->pavadinimas ?? 'Kategorija' }}
                         </span>
                     </div>
@@ -100,9 +90,8 @@
                     @if($listing->tipas === 'preke')
                         <div class="text-black mb-4">
                             <strong>Prieinama: </strong>
-                            <span
-                                class="{{ $listing->kiekis == 0 ? 'font-bold' : '' }}"
-                                style="{{ $listing->kiekis == 0 ? 'color: rgb(184, 80, 54)' : '' }}">
+                            <span class="{{ $listing->kiekis == 0 ? 'font-bold' : '' }}"
+                                  style="{{ $listing->kiekis == 0 ? 'color: rgb(184, 80, 54)' : '' }}">
                                 {{ $listing->kiekis }}
                             </span>
                         </div>
@@ -110,19 +99,17 @@
 
                     @if($listing->is_renewable)
                         <div class="mb-4">
-                            <span
-                                class="inline-block px-3 py-1 rounded text-sm text-black"
-                                style="background-color: rgb(234, 220, 200); border: 1px solid #836354">
+                            <span class="inline-block px-3 py-1 rounded text-sm text-black"
+                                  style="background-color: rgb(131, 99, 84)">
                                 Atsinaujinanti prekė – pardavėjas papildo atsargas
                             </span>
                         </div>
                     @endif
 
                     <div class="flex flex-col sm:flex-row gap-3 sm:gap-4 mt-4">
-                        <a
-                            href="{{ route('listing.edit', ['listing' => $listing->id, 'back' => route('admin.reported-listings.show', $listing->id)]) }}"
-                            class="px-6 py-3 text-white rounded hover:text-black transition text-center w-full sm:w-40 whitespace-nowrap"
-                            style="background-color: rgb(131, 99, 84)">
+                        <a href="{{ route('listing.edit', ['listing' => $listing->id, 'back' => route('admin.reported-listings.show', $listing->id)]) }}"
+                           class="px-6 py-3 text-white rounded hover:text-black transition text-center w-full sm:w-40 whitespace-nowrap"
+                           style="background-color: rgb(131, 99, 84)">
                             Redaguoti
                         </a>
                     </div>
@@ -130,9 +117,8 @@
                     <div class="mt-8 sm:mt-10 border-t pt-6" style="border-color: #836354">
                         <h3 class="font-semibold text-black mb-2">Moderavimo informacija</h3>
 
-                        <div
-                            class="p-4 rounded border text-sm"
-                            style="background-color: rgb(234, 220, 200); border-color: #836354">
+                        <div class="p-4 rounded border text-sm"
+                             style="background-color: rgb(234, 220, 200); border-color: #836354">
                             <div class="text-black font-semibold text-base sm:text-lg">
                                 {{ $seller->vardas }} {{ $seller->pavarde }}
                             </div>
@@ -146,17 +132,15 @@
                             </div>
 
                             <div class="flex flex-col sm:flex-row gap-2 mt-4">
-                                <a
-                                    href="{{ route('admin.reported-listings.user-listings', $seller) }}"
-                                    class="px-4 py-2 rounded text-white text-center hover:text-black"
-                                    style="background-color: rgb(131, 99, 84)">
+                                <a href="{{ route('admin.reported-listings.user-listings', $seller) }}"
+                                   class="px-4 py-2 rounded text-white text-center hover:text-black"
+                                   style="background-color: rgb(131, 99, 84)">
                                     Visi pardavėjo skelbimai
                                 </a>
 
-                                <a
-                                    href="{{ route('admin.reported-listings.user-comments', $seller) }}"
-                                    class="px-4 py-2 rounded text-white text-center hover:text-black"
-                                    style="background-color: rgb(131, 99, 84)">
+                                <a href="{{ route('admin.reported-listings.user-comments', $seller) }}"
+                                   class="px-4 py-2 rounded text-white text-center hover:text-black"
+                                   style="background-color: rgb(131, 99, 84)">
                                     Visi atsiliepimai
                                 </a>
                             </div>
@@ -164,50 +148,107 @@
                     </div>
 
                     <div class="mt-6 space-y-3">
-                        <form
-                            method="POST"
-                            action="{{ route('admin.reported-listings.remove', $listing) }}"
-                            onsubmit="return confirm('Ar tikrai norite pašalinti šį skelbimą?');"
-                            x-data="{ removalReason: '' }">
+                        <form method="POST"
+                              action="{{ route('admin.reported-listings.remove', $listing) }}"
+                              onsubmit="return confirm('Ar tikrai norite pašalinti šį skelbimą?');"
+                              x-data="{ removalReason: '{{ old('removal_reason') }}', removalOpen: false }">
                             @csrf
 
-                            <select
-                                name="removal_reason"
-                                x-model="removalReason"
-                                class="border p-2 rounded w-full mb-2 text-black"
-                                style="background-color: rgb(234, 220, 200); border-color: #836354"
-                                required>
-                                <option value="">Pasirinkite pašalinimo priežastį</option>
-                                <option value="fraud">Sukčiavimas</option>
-                                <option value="fake_item">Netikra prekė</option>
-                                <option value="abuse">Įžeidžiantis elgesys</option>
-                                <option value="spam">Šlamštas</option>
-                                <option value="prohibited_items">Draudžiamos prekės</option>
-                                <option value="other">Kita</option>
-                            </select>
+                            <div class="relative" @keydown.escape.window="removalOpen = false">
+                                <input type="hidden" name="removal_reason" x-bind:value="removalReason">
+
+                                <button
+                                    type="button"
+                                    x-on:click.stop="removalOpen = !removalOpen"
+                                    :class="removalOpen ? 'ring-1 ring-[#836354] border-[#836354]' : 'border-[#836354]'"
+                                    class="w-full rounded border py-2 px-3 text-left focus:outline-none focus:ring-1 focus:ring-[#836354] focus:border-[#836354] flex justify-between items-center text-black mb-2"
+                                    style="background-color: rgb(234, 220, 200)">
+                                    <span x-text="
+                                        removalReason === '' ? 'Pasirinkite pašalinimo priežastį' :
+                                        removalReason === 'fraud' ? 'Sukčiavimas' :
+                                        removalReason === 'fake_item' ? 'Netikra prekė' :
+                                        removalReason === 'abuse' ? 'Įžeidžiantis elgesys' :
+                                        removalReason === 'spam' ? 'Šlamštas' :
+                                        removalReason === 'prohibited_items' ? 'Draudžiamos prekės' :
+                                        'Kita'
+                                    "></span>
+
+                                    <svg class="h-5 w-5 text-black shrink-0 ml-2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                                        <path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 11.06l3.71-3.83a.75.75 0 111.08 1.04l-4.25 4.4a.75.75 0 01-1.08 0L5.21 8.27a.75.75 0 01.02-1.06z" clip-rule="evenodd" />
+                                    </svg>
+                                </button>
+
+                                <div
+                                    x-show="removalOpen"
+                                    x-cloak
+                                    x-transition
+                                    x-on:click.outside="removalOpen = false"
+                                    class="absolute left-0 right-0 mt-1 rounded border shadow overflow-hidden z-50"
+                                    style="background-color: rgb(234, 220, 200); border-color: #836354">
+                                    <div
+                                        x-on:click="removalReason = ''; removalOpen = false"
+                                        class="block w-full px-3 py-2 text-black cursor-pointer hover:bg-[#cfae86]">
+                                        Pasirinkite pašalinimo priežastį
+                                    </div>
+
+                                    <div
+                                        x-on:click="removalReason = 'fraud'; removalOpen = false"
+                                        class="block w-full px-3 py-2 text-black cursor-pointer hover:bg-[#cfae86]">
+                                        Sukčiavimas
+                                    </div>
+
+                                    <div
+                                        x-on:click="removalReason = 'fake_item'; removalOpen = false"
+                                        class="block w-full px-3 py-2 text-black cursor-pointer hover:bg-[#cfae86]">
+                                        Netikra prekė
+                                    </div>
+
+                                    <div
+                                        x-on:click="removalReason = 'abuse'; removalOpen = false"
+                                        class="block w-full px-3 py-2 text-black cursor-pointer hover:bg-[#cfae86]">
+                                        Įžeidžiantis elgesys
+                                    </div>
+
+                                    <div
+                                        x-on:click="removalReason = 'spam'; removalOpen = false"
+                                        class="block w-full px-3 py-2 text-black cursor-pointer hover:bg-[#cfae86]">
+                                        Šlamštas
+                                    </div>
+
+                                    <div
+                                        x-on:click="removalReason = 'prohibited_items'; removalOpen = false"
+                                        class="block w-full px-3 py-2 text-black cursor-pointer hover:bg-[#cfae86]">
+                                        Draudžiamos prekės
+                                    </div>
+
+                                    <div
+                                        x-on:click="removalReason = 'other'; removalOpen = false"
+                                        class="block w-full px-3 py-2 text-black cursor-pointer hover:bg-[#cfae86]">
+                                        Kita
+                                    </div>
+                                </div>
+                            </div>
 
                             <div x-show="removalReason === 'other'" x-cloak>
                                 <textarea
                                     name="admin_note"
-                                    class="border p-2 rounded w-full mb-2 text-black"
+                                    class="border p-2 rounded w-full mb-2 text-black focus:outline-none focus:ring-1 focus:ring-[#836354] focus:border-[#836354]"
                                     rows="3"
                                     placeholder="Administratoriaus pastaba. Įrašykite pašalinimo priežastį."
-                                    style="background-color: rgb(234, 220, 200); border-color: #836354"></textarea>
+                                    style="background-color: rgb(234, 220, 200); border-color: #836354">{{ old('admin_note') }}</textarea>
                             </div>
 
-                            <button
-                                type="submit"
-                                class="px-6 py-3 text-white rounded hover:text-black transition text-center w-full"
-                                style="background-color: rgb(184, 80, 54)">
+                            <button type="submit"
+                                    class="px-6 py-3 text-white rounded hover:text-black transition text-center w-full"
+                                    style="background-color: rgb(184, 80, 54)">
                                 Pašalinti skelbimą
                             </button>
                         </form>
 
                         @if($seller->is_banned)
-                            <form
-                                method="POST"
-                                action="{{ route('admin.reported-listings.unban-seller', $seller) }}"
-                                onsubmit="return confirm('Ar tikrai norite atblokuoti šį naudotoją?');">
+                            <form method="POST"
+                                  action="{{ route('admin.reported-listings.unban-seller', $seller) }}"
+                                  onsubmit="return confirm('Ar tikrai norite atblokuoti šį naudotoją?');">
                                 @csrf
 
                                 <button
@@ -218,15 +259,14 @@
                                 </button>
                             </form>
                         @else
-                            <form
-                                method="POST"
-                                action="{{ route('admin.reported-listings.ban-seller', $listing) }}"
-                                onsubmit="return confirm('Ar tikrai norite užblokuoti šį naudotoją?');">
+                            <form method="POST"
+                                  action="{{ route('admin.reported-listings.ban-seller', $listing) }}"
+                                  onsubmit="return confirm('Ar tikrai norite užblokuoti šį naudotoją?');">
                                 @csrf
 
                                 <textarea
                                     name="admin_note"
-                                    class="border p-2 rounded w-full mb-2 text-black"
+                                    class="border p-2 rounded w-full mb-2 text-black focus:outline-none focus:ring-1 focus:ring-[#836354] focus:border-[#836354]"
                                     rows="3"
                                     placeholder="Administratoriaus pastaba"
                                     style="background-color: rgb(234, 220, 200); border-color: #836354"
@@ -271,16 +311,13 @@
                             </div>
 
                             @if($reports->where('status', 'pending')->count() > 0)
-                                <form
-                                    method="POST"
-                                    action="{{ route('admin.reported-listings.dismiss-reason', $listing) }}"
-                                    class="w-full sm:w-auto">
+                                <form method="POST" action="{{ route('admin.reported-listings.dismiss-reason', $listing) }}" class="w-full sm:w-auto">
                                     @csrf
                                     <input type="hidden" name="reason" value="{{ $reason }}">
 
                                     <textarea
                                         name="admin_note"
-                                        class="border p-2 rounded w-full mb-2 text-black"
+                                        class="border p-2 rounded w-full mb-2 text-black focus:outline-none focus:ring-1 focus:ring-[#836354] focus:border-[#836354]"
                                         rows="2"
                                         placeholder="Administratoriaus pastaba"
                                         style="background-color: rgb(234, 220, 200); border-color: #836354"></textarea>
@@ -296,7 +333,7 @@
 
                         <div class="space-y-3">
                             @foreach($reports as $report)
-                                <div class="p-4 rounded border text-black" style="background-color: rgb(234, 220, 200); border-color: #836354">
+                                <div class="p-4 rounded border bg-white" style="border-color: #836354">
                                     <div class="flex items-center justify-between gap-3 mb-2">
                                         <strong class="text-black">
                                             {{ $report->reporterUser->vardas ?? '—' }} {{ $report->reporterUser->pavarde ?? '' }}

@@ -363,8 +363,6 @@ public function reporterReports(User $user)
 public function reportedComments()
 {
     $reviews = \App\Models\Review::with(['Listing.photos', 'user'])
-        ->whereNotNull('komentaras')
-        ->where('komentaras', '!=', '')
         ->whereHas('reports', function ($q) {
             $q->where('status', 'pending');
         })

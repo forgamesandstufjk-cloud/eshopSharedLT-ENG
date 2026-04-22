@@ -56,130 +56,81 @@
                 </div>
             </div>
 
-            <!-- TABLET: 768-1023 -->
-            <div class="hidden md:flex lg:hidden flex-col py-3 gap-3">
-                <div class="flex items-center justify-between gap-3">
-                    <a href="{{ auth()->check() && auth()->user()->role === 'admin' ? route('admin.reported-listings.index') : route('home') }}"
-                       class="text-2xl font-bold text-black shrink-0 hover:text-white">
-                        Keblu.lt
-                    </a>
-
-                    <div class="flex items-center gap-3 shrink-0">
-                        @auth
-                            @unless($isAdmin)
-                                <a href="{{ route('cart.index') }}" class="relative text-black hover:text-white inline-flex items-center" aria-label="Krepšelis">
-                                    <svg xmlns="http://www.w3.org/2000/svg"
-                                         fill="none"
-                                         viewBox="0 0 24 24"
-                                         stroke="currentColor"
-                                         stroke-width="1.8"
-                                         class="w-6 h-6">
-                                        <path stroke-linecap="round" stroke-linejoin="round"
-                                              d="M2.25 3h1.386c.51 0 .955.343 1.087.836l.383 1.437m0 0L6.75 11.25m-1.644-5.977h13.239c.917 0 1.593.862 1.375 1.752l-1.273 5.25a1.125 1.125 0 01-1.094.86H6.75m-1.644-7.837L6.75 11.25m0 0L5.94 14.49a1.125 1.125 0 001.09 1.385h10.72M9 19.5a.75.75 0 100 1.5.75.75 0 000-1.5zm9 0a.75.75 0 100 1.5.75.75 0 000-1.5z" />
-                                    </svg>
-
-                                    @if(session('cart_count', 0) > 0)
-                                        <span class="absolute -top-2 -right-2 text-white text-xs rounded-full min-w-[18px] h-[18px] flex items-center justify-center px-1"
-                                              style="background-color: rgb(131, 99, 84)">
-                                            {{ session('cart_count') }}
-                                        </span>
-                                    @endif
-                                </a>
-                            @endunless
-
-                            <x-dropdown align="right" width="48">
-                                <x-slot name="trigger">
-                                    <button class="inline-flex items-center px-2 py-2 text-sm font-medium text-black font-bold"
-                                            style="background-color: rgb(215, 183, 142)">
-                                        <span class="max-w-[90px] truncate">{{ Auth::user()->vardas }}</span>
-                                        <svg class="ms-1 h-4 w-4" fill="currentColor" viewBox="0 0 20 20">
-                                            <path fill-rule="evenodd"
-                                                  d="M5.23 7.21a.75.75 0 011.06.02L10 11.06l3.71-3.83a.75.75 0 111.08 1.04l-4.25 4.4a.75.75 0 01-1.08 0L5.21 8.27a.75.75 0 01.02-1.06z"
-                                                  clip-rule="evenodd" />
-                                        </svg>
-                                    </button>
-                                </x-slot>
-
-                                <x-slot name="content">
-                                    <x-dropdown-link :href="route('profile.edit')">
-                                        Profilis
-                                    </x-dropdown-link>
-
-                                    <form method="POST" action="{{ route('logout') }}">
-                                        @csrf
-                                        <x-dropdown-link :href="route('logout')"
-                                                         onclick="event.preventDefault(); this.closest('form').submit();">
-                                            Atsijungti
-                                        </x-dropdown-link>
-                                    </form>
-                                </x-slot>
-                            </x-dropdown>
-                        @else
-                            <a href="{{ route('login') }}" class="text-black font-medium hover:text-white">Prisijungti</a>
-                        @endauth
-                    </div>
-                </div>
-
-                <div class="flex items-start justify-center gap-x-4 gap-y-2 text-black font-medium text-sm flex-wrap leading-tight">
+            <!-- TABLET NAVIGATION: 768–1023px -->
+            <div class="hidden md:flex lg:hidden flex-1 min-w-0 items-center justify-center px-4">
+                <div class="flex items-center justify-center gap-4 lg:gap-5 text-black font-medium text-sm text-center min-w-0">
                     @auth
                         @if($isAdmin)
-                            <a href="{{ route('admin.shipments.index') }}" class="hover:text-white text-center whitespace-normal break-words max-w-[95px]">
+                            <a href="{{ route('admin.shipments.index') }}"
+                               class="hover:text-white shrink min-w-0 max-w-[92px] break-words leading-tight">
                                 Siuntų peržiūra
                             </a>
-
-                            <a href="{{ route('admin.reported-listings.index') }}" class="hover:text-white text-center whitespace-normal break-words max-w-[110px]">
+            
+                            <a href="{{ route('admin.reported-listings.index') }}"
+                               class="hover:text-white shrink min-w-0 max-w-[96px] break-words leading-tight">
                                 Pranešti skelbimai
                             </a>
-
-                            <a href="{{ route('admin.reported-listings.reported-comments') }}" class="hover:text-white text-center whitespace-normal break-words max-w-[120px]">
+            
+                            <a href="{{ route('admin.reported-listings.reported-comments') }}"
+                               class="hover:text-white shrink min-w-0 max-w-[96px] break-words leading-tight">
                                 Pranešti atsiliepimai
                             </a>
                         @else
-                            <a href="{{ route('favorites.page') }}" class="hover:text-white text-center whitespace-normal break-words max-w-[90px]">
+                            <a href="{{ route('favorites.page') }}"
+                               class="hover:text-white shrink min-w-0 max-w-[72px] break-words leading-tight">
                                 Išsaugoti
                             </a>
-
+            
                             @if(auth()->user()->role === 'seller' && auth()->user()->canUseSellerFeatures())
-                                <a href="{{ route('my.listings') }}" class="hover:text-white text-center whitespace-normal break-words max-w-[95px]">
+                                <a href="{{ route('my.listings') }}"
+                                   class="hover:text-white shrink min-w-0 max-w-[86px] break-words leading-tight">
                                     Mano skelbimai
                                 </a>
                             @endif
-
+            
                             @if(auth()->user()->canUseSellerFeatures())
-                                <a href="{{ route('listing.create') }}" class="hover:text-white text-center whitespace-normal break-words max-w-[95px]">
+                                <a href="{{ route('listing.create') }}"
+                                   class="hover:text-white shrink min-w-0 max-w-[88px] break-words leading-tight">
                                     Įkelti skelbimą
                                 </a>
                             @endif
-
-                            <a href="{{ route('buyer.orders') }}" class="hover:text-white text-center whitespace-normal break-words max-w-[90px]">
+            
+                            <a href="{{ route('buyer.orders') }}"
+                               class="hover:text-white shrink min-w-0 max-w-[86px] break-words leading-tight">
                                 Mano pirkimai
                             </a>
-
+            
                             @if(auth()->user()->role === 'seller')
-                                <a href="{{ route('seller.orders') }}" class="hover:text-white text-center whitespace-normal break-words max-w-[100px]">
+                                <a href="{{ route('seller.orders') }}"
+                                   class="hover:text-white shrink min-w-0 max-w-[92px] break-words leading-tight">
                                     Mano pardavimai
                                 </a>
-
-                                <a href="{{ route('seller.service-orders.index') }}" class="hover:text-white text-center whitespace-normal break-words max-w-[100px]">
+            
+                                <a href="{{ route('seller.service-orders.index') }}"
+                                   class="hover:text-white shrink min-w-0 max-w-[94px] break-words leading-tight">
                                     Paslaugų užsakymai
                                 </a>
                             @endif
                         @endif
                     @else
-                        <a href="{{ route('login') }}" class="hover:text-white text-center whitespace-normal break-words max-w-[90px]">
+                        <a href="{{ route('login') }}"
+                           class="hover:text-white shrink min-w-0 max-w-[72px] break-words leading-tight">
                             Išsaugoti
                         </a>
-
-                        <a href="{{ route('login') }}" class="hover:text-white text-center whitespace-normal break-words max-w-[95px]">
+            
+                        <a href="{{ route('login') }}"
+                           class="hover:text-white shrink min-w-0 max-w-[86px] break-words leading-tight">
                             Mano skelbimai
                         </a>
-
-                        <a href="{{ route('login') }}" class="hover:text-white text-center whitespace-normal break-words max-w-[95px]">
+            
+                        <a href="{{ route('login') }}"
+                           class="hover:text-white shrink min-w-0 max-w-[88px] break-words leading-tight">
                             Įkelti skelbimą
                         </a>
                     @endauth
                 </div>
             </div>
+
 
             <!-- LAPTOP / DESKTOP: 1024+ -->
             <div class="hidden lg:flex min-h-16 items-center justify-between gap-3">

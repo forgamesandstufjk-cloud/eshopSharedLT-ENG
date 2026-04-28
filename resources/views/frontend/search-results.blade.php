@@ -65,7 +65,7 @@
                             >
                                 <span>{{ $label }}: {{ $value }}</span>
                                 <span class="font-bold">✕</span>
-                            </a>
+                            </div>
                         @endforeach
 
                         <a
@@ -91,11 +91,16 @@
                             $remainingToAdd = max(0, $item->kiekis - $alreadyInCart);
                         @endphp
 
-                        <a
-                            href="{{ route('listing.single', ['listing' => $item['id'], 'back' => request()->fullUrl()]) }}"
-                            class="shadow rounded overflow-hidden hover:shadow-lg transition flex flex-col"
+                        <div
+                            class="relative w-full h-full shadow rounded overflow-hidden hover:shadow-lg transition flex flex-col"
                             style="background-color: rgb(215, 183, 142)"
                         >
+                            <a
+                                href="{{ route('listing.single', ['listing' => $item['id'], 'back' => request()->fullUrl()]) }}"
+                                class="absolute inset-0 z-10"
+                                aria-label="{{ $item->pavadinimas }}"
+                            ></a>
+
                             <div class="relative">
                                 <div class="w-full h-56 sm:h-64 bg-white flex items-center justify-center overflow-hidden">
                                     @if($item->photos->isNotEmpty())
@@ -181,7 +186,7 @@
                                         )
                                             @auth
                                                 @if($remainingToAdd > 0)
-                                                    <form method="POST" action="{{ route('cart.add', $item->id) }}" x-on:click.stop>
+                                                    <form method="POST" action="{{ route('cart.add', $item->id) }}" x-on:click.stop class="relative z-20">
                                                         @csrf
                                                         <button type="submit"
                                                             class="p-2 rounded text-black hover:text-white transition"
@@ -217,7 +222,7 @@
                                                 @endif
                                             @else
                                                 <a href="{{ route('login') }}"
-                                                   class="p-2 rounded text-black hover:text-white transition"
+                                                   class="relative z-20 p-2 rounded text-black hover:text-white transition"
                                                    aria-label="Prisijunkite, kad pridėtumėte į krepšelį"
                                                    title="Prisijunkite, kad pridėtumėte į krepšelį"
                                                    x-on:click.stop>
@@ -244,7 +249,7 @@
                                     
                                 </div>
                             </div>
-                        </a>
+                        </div>
                     @empty
                         <p class="text-gray-600 text-center w-full">
                             Rezultatų nerasta.

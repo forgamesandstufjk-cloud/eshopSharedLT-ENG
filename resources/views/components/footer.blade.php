@@ -8,7 +8,7 @@
                         <h3 class="text-xl font-bold mb-4">Lietuviška prekė</h3>
                         <div class="space-y-2 text-sm leading-7">
                             <p>© {{ now()->year }}. Visos teisės saugomos.</p>
-                            <p>Šiauliai Dvaro g. 10, LT-01102 Vilnius</p>
+                            <p>Šiauliai Dvaro g. 10, LT-01102</p>
                             <p>Įmonės kodas: 304496867</p>
                             <p>info@keblu.lt</p>
                         </div>

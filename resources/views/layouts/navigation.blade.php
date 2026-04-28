@@ -190,6 +190,13 @@
                     <a href="{{ route('admin.reported-listings.reported-comments') }}" class="block hover:text-white">
                         Pranešti atsiliepimai
                     </a>
+
+                    <form method="POST" action="{{ route('logout') }}">
+                        @csrf
+                        <button type="submit" class="block hover:text-white text-left w-full">
+                            Atsijungti
+                        </button>
+                    </form>
                 @else
                     <a href="{{ route('favorites.page') }}" class="block hover:text-white">
                         Išsaugoti
@@ -265,6 +272,16 @@
 
                 <!-- SEARCH BAR -->
                 <form action="{{ route('search.listings') }}" method="GET" class="grid grid-cols-3 sm:flex w-full sm:max-w-3xl mx-auto">
+                    @foreach(request()->except('q', 'page') as $key => $value)
+                        @if(is_array($value))
+                            @foreach($value as $subValue)
+                                <input type="hidden" name="{{ $key }}[]" value="{{ $subValue }}">
+                            @endforeach
+                        @else
+                            <input type="hidden" name="{{ $key }}" value="{{ $value }}">
+                        @endif
+                    @endforeach
+
                     <input
                         type="text"
                         name="q"
@@ -291,8 +308,14 @@
                     </button>
 
                     <form method="GET" action="{{ url()->current() }}" class="w-full sm:w-auto">
-                        @foreach(request()->except('sort') as $key => $value)
-                            <input type="hidden" name="{{ $key }}" value="{{ $value }}">
+                        @foreach(request()->except('sort', 'page') as $key => $value)
+                            @if(is_array($value))
+                                @foreach($value as $subValue)
+                                    <input type="hidden" name="{{ $key }}[]" value="{{ $subValue }}">
+                                @endforeach
+                            @else
+                                <input type="hidden" name="{{ $key }}" value="{{ $value }}">
+                            @endif
                         @endforeach
 
                         <div class="relative" x-data="{ sortOpen: false, selectedSort: '{{ request('sort', '') }}' }" @keydown.escape.window="sortOpen = false">

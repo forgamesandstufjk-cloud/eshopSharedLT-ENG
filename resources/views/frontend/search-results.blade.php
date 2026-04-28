@@ -59,19 +59,19 @@
 
                             <a
                                 href="{{ route('search.listings') }}?{{ $query }}"
-                                 aria-label="Skelbimų paieška"
-                                class="px-3 py-1 rounded-full flex items-center gap-2 text-sm text-black"
+                                aria-label="Pašalinti filtrą {{ $label }}"
+                                class="inline-flex max-w-full items-center gap-2 px-3 py-1 rounded-full text-sm text-black break-words"
                                 style="background-color: rgb(215, 183, 142)"
                             >
-                                <span>{{ $label }}: {{ $value }}</span>
-                                <span class="font-bold">✕</span>
-                            </div>
+                                <span class="min-w-0 break-words">{{ $label }}: {{ $value }}</span>
+                                <span class="font-bold shrink-0">✕</span>
+                            </a>
                         @endforeach
 
                         <a
                             href="{{ route('search.listings') }}"
                             aria-label="Išvalyti filtrus"
-                            class="px-3 py-1 rounded-full font-bold text-sm text-white"
+                            class="inline-flex max-w-full px-3 py-1 rounded-full font-bold text-sm text-white"
                             style="background-color: rgb(184, 80, 54)"
                         >
                             Išvalyti viską

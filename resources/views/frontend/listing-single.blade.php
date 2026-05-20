@@ -546,7 +546,7 @@ input[type=number] {
 {{-- OTHER PRODUCTS --}}
 @if($similar->count() > 0)
 <section class="mt-14 sm:mt-20">
-    <h2 class="text-xl sm:text-2xl font-bold mb-6">Kiti šio pardavėjo produktai</h2>
+    <h2 class="text-xl sm:text-2xl font-bold mb-6 text-black">Kiti šio pardavėjo produktai</h2>
 
     <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
         @foreach($similar as $s)
@@ -606,11 +606,11 @@ input[type=number] {
 
                     <div class="p-4 mt-auto min-h-[88px] flex flex-col justify-end">
                         <a href="{{ route('listing.single', $s->id) }}"
-                           class="font-semibold break-words whitespace-normal line-clamp-1">
+                           class="font-semibold text-black break-words whitespace-normal line-clamp-1">
                             {{ $s->pavadinimas }}
                         </a>
                         <a href="{{ route('listing.single', $s->id) }}"
-                           class="hover:underline line-clamp-1">
+                           class="text-black hover:underline line-clamp-1">
                             {{ $s->aprasymas }}
                         </a>
 

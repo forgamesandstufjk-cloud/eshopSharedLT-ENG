@@ -66,14 +66,14 @@
                                 <div>
                                     <a href="{{ route('listing.single', ['listing' => $item->id, 'back' => request()->fullUrl()]) }}"
                                        class="block">
-                                        <h2 class="text-base sm:text-lg font-semibold mb-1 leading-snug break-words whitespace-normal line-clamp-1">
+                                        <h2 class="text-base sm:text-lg font-semibold mb-1 leading-snug break-words whitespace-normal line-clamp-1 text-black">
                                             {{ $item->pavadinimas }}
                                         </h2>
                                     </a>
 
                                     <a href="{{ route('listing.single', ['listing' => $item->id, 'back' => request()->fullUrl()]) }}"
                                        class="block text-black hover:underline">
-                                        <p class="text-black text-base break-words whitespace-normal line-clamp-1">
+                                        <p class="text-black text-base break-words whitespace-normal line-clamp-1 text-black">
                                             {{ $item->aprasymas }}
                                         </p>
                                     </a>

@@ -335,7 +335,7 @@
                                 class="px-3 py-2 rounded border text-black focus:outline-none focus:ring-1 focus:ring-[#836354] focus:border-[#836354] flex justify-between items-center w-full sm:w-auto sm:min-w-[220px]"
                                 style="background-color: rgba(234, 220, 200, 0.8)"
                             >
-                                <span class="truncate" x-text="
+                                <span x-text="
                                     selectedSort === '' ? 'Rūšiuoti' :
                                     selectedSort === 'newest' ? 'Naujausi pirmiausia' :
                                     selectedSort === 'oldest' ? 'Seniausi pirmiausia' :

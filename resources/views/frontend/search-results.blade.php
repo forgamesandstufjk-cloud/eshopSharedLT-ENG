@@ -145,11 +145,11 @@
 
                             <div class="p-3 sm:p-4 flex flex-col flex-1 justify-end">
                                 <div>
-                                    <h2 class="text-base sm:text-lg font-semibold mb-1 leading-snug break-words whitespace-normal line-clamp-1">
+                                    <h2 class="text-base sm:text-lg font-semibold mb-1 leading-snug break-words whitespace-normal line-clamp-1 text-black">
                                         {{ $item['pavadinimas'] }}
                                     </h2>
 
-                                    <p class="text-black text-base break-words whitespace-normal line-clamp-1 hover:underline">
+                                    <p class="text-black text-base break-words whitespace-normal line-clamp-1 hover:underline text-black">
                                         {{ $item['aprasymas'] }}
                                     </p>
                                 </div>

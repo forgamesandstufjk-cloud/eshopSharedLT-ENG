@@ -90,7 +90,7 @@
                                 @endphp
 
                                 <div class="flex justify-between items-center pt-3 gap-2">
-                                    <span class="font-bold text-base sm:text-lg text-black">
+                                     <span class="font-bold text-base sm:text-lg" style="color: rgb(0, 0, 0)">
                                         {{ $item->kaina }} €
                                     </span>
                                     <div class="flex items-center gap-3">

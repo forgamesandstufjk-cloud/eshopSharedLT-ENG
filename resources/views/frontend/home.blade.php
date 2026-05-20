@@ -3,8 +3,6 @@
     <x-slot name="description">Pagrindinis puslapis su skelbimais ir paieška.</x-slot>
     <div class="min-h-screen flex flex-col" style="background-color: rgb(234, 220, 200)">
         <div
-            x-data
-            x-init="if ({{ auth()->check() ? 'true' : 'false' }}) Alpine.store('favorites').load()"
             class="relative flex-1 w-full px-3 sm:px-4 mt-6 sm:mt-8 pb-10"
         >
             <div
@@ -195,6 +193,17 @@
                 @endif
             </div>
         </div>
+
+
+        @auth
+            <script>
+                document.addEventListener('DOMContentLoaded', function () {
+                    if (window.Alpine && Alpine.store('favorites')) {
+                        Alpine.store('favorites').load();
+                    }
+                });
+            </script>
+        @endauth
 
         @include('components.footer')
     </div>

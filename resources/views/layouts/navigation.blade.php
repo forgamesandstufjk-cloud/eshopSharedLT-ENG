@@ -332,7 +332,7 @@
                                     'Kaina nuo didžiausios'
                                 "
                                 :class="sortOpen ? 'ring-1 ring-[#836354] border-[#836354]' : 'border-[#836354]'"
-                                class="px-3 py-2 rounded border text-black focus:outline-none focus:ring-1 focus:ring-[#836354] focus:border-[#836354] flex justify-between items-center w-full sm:w-auto sm:min-w-[220px]"
+                                class="px-3 py-2 rounded border text-black focus-visible:outline focus-visible:outline-2 focus-visible:outline-black focus:outline-none focus:ring-1 focus:ring-[#836354] focus:border-[#836354] flex justify-between items-center w-full sm:w-auto sm:min-w-[220px]"
                                 style="background-color: rgba(234, 220, 200, 0.8)"
                             >
                                 <span x-text="

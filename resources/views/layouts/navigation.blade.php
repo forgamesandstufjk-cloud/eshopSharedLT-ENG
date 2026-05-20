@@ -1,4 +1,4 @@
-<nav x-data="{ open: false, filtersOpen: false }" class="shadow sticky top-0 z-50">
+<nav class="shadow sticky top-0 z-50">
     @php
         $isAdmin = auth()->check() && auth()->user()->role === 'admin';
     @endphp
@@ -150,16 +150,18 @@
 
                 <!-- MOBILE + TABLET MENU BUTTON -->
                 <button
-                    x-on:click="open = !open"
+                    id="mobile-menu-toggle"
                     class="lg:hidden inline-flex items-center justify-center p-2 rounded text-black shrink-0"
                     type="button"
                     aria-label="Atidaryti meniu"
+                    aria-expanded="false"
+                    aria-controls="mobile-menu"
                 >
-                    <svg x-show="!open" class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <svg class="h-6 w-6 mobile-menu-icon-open" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                               d="M4 6h16M4 12h16M4 18h16"/>
                     </svg>
-                    <svg x-show="open" class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <svg class="h-6 w-6 mobile-menu-icon-close hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                               d="M6 18L18 6M6 6l12 12"/>
                     </svg>
@@ -168,7 +170,7 @@
         </div>
 
         <!-- MOBILE + TABLET MENU -->
-        <div x-show="open" class="lg:hidden px-4 pb-4 space-y-3 text-black font-medium">
+        <div id="mobile-menu" class="hidden lg:hidden px-4 pb-4 space-y-3 text-black font-medium">
             <a href="{{ route('home', ['tipas' => 'preke']) }}" class="block hover:text-white">
                 Prekės
             </a>
@@ -359,43 +361,23 @@
                                 class="sort-menu absolute left-0 right-0 mt-1 rounded border shadow overflow-hidden z-50 hidden"
                                 style="background-color: rgb(234, 220, 200); border-color: #836354"
                             >
-                               <button
-                                    type="button"
-                                    class="sort-option block w-full px-3 py-2 text-left text-black cursor-pointer hover:bg-[#836354]"
-                                    data-value=""
-                                >
+                                <button type="button" class="sort-option block w-full px-3 py-2 text-left text-black cursor-pointer hover:bg-[#836354]" data-value="">
                                     Rūšiuoti
                                 </button>
 
-                                <button
-                                    type="button"
-                                    class="sort-option block w-full px-3 py-2 text-left text-black cursor-pointer hover:bg-[#836354]"
-                                    data-value="newest"
-                                >
+                                <button type="button" class="sort-option block w-full px-3 py-2 text-left text-black cursor-pointer hover:bg-[#836354]" data-value="newest">
                                     Naujausi pirmiausia
                                 </button>
 
-                               <button
-                                    type="button"
-                                    class="sort-option block w-full px-3 py-2 text-left text-black cursor-pointer hover:bg-[#836354]"
-                                    data-value="oldest"
-                                >
+                                <button type="button" class="sort-option block w-full px-3 py-2 text-left text-black cursor-pointer hover:bg-[#836354]" data-value="oldest">
                                     Seniausi pirmiausia
                                 </button>
-                                
-                                <button
-                                    type="button"
-                                    class="sort-option block w-full px-3 py-2 text-left text-black cursor-pointer hover:bg-[#836354]"
-                                    data-value="price_asc"
-                                >
+
+                                <button type="button" class="sort-option block w-full px-3 py-2 text-left text-black cursor-pointer hover:bg-[#836354]" data-value="price_asc">
                                     Kaina: nuo mažiausios
                                 </button>
-                                
-                                <button
-                                    type="button"
-                                    class="sort-option block w-full px-3 py-2 text-left text-black cursor-pointer hover:bg-[#836354]"
-                                    data-value="price_desc"
-                                >
+
+                                <button type="button" class="sort-option block w-full px-3 py-2 text-left text-black cursor-pointer hover:bg-[#836354]" data-value="price_desc">
                                     Kaina: nuo didžiausios
                                 </button>
                             </div>
@@ -407,211 +389,177 @@
         </div>
     </div>
 
-@php
-    $categories = \App\Models\Category::all()->mapWithKeys(fn ($cat) => [
-        (string) $cat->id => $cat->pavadinimas
-    ]);
+    @php
+        $categories = \App\Models\Category::all()->mapWithKeys(fn ($cat) => [
+            (string) $cat->id => $cat->pavadinimas
+        ]);
 
-    $cities = \App\Models\City::orderBy('pavadinimas')->get()->mapWithKeys(fn ($city) => [
-        (string) $city->id => $city->pavadinimas
-    ]);
-@endphp
+        $cities = \App\Models\City::orderBy('pavadinimas')->get()->mapWithKeys(fn ($city) => [
+            (string) $city->id => $city->pavadinimas
+        ]);
 
-<!-- FILTER PANEL -->
-<div
-    x-show="filtersOpen"
-    x-cloak
-    x-transition:enter="transition ease-out duration-200"
-    x-transition:enter-start="opacity-0 -translate-y-3 scale-y-95"
-    x-transition:enter-end="opacity-100 translate-y-0 scale-y-100"
-    x-transition:leave="transition ease-in duration-150"
-    x-transition:leave-start="opacity-100 translate-y-0 scale-y-100"
-    x-transition:leave-end="opacity-0 -translate-y-2 scale-y-95"
-    class="pb-4 origin-top"
-    style="background-color: rgb(215, 183, 142)"
->
-    <div class="w-full pt-2 px-2 sm:px-3">
-        <form method="GET"
-              action="{{ route('search.listings') }}"
-              class="grid grid-cols-1 sm:grid-cols-5 gap-4 border-0 shadow-none outline-none"
-              style="background-color: rgb(215, 183, 142)">
+        $selectedCategory = (string) request('category_id', '');
+        $selectedType = (string) request('tipas', '');
+        $selectedCity = (string) request('city_id', '');
+    @endphp
 
-            <input type="hidden" name="q" value="{{ request('q') }}">
+    <!-- FILTER PANEL -->
+    <div
+        id="filters-panel"
+        class="pb-4 origin-top hidden"
+        style="background-color: rgb(215, 183, 142)"
+    >
+        <div class="w-full pt-2 px-2 sm:px-3">
+            <form method="GET"
+                  action="{{ route('search.listings') }}"
+                  class="grid grid-cols-1 sm:grid-cols-5 gap-4 border-0 shadow-none outline-none"
+                  style="background-color: rgb(215, 183, 142)">
 
-            <!-- Category -->
-            <div
-                class="relative"
-                x-data='{
-                    open: false,
-                    selected: @js((string) request("category_id", "")),
-                    categories: @js($categories)
-                }'
-                x-on:keydown.escape.window="open = false"
-            >
-                <input type="hidden" name="category_id" x-bind:value="selected">
+                <input type="hidden" name="q" value="{{ request('q') }}">
 
-                <button
-                    type="button"
-                    x-on:click.stop="open = !open"
-                    :class="open ? 'ring-1 ring-[#836354] border-[#836354]' : 'border-gray-500'"
-                    class="w-full rounded border py-2 px-3 text-left focus:outline-none focus:ring-1 focus:ring-[#836354] focus:border-[#836354] flex justify-between items-center"
-                    style="background-color: rgb(234, 220, 200)"
-                    aria-label="Pasirinkti kategoriją"
-                >
-                    <span class="text-black" x-text="selected === '' ? 'Kategorija' : (categories[selected] ?? 'Kategorija')"></span>
+                <!-- Category -->
+                <div class="relative filter-dropdown" data-name="category_id">
+                    <input type="hidden" name="category_id" value="{{ $selectedCategory }}">
 
-                    <svg class="h-5 w-5 text-black" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-                        <path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 11.06l3.71-3.83a.75.75 0 111.08 1.04l-4.25 4.4a.75.75 0 01-1.08 0L5.21 8.27a.75.75 0 01.02-1.06z" clip-rule="evenodd" />
-                    </svg>
-                </button>
-
-                <div
-                    x-show="open"
-                    x-cloak
-                    x-transition
-                    x-on:click.outside="open = false"
-                    class="absolute left-0 right-0 mt-1 rounded border shadow overflow-hidden z-50 max-h-60 overflow-y-auto"
-                    style="background-color: rgb(234, 220, 200); border-color: #836354"
-                >
-                    <div
-                        x-on:click="selected = ''; open = false"
-                        class="block w-full px-3 py-2 text-black cursor-pointer hover:bg-[#cfae86]"
+                    <button
+                        type="button"
+                        class="filter-toggle w-full rounded border border-gray-500 py-2 px-3 text-left focus:outline-none focus:ring-1 focus:ring-[#836354] focus:border-[#836354] flex justify-between items-center"
+                        style="background-color: rgb(234, 220, 200)"
+                        aria-label="Pasirinkti kategoriją"
+                        aria-expanded="false"
                     >
-                        Kategorija
-                    </div>
+                        <span class="filter-label text-black">{{ $categories[$selectedCategory] ?? 'Kategorija' }}</span>
 
-                    @foreach(\App\Models\Category::all() as $cat)
-                        <div
-                            x-on:click="selected = @js((string) $cat->id); open = false"
-                            class="block w-full px-3 py-2 text-black cursor-pointer hover:bg-[#cfae86]"
-                        >
-                            {{ $cat->pavadinimas }}
-                        </div>
-                    @endforeach
-                </div>
-            </div>
+                        <svg class="h-5 w-5 text-black" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                            <path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 11.06l3.71-3.83a.75.75 0 111.08 1.04l-4.25 4.4a.75.75 0 01-1.08 0L5.21 8.27a.75.75 0 01.02-1.06z" clip-rule="evenodd" />
+                        </svg>
+                    </button>
 
-            <!-- Type -->
-            <div
-                class="relative"
-                x-data='{ open: false, selected: @js((string) request("tipas", "")) }'
-                x-on:keydown.escape.window="open = false"
-            >
-                <input type="hidden" name="tipas" x-bind:value="selected">
-
-                <button
-                    type="button"
-                    x-on:click.stop="open = !open"
-                    :class="open ? 'ring-1 ring-[#836354] border-[#836354]' : 'border-gray-500'"
-                    class="w-full rounded border py-2 px-3 text-left focus:outline-none focus:ring-1 focus:ring-[#836354] focus:border-[#836354] flex justify-between items-center"
-                    style="background-color: rgb(234, 220, 200)"
-                    aria-label="Pasirinkti tipą"
-                >
-                    <span class="text-black" x-text="selected === '' ? 'Tipas' : (selected === 'preke' ? 'Prekė' : 'Paslauga')"></span>
-
-                    <svg class="h-5 w-5 text-black" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-                        <path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 11.06l3.71-3.83a.75.75 0 111.08 1.04l-4.25 4.4a.75.75 0 01-1.08 0L5.21 8.27a.75.75 0 01.02-1.06z" clip-rule="evenodd" />
-                    </svg>
-                </button>
-
-                <div
-                    x-show="open"
-                    x-cloak
-                    x-transition
-                    x-on:click.outside="open = false"
-                    class="absolute left-0 right-0 mt-1 rounded border shadow overflow-hidden z-50"
-                    style="background-color: rgb(234, 220, 200); border-color: #836354"
-                >
-                    <div x-on:click="selected = ''; open = false" class="block w-full px-3 py-2 text-black cursor-pointer hover:bg-[#cfae86]">
-                        Tipas
-                    </div>
-                    <div x-on:click="selected = 'preke'; open = false" class="block w-full px-3 py-2 text-black cursor-pointer hover:bg-[#cfae86]">
-                        Prekė
-                    </div>
-                    <div x-on:click="selected = 'paslauga'; open = false" class="block w-full px-3 py-2 text-black cursor-pointer hover:bg-[#cfae86]">
-                        Paslauga
-                    </div>
-                </div>
-            </div>
-
-            <!-- Min Price -->
-            <input
-                type="number"
-                name="min_price"
-                class="border border-gray-500 rounded px-3 py-2 text-black placeholder-gray-700 focus:outline-none focus:ring-1 focus:ring-[#836354] focus:border-[#836354]"
-                style="background-color: rgb(234, 220, 200)"
-                placeholder="Min. kaina"
-                value="{{ request('min_price') }}"
-                min="0.20"
-                max="99999"
-                step="0.01"
-            >
-
-            <!-- Max Price -->
-            <input
-                type="number"
-                name="max_price"
-                class="border border-gray-500 rounded px-3 py-2 text-black placeholder-gray-700 focus:outline-none focus:ring-1 focus:ring-[#836354] focus:border-[#836354]"
-                style="background-color: rgb(234, 220, 200)"
-                placeholder="Maks. kaina"
-                value="{{ request('max_price') }}"
-                min="0.20"
-                max="99999"
-                step="0.01"
-            >
-
-            <!-- City -->
-            <div
-                class="relative"
-                x-data='{
-                    open: false,
-                    selected: @js((string) request("city_id", "")),
-                    cities: @js($cities)
-                }'
-                x-on:keydown.escape.window="open = false"
-            >
-                <input type="hidden" name="city_id" x-bind:value="selected">
-
-                <button
-                    type="button"
-                    x-on:click.stop="open = !open"
-                    :class="open ? 'ring-1 ring-[#836354] border-[#836354]' : 'border-gray-500'"
-                    class="w-full rounded border py-2 px-3 text-left focus:outline-none focus:ring-1 focus:ring-[#836354] focus:border-[#836354] flex justify-between items-center"
-                    style="background-color: rgb(234, 220, 200)"
-                    aria-label="Pasirinkti miestą"
-                >
-                    <span class="text-black" x-text="selected === '' ? 'Miestas' : (cities[selected] ?? 'Miestas')"></span>
-
-                    <svg class="h-5 w-5 text-black" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-                        <path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 11.06l3.71-3.83a.75.75 0 111.08 1.04l-4.25 4.4a.75.75 0 01-1.08 0L5.21 8.27a.75.75 0 01.02-1.06z" clip-rule="evenodd" />
-                    </svg>
-                </button>
-
-                <div
-                    x-show="open"
-                    x-cloak
-                    x-transition
-                    x-on:click.outside="open = false"
-                    class="absolute left-0 right-0 mt-1 rounded border shadow overflow-hidden z-50 max-h-60 overflow-y-auto"
-                    style="background-color: rgb(234, 220, 200); border-color: #836354"
-                >
                     <div
-                        x-on:click="selected = ''; open = false"
-                        class="block w-full px-3 py-2 text-black cursor-pointer hover:bg-[#cfae86]"
+                        class="filter-menu absolute left-0 right-0 mt-1 rounded border shadow overflow-hidden z-50 max-h-60 overflow-y-auto hidden"
+                        style="background-color: rgb(234, 220, 200); border-color: #836354"
                     >
-                        Miestas
-                    </div>
+                        <button type="button" class="filter-option block w-full px-3 py-2 text-left text-black cursor-pointer hover:bg-[#cfae86]" data-value="">
+                            Kategorija
+                        </button>
 
-                    @foreach(\App\Models\City::orderBy('pavadinimas')->get() as $city)
-                        <div
-                            x-on:click="selected = @js((string) $city->id); open = false"
-                            class="block w-full px-3 py-2 text-black cursor-pointer hover:bg-[#cfae86]"
-                        >
-                            {{ $city->pavadinimas }}
-                        </div>
-                    @endforeach
+                        @foreach(\App\Models\Category::all() as $cat)
+                            <button
+                                type="button"
+                                class="filter-option block w-full px-3 py-2 text-left text-black cursor-pointer hover:bg-[#cfae86]"
+                                data-value="{{ $cat->id }}"
+                            >
+                                {{ $cat->pavadinimas }}
+                            </button>
+                        @endforeach
+                    </div>
                 </div>
-            </div>
+
+                <!-- Type -->
+                <div class="relative filter-dropdown" data-name="tipas">
+                    <input type="hidden" name="tipas" value="{{ $selectedType }}">
+
+                    <button
+                        type="button"
+                        class="filter-toggle w-full rounded border border-gray-500 py-2 px-3 text-left focus:outline-none focus:ring-1 focus:ring-[#836354] focus:border-[#836354] flex justify-between items-center"
+                        style="background-color: rgb(234, 220, 200)"
+                        aria-label="Pasirinkti tipą"
+                        aria-expanded="false"
+                    >
+                        <span class="filter-label text-black">
+                            @if($selectedType === 'preke')
+                                Prekė
+                            @elseif($selectedType === 'paslauga')
+                                Paslauga
+                            @else
+                                Tipas
+                            @endif
+                        </span>
+
+                        <svg class="h-5 w-5 text-black" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                            <path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 11.06l3.71-3.83a.75.75 0 111.08 1.04l-4.25 4.4a.75.75 0 01-1.08 0L5.21 8.27a.75.75 0 01.02-1.06z" clip-rule="evenodd" />
+                        </svg>
+                    </button>
+
+                    <div
+                        class="filter-menu absolute left-0 right-0 mt-1 rounded border shadow overflow-hidden z-50 hidden"
+                        style="background-color: rgb(234, 220, 200); border-color: #836354"
+                    >
+                        <button type="button" class="filter-option block w-full px-3 py-2 text-left text-black cursor-pointer hover:bg-[#cfae86]" data-value="">
+                            Tipas
+                        </button>
+                        <button type="button" class="filter-option block w-full px-3 py-2 text-left text-black cursor-pointer hover:bg-[#cfae86]" data-value="preke">
+                            Prekė
+                        </button>
+                        <button type="button" class="filter-option block w-full px-3 py-2 text-left text-black cursor-pointer hover:bg-[#cfae86]" data-value="paslauga">
+                            Paslauga
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Min Price -->
+                <input
+                    type="number"
+                    name="min_price"
+                    class="border border-gray-500 rounded px-3 py-2 text-black placeholder-gray-700 focus:outline-none focus:ring-1 focus:ring-[#836354] focus:border-[#836354]"
+                    style="background-color: rgb(234, 220, 200)"
+                    placeholder="Min. kaina"
+                    value="{{ request('min_price') }}"
+                    min="0.20"
+                    max="99999"
+                    step="0.01"
+                >
+
+                <!-- Max Price -->
+                <input
+                    type="number"
+                    name="max_price"
+                    class="border border-gray-500 rounded px-3 py-2 text-black placeholder-gray-700 focus:outline-none focus:ring-1 focus:ring-[#836354] focus:border-[#836354]"
+                    style="background-color: rgb(234, 220, 200)"
+                    placeholder="Maks. kaina"
+                    value="{{ request('max_price') }}"
+                    min="0.20"
+                    max="99999"
+                    step="0.01"
+                >
+
+                <!-- City -->
+                <div class="relative filter-dropdown" data-name="city_id">
+                    <input type="hidden" name="city_id" value="{{ $selectedCity }}">
+
+                    <button
+                        type="button"
+                        class="filter-toggle w-full rounded border border-gray-500 py-2 px-3 text-left focus:outline-none focus:ring-1 focus:ring-[#836354] focus:border-[#836354] flex justify-between items-center"
+                        style="background-color: rgb(234, 220, 200)"
+                        aria-label="Pasirinkti miestą"
+                        aria-expanded="false"
+                    >
+                        <span class="filter-label text-black">{{ $cities[$selectedCity] ?? 'Miestas' }}</span>
+
+                        <svg class="h-5 w-5 text-black" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                            <path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 11.06l3.71-3.83a.75.75 0 111.08 1.04l-4.25 4.4a.75.75 0 01-1.08 0L5.21 8.27a.75.75 0 01.02-1.06z" clip-rule="evenodd" />
+                        </svg>
+                    </button>
+
+                    <div
+                        class="filter-menu absolute left-0 right-0 mt-1 rounded border shadow overflow-hidden z-50 max-h-60 overflow-y-auto hidden"
+                        style="background-color: rgb(234, 220, 200); border-color: #836354"
+                    >
+                        <button type="button" class="filter-option block w-full px-3 py-2 text-left text-black cursor-pointer hover:bg-[#cfae86]" data-value="">
+                            Miestas
+                        </button>
+
+                        @foreach(\App\Models\City::orderBy('pavadinimas')->get() as $city)
+                            <button
+                                type="button"
+                                class="filter-option block w-full px-3 py-2 text-left text-black cursor-pointer hover:bg-[#cfae86]"
+                                data-value="{{ $city->id }}"
+                            >
+                                {{ $city->pavadinimas }}
+                            </button>
+                        @endforeach
+                    </div>
+                </div>
 
                 <!-- Submit -->
                 <div class="col-span-full flex flex-wrap gap-3 pt-1">
@@ -636,3 +584,143 @@
     </div>
     @endif
 </nav>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    const mobileToggle = document.getElementById('mobile-menu-toggle');
+    const mobileMenu = document.getElementById('mobile-menu');
+    const openIcon = mobileToggle?.querySelector('.mobile-menu-icon-open');
+    const closeIcon = mobileToggle?.querySelector('.mobile-menu-icon-close');
+
+    if (mobileToggle && mobileMenu) {
+        mobileToggle.addEventListener('click', (e) => {
+            e.stopPropagation();
+            const willOpen = mobileMenu.classList.contains('hidden');
+            mobileMenu.classList.toggle('hidden', !willOpen);
+            mobileToggle.setAttribute('aria-expanded', willOpen ? 'true' : 'false');
+            openIcon?.classList.toggle('hidden', willOpen);
+            closeIcon?.classList.toggle('hidden', !willOpen);
+        });
+    }
+
+    const filtersToggle = document.getElementById('filters-toggle');
+    const filtersPanel = document.getElementById('filters-panel');
+
+    if (filtersToggle && filtersPanel) {
+        filtersToggle.addEventListener('click', (e) => {
+            e.stopPropagation();
+            const willOpen = filtersPanel.classList.contains('hidden');
+            filtersPanel.classList.toggle('hidden', !willOpen);
+            filtersToggle.setAttribute('aria-expanded', willOpen ? 'true' : 'false');
+        });
+    }
+
+    document.querySelectorAll('.sort-dropdown').forEach((dropdown) => {
+        const toggle = dropdown.querySelector('.sort-toggle');
+        const menu = dropdown.querySelector('.sort-menu');
+        const input = dropdown.querySelector('input[name="sort"]');
+        const label = dropdown.querySelector('.sort-label');
+        const form = dropdown.closest('form');
+
+        const labels = {
+            '': 'Rūšiuoti',
+            'newest': 'Naujausi pirmiausia',
+            'oldest': 'Seniausi pirmiausia',
+            'price_asc': 'Kaina: nuo mažiausios',
+            'price_desc': 'Kaina: nuo didžiausios'
+        };
+
+        toggle?.addEventListener('click', (e) => {
+            e.stopPropagation();
+            const willOpen = menu.classList.contains('hidden');
+            menu.classList.toggle('hidden', !willOpen);
+            toggle.setAttribute('aria-expanded', willOpen ? 'true' : 'false');
+        });
+
+        menu?.querySelectorAll('.sort-option').forEach((option) => {
+            option.addEventListener('click', () => {
+                const value = option.dataset.value ?? '';
+                input.value = value;
+                label.textContent = labels[value] ?? 'Rūšiuoti';
+                menu.classList.add('hidden');
+                toggle.setAttribute('aria-expanded', 'false');
+                form.submit();
+            });
+        });
+    });
+
+    document.querySelectorAll('.filter-dropdown').forEach((dropdown) => {
+        const toggle = dropdown.querySelector('.filter-toggle');
+        const menu = dropdown.querySelector('.filter-menu');
+        const input = dropdown.querySelector('input[type="hidden"]');
+        const label = dropdown.querySelector('.filter-label');
+        const name = dropdown.dataset.name;
+
+        const defaultLabels = {
+            category_id: 'Kategorija',
+            tipas: 'Tipas',
+            city_id: 'Miestas'
+        };
+
+        const optionMap = {};
+        dropdown.querySelectorAll('.filter-option').forEach((option) => {
+            optionMap[option.dataset.value ?? ''] = option.textContent.trim();
+        });
+
+        toggle?.addEventListener('click', (e) => {
+            e.stopPropagation();
+            const willOpen = menu.classList.contains('hidden');
+            menu.classList.toggle('hidden', !willOpen);
+            toggle.setAttribute('aria-expanded', willOpen ? 'true' : 'false');
+        });
+
+        dropdown.querySelectorAll('.filter-option').forEach((option) => {
+            option.addEventListener('click', () => {
+                const value = option.dataset.value ?? '';
+                input.value = value;
+                label.textContent = optionMap[value] || defaultLabels[name] || '';
+                menu.classList.add('hidden');
+                toggle.setAttribute('aria-expanded', 'false');
+            });
+        });
+    });
+
+    document.addEventListener('click', () => {
+        mobileMenu?.classList.add('hidden');
+        mobileToggle?.setAttribute('aria-expanded', 'false');
+        openIcon?.classList.remove('hidden');
+        closeIcon?.classList.add('hidden');
+
+        filtersPanel?.classList.add('hidden');
+        filtersToggle?.setAttribute('aria-expanded', 'false');
+
+        document.querySelectorAll('.sort-menu, .filter-menu').forEach((menu) => {
+            menu.classList.add('hidden');
+        });
+
+        document.querySelectorAll('.sort-toggle, .filter-toggle').forEach((toggle) => {
+            toggle.setAttribute('aria-expanded', 'false');
+        });
+    });
+
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') {
+            mobileMenu?.classList.add('hidden');
+            mobileToggle?.setAttribute('aria-expanded', 'false');
+            openIcon?.classList.remove('hidden');
+            closeIcon?.classList.add('hidden');
+
+            filtersPanel?.classList.add('hidden');
+            filtersToggle?.setAttribute('aria-expanded', 'false');
+
+            document.querySelectorAll('.sort-menu, .filter-menu').forEach((menu) => {
+                menu.classList.add('hidden');
+            });
+
+            document.querySelectorAll('.sort-toggle, .filter-toggle').forEach((toggle) => {
+                toggle.setAttribute('aria-expanded', 'false');
+            });
+        }
+    });
+});
+</script>

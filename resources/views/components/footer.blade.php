@@ -17,7 +17,7 @@
                     <div>
                         <h3 class="text-xl font-bold mb-4">Informacija</h3>
                         <ul class="space-y-2 text-sm">
-                            <li><a href="{{ route('home') }}"" class="hover:underline">Siuntimas</a></li>
+                            <li><a href="{{ route('home') }}" class="hover:underline">Siuntimas</a></li>
                             <li><a href="{{ route('home') }}" class="hover:underline">Grąžinimas</a></li>
                         </ul>
                     </div>
@@ -25,7 +25,7 @@
                     <div>
                         <h3 class="text-xl font-bold mb-4">Pirkėjams</h3>
                         <ul class="space-y-2 text-sm">
-                            <li><a <a href="{{ route('about') }}" class="hover:underline">Apie mus</a></li>
+                            <li><a href="{{ route('about') }}" class="hover:underline">Apie mus</a></li>
                             <li><a href="{{ route('home') }}" class="hover:underline">Paieška</a></li>
                         </ul>
                     </div>

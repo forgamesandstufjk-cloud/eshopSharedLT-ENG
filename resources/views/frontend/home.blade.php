@@ -16,7 +16,7 @@
                     @forelse ($listings as $item)
                         <div
                             class="shadow rounded overflow-hidden hover:shadow-lg transition flex flex-col"
-                            style="background-color: rgb(215, 183, 142)"
+                            style="background-color: rgb(227, 197, 157)"
                         >
                             <a href="{{ route('listing.single', ['listing' => $item->id, 'back' => request()->fullUrl()]) }}"
                                class="block relative">

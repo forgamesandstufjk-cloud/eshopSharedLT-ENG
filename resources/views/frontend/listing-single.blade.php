@@ -39,7 +39,7 @@ input[type=number] {
     @endif
 
     {{-- LISTING CARD --}}
-    <div class="rounded-lg shadow p-4 sm:p-6" style="background-color: rgb(215, 183, 142)">
+    <div class="rounded-lg shadow p-4 sm:p-6" style="background-color: rgb(227, 197, 157)">
 
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-10">
 
@@ -67,7 +67,7 @@ input[type=number] {
                                 <span
                                     x-show="Alpine.store('favorites').has({{ $listing->id }})"
                                     class="text-2xl leading-none"
-                                    style="color: rgb(131, 99, 84)"
+                                    style="color: rgb(104, 79, 67)"
                                 >
                                     🤎
                                 </span>
@@ -106,7 +106,7 @@ input[type=number] {
                 {{-- CATEGORY --}}
                 <div class="mb-3">
                     <span class="inline-block px-3 py-1 rounded text-sm text-white"
-                          style="background-color: rgb(131, 99, 84)">
+                          style="background-color: rgb(104, 79, 67)">
                         {{ $listing->Category->pavadinimas ?? 'Kategorija' }}
                     </span>
                 </div>
@@ -146,7 +146,7 @@ input[type=number] {
                 @if($listing->is_renewable)
                     <div class="mb-4">
                         <span class="inline-block px-3 py-1 rounded text-sm text-black"
-                              style="background-color: rgb(131, 99, 84)">
+                              style="background-color: rgb(104, 79, 67)">
                             Atsinaujinanti prekė – pardavėjas papildo atsargas
                         </span>
                     </div>
@@ -161,7 +161,7 @@ input[type=number] {
                             <a href="{{ route('seller.service-orders.create.from-listing', $listing->id) }}"
                                aria-label="Sukurti paslaugos užsakymą"
                                class="inline-block px-6 py-3 text-white rounded hover:text-black transition text-center w-full sm:w-auto"
-                               style="background-color: rgb(131, 99, 84)">
+                               style="background-color: rgb(104, 79, 67)">
                                 Sukurti paslaugos užsakymą
                             </a>
                         </div>
@@ -171,7 +171,7 @@ input[type=number] {
                         <a href="{{ route('listing.edit', $listing->id) }}"
                           aria-label="Redaguoti"
                            class="px-6 py-3 text-white rounded hover:text-black transition text-center w-full sm:w-40 whitespace-nowrap"
-                           style="background-color: rgb(131, 99, 84)">
+                           style="background-color: rgb(104, 79, 67)">
                             Redaguoti
                         </a>
 
@@ -221,7 +221,7 @@ input[type=number] {
         :class="qty <= 1 ? 'opacity-50 cursor-not-allowed' : 'hover:text-white cursor-pointer'"
         class="w-10 h-10 border rounded flex items-center justify-center text-black transition-colors"
         style="background-color: rgb(234, 220, 200); border-color: #836354"
-        @mouseenter="if(qty > 1) $el.style.backgroundColor = 'rgb(131, 99, 84)'"
+        @mouseenter="if(qty > 1) $el.style.backgroundColor = 'rgb(104, 79, 67)'"
         @mouseleave="$el.style.backgroundColor = 'rgb(234, 220, 200)'"
     >
         −
@@ -247,7 +247,7 @@ input[type=number] {
         :class="qty >= max ? 'opacity-50 cursor-not-allowed' : 'hover:text-white cursor-pointer'"
         class="w-10 h-10 border rounded flex items-center justify-center text-black transition-colors"
         style="background-color: rgb(234, 220, 200); border-color: #836354"
-        @mouseenter="if(qty < max) $el.style.backgroundColor = 'rgb(131, 99, 84)'"
+        @mouseenter="if(qty < max) $el.style.backgroundColor = 'rgb(104, 79, 67)'"
         @mouseleave="$el.style.backgroundColor = 'rgb(234, 220, 200)'"
     >
         +
@@ -256,7 +256,7 @@ input[type=number] {
 
                         <button type="submit"
                             class="px-6 py-3 text-white rounded hover:text-black transition w-full sm:w-auto"
-                            style="background-color: rgb(131, 99, 84)">
+                            style="background-color: rgb(104, 79, 67)">
                            Pridėti į krepšelį              
                         </button>                 
                     </form>
@@ -373,7 +373,7 @@ input[type=number] {
                             :disabled="loadingSeller"
                             :class="loadingSeller ? 'opacity-50 cursor-not-allowed' : ''"
                             class="mt-3 px-4 py-2 rounded text-white hover:text-black transition-colors"
-                            style="background-color: rgb(131, 99, 84)"
+                            style="background-color: rgb(104, 79, 67)"
                         >
                             <span x-show="!loadingSeller">Rodyti pardavėjo kontaktus</span>
                             <span x-show="loadingSeller">Kraunama...</span>
@@ -383,7 +383,7 @@ input[type=number] {
                             href="{{ route('login') }}"
                              aria-label=" Prisijunkite, kad matytumėte kontaktus"
                             class="inline-block mt-3 px-4 py-2 rounded text-white hover:text-black transition-colors"
-                            style="background-color: rgb(131, 99, 84)"
+                            style="background-color: rgb(104, 79, 67)"
                         >
                             Prisijunkite, kad matytumėte kontaktus
                         </a>
@@ -456,7 +456,7 @@ input[type=number] {
                                     x-show="reasonOpen"
                                     x-on:click.outside="reasonOpen = false"
                                     class="absolute left-0 right-0 mt-1 rounded border shadow overflow-hidden z-50"
-                                    style="background-color: rgb(215, 183, 142); border-color: #836354"
+                                    style="background-color: rgb(227, 197, 157); border-color: #836354"
                                 >
 
                                     <div
@@ -510,7 +510,7 @@ input[type=number] {
                                 name="details"
                                 rows="4"
                                 class="border p-2 rounded w-full text-black focus:outline-none focus:ring-1 focus:ring-[#836354] focus:border-[#836354]"
-                                style="background-color: rgb(215, 183, 142); border-color: #836354"
+                                style="background-color: rgb(227, 197, 157); border-color: #836354"
                                 placeholder="Aprašykite situaciją, jei reikia"
                             ></textarea>
                         </div>
@@ -519,7 +519,7 @@ input[type=number] {
                             <button
                                 type="submit"
                                 class="px-4 py-2 rounded text-white hover:text-black transition-colors"
-                                style="background-color: rgb(131, 99, 84)"
+                                style="background-color: rgb(104, 79, 67)"
                             >
                                 Siųsti pranešimą
                             </button>
@@ -562,7 +562,7 @@ input[type=number] {
                 @endphp
 
                 <div class="shadow rounded overflow-hidden flex flex-col h-full"
-                     style="background-color: rgb(215, 183, 142)">
+                     style="background-color: rgb(227, 197, 157)">
 
                     <a href="{{ route('listing.single', $s->id) }}"
                       aria-label=" Pereižrėkite skelbimą">
@@ -587,7 +587,7 @@ input[type=number] {
                                         <span
                                             x-show="Alpine.store('favorites').has({{ $s->id }})"
                                             class="text-2xl leading-none"
-                                            style="color: rgb(131, 99, 84)"
+                                            style="color: rgb(104, 79, 67)"
                                         >
                                             🤎
                                         </span>
@@ -615,7 +615,7 @@ input[type=number] {
                         </a>
 
                         <div class="mt-2 flex items-center justify-between gap-2">
-                            <div class="font-semibold" style="color: rgb(131, 99, 84)">
+                            <div class="font-semibold" style="color: rgb(104, 79, 67)">
                                 {{ number_format($s->kaina, 2, ',', '.') }} €
                             </div>
 
@@ -741,7 +741,7 @@ input[type=number] {
         @if($totalReviews > 0)
             <div class="mb-6">
                 <div class="flex items-center gap-3 mb-3">
-                    <div class="text-2xl sm:text-3xl" style="color: rgb(131, 99, 84)">
+                    <div class="text-2xl sm:text-3xl" style="color: rgb(104, 79, 67)">
                         {{ str_repeat('★', floor($avgRating)) }}
                     </div>
                     <div class="text-black">
@@ -766,7 +766,7 @@ input[type=number] {
                             x-on:click="sortOpen = !sortOpen"
                             :class="sortOpen ? 'ring-1 ring-[#836354] border-[#836354]' : 'border-gray-500'"
                             class="w-full rounded border py-2 px-3 text-left text-black focus:outline-none focus:ring-1 focus:ring-[#836354] focus:border-[#836354] flex justify-between items-center"
-                            style="background-color: rgb(215, 183, 142)"
+                            style="background-color: rgb(227, 197, 157)"
                         >
                             <span x-text="
                                 selectedSort === 'newest' ? 'Naujausi' :
@@ -784,7 +784,7 @@ input[type=number] {
                             x-show="sortOpen"
                             x-on:click.outside="sortOpen = false"
                             class="absolute left-0 right-0 mt-1 rounded border shadow overflow-hidden z-50"
-                            style="background-color: rgb(215, 183, 142); border-color: #836354"
+                            style="background-color: rgb(227, 197, 157); border-color: #836354"
                         >
                             <div
                                 x-on:click="selectedSort = 'newest'; sortOpen = false; $nextTick(() => $el.closest('form').submit())"
@@ -833,7 +833,7 @@ input[type=number] {
                         hoverStars: 0
                     }"
                     class="p-4 rounded border relative"
-                    style="background-color: rgb(215, 183, 142); border-color: #836354"
+                    style="background-color: rgb(227, 197, 157); border-color: #836354"
                 >
                     @auth
                         @if(auth()->id() === $review->user_id)
@@ -867,7 +867,7 @@ input[type=number] {
                     <div x-show="editingReviewId !== {{ $review->id }}">
                         <div class="flex items-center gap-2 mb-1 pr-8">
                             <strong class="text-black">{{ $review->user->vardas }}</strong>
-                            <span class="text-sm" style="color: rgb(131, 99, 84)">
+                            <span class="text-sm" style="color: rgb(104, 79, 67)">
                                 {{ str_repeat('★', $review->ivertinimas) }}
                             </span>
                         </div>
@@ -903,7 +903,7 @@ input[type=number] {
                                                 >
                                                     <span
                                                         x-show="(hoverStars || editStars) >= {{ $n }}"
-                                                        style="color: rgb(131, 99, 84)">
+                                                        style="color: rgb(104, 79, 67)">
                                                         ★
                                                     </span>
                                                     <span
@@ -934,7 +934,7 @@ input[type=number] {
                                         <button
                                             type="submit"
                                             class="text-white px-4 py-2 rounded hover:text-black"
-                                            style="background-color: rgb(131, 99, 84)"
+                                            style="background-color: rgb(104, 79, 67)"
                                             :disabled="editStars === 0"
                                             :class="editStars === 0 ? 'opacity-50 cursor-not-allowed' : ''"
                                         >
@@ -1001,7 +1001,7 @@ input[type=number] {
                                                 x-show="reasonOpen"
                                                 x-on:click.outside="reasonOpen = false"
                                                 class="absolute left-0 right-0 mt-1 rounded border shadow overflow-hidden z-50"
-                                                style="background-color: rgb(215, 183, 142); border-color: #836354"
+                                                style="background-color: rgb(227, 197, 157); border-color: #836354"
                                             >
                                                 <div
                                                     x-on:click="selectedReason = 'abuse'; reasonOpen = false"
@@ -1056,7 +1056,7 @@ input[type=number] {
                                         <button
                                             type="submit"
                                             class="px-3 py-2 rounded text-white hover:text-black transition-colors"
-                                            style="background-color: rgb(131, 99, 84)"
+                                            style="background-color: rgb(104, 79, 67)"
                                         >
                                             Siųsti
                                         </button>
@@ -1118,7 +1118,7 @@ input[type=number] {
                                 >
                                     <span
                                         x-show="(hoverStars || selectedStars) >= {{ $n }}"
-                                        style="color: rgb(131, 99, 84)">
+                                        style="color: rgb(104, 79, 67)">
                                         ★
                                     </span>
                                     <span
@@ -1141,14 +1141,14 @@ input[type=number] {
                         name="komentaras"
                         rows="4"
                         class="w-full border border-gray-500 rounded p-3 text-black focus:outline-none focus:ring-1 focus:ring-[#836354] focus:border-[#836354]"
-                        style="background-color: rgb(215, 183, 142)"
+                        style="background-color: rgb(227, 197, 157)"
                         placeholder="Parašykite atsiliepimą..."
                     ></textarea>
 
                     <button
                         type="submit"
                         class="text-white px-4 py-2 rounded w-full hover:text-black"
-                        style="background-color: rgb(131, 99, 84)"
+                        style="background-color: rgb(104, 79, 67)"
                         :disabled="selectedStars === 0"
                         :class="selectedStars === 0 ? 'opacity-50 cursor-not-allowed' : ''"
                     >

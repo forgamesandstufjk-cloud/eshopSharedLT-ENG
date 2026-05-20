@@ -405,207 +405,211 @@
         </div>
     </div>
 
-    <!-- FILTER PANEL -->
-    <div
-        x-show="filtersOpen"
-        x-cloak
-        x-transition:enter="transition ease-out duration-200"
-        x-transition:enter-start="opacity-0 -translate-y-3 scale-y-95"
-        x-transition:enter-end="opacity-100 translate-y-0 scale-y-100"
-        x-transition:leave="transition ease-in duration-150"
-        x-transition:leave-start="opacity-100 translate-y-0 scale-y-100"
-        x-transition:leave-end="opacity-0 -translate-y-2 scale-y-95"
-        class="pb-4 origin-top"
-        style="background-color: rgb(215, 183, 142)"
-    >
-        <div class="w-full pt-2 px-2 sm:px-3">
-            <form method="GET"
-                  action="{{ route('search.listings') }}"
-                  class="grid grid-cols-1 sm:grid-cols-5 gap-4 border-0 shadow-none outline-none"
-                  style="background-color: rgb(215, 183, 142)">
+@php
+    $categories = \App\Models\Category::all()->mapWithKeys(fn ($cat) => [
+        (string) $cat->id => $cat->pavadinimas
+    ]);
 
-                <input type="hidden" name="q" value="{{ request('q') }}">
+    $cities = \App\Models\City::orderBy('pavadinimas')->get()->mapWithKeys(fn ($city) => [
+        (string) $city->id => $city->pavadinimas
+    ]);
+@endphp
 
-                <!-- Category -->
-                <div class="relative" x-data="{ open: false, selected: '{{ request('category_id', '') }}' }" @keydown.escape.window="open = false">
-                    <input type="hidden" name="category_id" x-bind:value="selected">
+<!-- FILTER PANEL -->
+<div
+    x-show="filtersOpen"
+    x-cloak
+    x-transition:enter="transition ease-out duration-200"
+    x-transition:enter-start="opacity-0 -translate-y-3 scale-y-95"
+    x-transition:enter-end="opacity-100 translate-y-0 scale-y-100"
+    x-transition:leave="transition ease-in duration-150"
+    x-transition:leave-start="opacity-100 translate-y-0 scale-y-100"
+    x-transition:leave-end="opacity-0 -translate-y-2 scale-y-95"
+    class="pb-4 origin-top"
+    style="background-color: rgb(215, 183, 142)"
+>
+    <div class="w-full pt-2 px-2 sm:px-3">
+        <form method="GET"
+              action="{{ route('search.listings') }}"
+              class="grid grid-cols-1 sm:grid-cols-5 gap-4 border-0 shadow-none outline-none"
+              style="background-color: rgb(215, 183, 142)">
 
-                    <button
-                        type="button"
-                        x-on:click.stop="open = !open"
-                        :class="open ? 'ring-1 ring-[#836354] border-[#836354]' : 'border-gray-500'"
-                        class="w-full rounded border py-2 px-3 text-left focus:outline-none focus:ring-1 focus:ring-[#836354] focus:border-[#836354] flex justify-between items-center"
-                        style="background-color: rgb(234, 220, 200)"
-                    >
-                        <span class="text-black"
-                            x-text="selected === '' ? 'Kategorija' : (() => {
-                                const categories = {
-                                    @foreach(\App\Models\Category::all() as $cat)
-                                        '{{ $cat->id }}': '{{ $cat->pavadinimas }}',
-                                    @endforeach
-                                };
-                                return categories[selected] ?? 'Kategorija';
-                            })()"
-                        ></span>
+            <input type="hidden" name="q" value="{{ request('q') }}">
 
-                        <svg class="h-5 w-5 text-black" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
-                            <path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 11.06l3.71-3.83a.75.75 0 111.08 1.04l-4.25 4.4a.75.75 0 01-1.08 0L5.21 8.27a.75.75 0 01.02-1.06z" clip-rule="evenodd" />
-                        </svg>
-                    </button>
+            <!-- Category -->
+            <div
+                class="relative"
+                x-data='{
+                    open: false,
+                    selected: @js((string) request("category_id", "")),
+                    categories: @js($categories)
+                }'
+                x-on:keydown.escape.window="open = false"
+            >
+                <input type="hidden" name="category_id" x-bind:value="selected">
 
-                    <div
-                        x-show="open"
-                        x-cloak
-                        x-transition
-                        x-on:click.outside="open = false"
-                        class="absolute left-0 right-0 mt-1 rounded border shadow overflow-hidden z-50 max-h-60 overflow-y-auto"
-                        style="background-color: rgb(234, 220, 200); border-color: #836354"
-                    >
-                        <div
-                            x-on:click="selected = ''; open = false"
-                            class="block w-full px-3 py-2 text-black cursor-pointer hover:bg-[#cfae86]"
-                        >
-                            Kategorija
-                        </div>
-
-                        @foreach(\App\Models\Category::all() as $cat)
-                            <div
-                                x-on:click="selected = '{{ $cat->id }}'; open = false"
-                                class="block w-full px-3 py-2 text-black cursor-pointer hover:bg-[#cfae86]"
-                            >
-                                {{ $cat->pavadinimas }}
-                            </div>
-                        @endforeach
-                    </div>
-                </div>
-
-                <!-- Type -->
-                <div class="relative" x-data="{ open: false, selected: '{{ request('tipas', '') }}' }" @keydown.escape.window="open = false">
-                    <input type="hidden" name="tipas" x-bind:value="selected">
-
-                    <button
-                        type="button"
-                        x-on:click.stop="open = !open"
-                        :class="open ? 'ring-1 ring-[#836354] border-[#836354]' : 'border-gray-500'"
-                        class="w-full rounded border py-2 px-3 text-left focus:outline-none focus:ring-1 focus:ring-[#836354] focus:border-[#836354] flex justify-between items-center"
-                        style="background-color: rgb(234, 220, 200)"
-                    >
-                        <span class="text-black" x-text="selected === '' ? 'Tipas' : (selected === 'preke' ? 'Prekė' : 'Paslauga')"></span>
-
-                        <svg class="h-5 w-5 text-black" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
-                            <path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 11.06l3.71-3.83a.75.75 0 111.08 1.04l-4.25 4.4a.75.75 0 01-1.08 0L5.21 8.27a.75.75 0 01.02-1.06z" clip-rule="evenodd" />
-                        </svg>
-                    </button>
-
-                    <div
-                        x-show="open"
-                        x-cloak
-                        x-transition
-                        x-on:click.outside="open = false"
-                        class="absolute left-0 right-0 mt-1 rounded border shadow overflow-hidden z-50"
-                        style="background-color: rgb(234, 220, 200); border-color: #836354"
-                    >
-                        <div
-                            x-on:click="selected = ''; open = false"
-                            class="block w-full px-3 py-2 text-black cursor-pointer hover:bg-[#cfae86]"
-                        >
-                            Tipas
-                        </div>
-
-                        <div
-                            x-on:click="selected = 'preke'; open = false"
-                            class="block w-full px-3 py-2 text-black cursor-pointer hover:bg-[#cfae86]"
-                        >
-                            Prekė
-                        </div>
-
-                        <div
-                            x-on:click="selected = 'paslauga'; open = false"
-                            class="block w-full px-3 py-2 text-black cursor-pointer hover:bg-[#cfae86]"
-                        >
-                            Paslauga
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Min Price -->
-                <input
-                    type="number"
-                    name="min_price"
-                    class="border border-gray-500 rounded px-3 py-2 text-black placeholder-gray-700 focus:outline-none focus:ring-1 focus:ring-[#836354] focus:border-[#836354]"
+                <button
+                    type="button"
+                    x-on:click.stop="open = !open"
+                    :class="open ? 'ring-1 ring-[#836354] border-[#836354]' : 'border-gray-500'"
+                    class="w-full rounded border py-2 px-3 text-left focus:outline-none focus:ring-1 focus:ring-[#836354] focus:border-[#836354] flex justify-between items-center"
                     style="background-color: rgb(234, 220, 200)"
-                    placeholder="Min. kaina"
-                    value="{{ request('min_price') }}"
-                    min="0.20"
-                    max="99999"
-                    step="0.01"
+                    aria-label="Pasirinkti kategoriją"
                 >
+                    <span class="text-black" x-text="selected === '' ? 'Kategorija' : (categories[selected] ?? 'Kategorija')"></span>
 
-                <!-- Max Price -->
-                <input
-                    type="number"
-                    name="max_price"
-                    class="border border-gray-500 rounded px-3 py-2 text-black placeholder-gray-700 focus:outline-none focus:ring-1 focus:ring-[#836354] focus:border-[#836354]"
-                    style="background-color: rgb(234, 220, 200)"
-                    placeholder="Maks. kaina"
-                    value="{{ request('max_price') }}"
-                    min="0.20"
-                    max="99999"
-                    step="0.01"
+                    <svg class="h-5 w-5 text-black" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                        <path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 11.06l3.71-3.83a.75.75 0 111.08 1.04l-4.25 4.4a.75.75 0 01-1.08 0L5.21 8.27a.75.75 0 01.02-1.06z" clip-rule="evenodd" />
+                    </svg>
+                </button>
+
+                <div
+                    x-show="open"
+                    x-cloak
+                    x-transition
+                    x-on:click.outside="open = false"
+                    class="absolute left-0 right-0 mt-1 rounded border shadow overflow-hidden z-50 max-h-60 overflow-y-auto"
+                    style="background-color: rgb(234, 220, 200); border-color: #836354"
                 >
-
-                <!-- City -->
-                <div class="relative" x-data="{ open: false, selected: '{{ request('city_id', '') }}' }" @keydown.escape.window="open = false">
-                    <input type="hidden" name="city_id" x-bind:value="selected">
-
-                    <button
-                        type="button"
-                        x-on:click.stop="open = !open"
-                        :class="open ? 'ring-1 ring-[#836354] border-[#836354]' : 'border-gray-500'"
-                        class="w-full rounded border py-2 px-3 text-left focus:outline-none focus:ring-1 focus:ring-[#836354] focus:border-[#836354] flex justify-between items-center"
-                        style="background-color: rgb(234, 220, 200)"
-                    >
-                        <span class="text-black"
-                            x-text="selected === '' ? 'Miestas' : (() => {
-                                const cities = {
-                                    @foreach(\App\Models\City::orderBy('pavadinimas')->get() as $city)
-                                        '{{ $city->id }}': '{{ $city->pavadinimas }}',
-                                    @endforeach
-                                };
-                                return cities[selected] ?? 'Miestas';
-                            })()"
-                        ></span>
-
-                        <svg class="h-5 w-5 text-black" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
-                            <path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 11.06l3.71-3.83a.75.75 0 111.08 1.04l-4.25 4.4a.75.75 0 01-1.08 0L5.21 8.27a.75.75 0 01.02-1.06z" clip-rule="evenodd" />
-                        </svg>
-                    </button>
-
                     <div
-                        x-show="open"
-                        x-cloak
-                        x-transition
-                        x-on:click.outside="open = false"
-                        class="absolute left-0 right-0 mt-1 rounded border shadow overflow-hidden z-50 max-h-60 overflow-y-auto"
-                        style="background-color: rgb(234, 220, 200); border-color: #836354"
+                        x-on:click="selected = ''; open = false"
+                        class="block w-full px-3 py-2 text-black cursor-pointer hover:bg-[#cfae86]"
                     >
+                        Kategorija
+                    </div>
+
+                    @foreach(\App\Models\Category::all() as $cat)
                         <div
-                            x-on:click="selected = ''; open = false"
+                            x-on:click="selected = @js((string) $cat->id); open = false"
                             class="block w-full px-3 py-2 text-black cursor-pointer hover:bg-[#cfae86]"
                         >
-                            Miestas
+                            {{ $cat->pavadinimas }}
                         </div>
+                    @endforeach
+                </div>
+            </div>
 
-                        @foreach(\App\Models\City::orderBy('pavadinimas')->get() as $city)
-                            <div
-                                x-on:click="selected = '{{ $city->id }}'; open = false"
-                                class="block w-full px-3 py-2 text-black cursor-pointer hover:bg-[#cfae86]"
-                            >
-                                {{ $city->pavadinimas }}
-                            </div>
-                        @endforeach
+            <!-- Type -->
+            <div
+                class="relative"
+                x-data='{ open: false, selected: @js((string) request("tipas", "")) }'
+                x-on:keydown.escape.window="open = false"
+            >
+                <input type="hidden" name="tipas" x-bind:value="selected">
+
+                <button
+                    type="button"
+                    x-on:click.stop="open = !open"
+                    :class="open ? 'ring-1 ring-[#836354] border-[#836354]' : 'border-gray-500'"
+                    class="w-full rounded border py-2 px-3 text-left focus:outline-none focus:ring-1 focus:ring-[#836354] focus:border-[#836354] flex justify-between items-center"
+                    style="background-color: rgb(234, 220, 200)"
+                    aria-label="Pasirinkti tipą"
+                >
+                    <span class="text-black" x-text="selected === '' ? 'Tipas' : (selected === 'preke' ? 'Prekė' : 'Paslauga')"></span>
+
+                    <svg class="h-5 w-5 text-black" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                        <path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 11.06l3.71-3.83a.75.75 0 111.08 1.04l-4.25 4.4a.75.75 0 01-1.08 0L5.21 8.27a.75.75 0 01.02-1.06z" clip-rule="evenodd" />
+                    </svg>
+                </button>
+
+                <div
+                    x-show="open"
+                    x-cloak
+                    x-transition
+                    x-on:click.outside="open = false"
+                    class="absolute left-0 right-0 mt-1 rounded border shadow overflow-hidden z-50"
+                    style="background-color: rgb(234, 220, 200); border-color: #836354"
+                >
+                    <div x-on:click="selected = ''; open = false" class="block w-full px-3 py-2 text-black cursor-pointer hover:bg-[#cfae86]">
+                        Tipas
+                    </div>
+                    <div x-on:click="selected = 'preke'; open = false" class="block w-full px-3 py-2 text-black cursor-pointer hover:bg-[#cfae86]">
+                        Prekė
+                    </div>
+                    <div x-on:click="selected = 'paslauga'; open = false" class="block w-full px-3 py-2 text-black cursor-pointer hover:bg-[#cfae86]">
+                        Paslauga
                     </div>
                 </div>
+            </div>
+
+            <!-- Min Price -->
+            <input
+                type="number"
+                name="min_price"
+                class="border border-gray-500 rounded px-3 py-2 text-black placeholder-gray-700 focus:outline-none focus:ring-1 focus:ring-[#836354] focus:border-[#836354]"
+                style="background-color: rgb(234, 220, 200)"
+                placeholder="Min. kaina"
+                value="{{ request('min_price') }}"
+                min="0.20"
+                max="99999"
+                step="0.01"
+            >
+
+            <!-- Max Price -->
+            <input
+                type="number"
+                name="max_price"
+                class="border border-gray-500 rounded px-3 py-2 text-black placeholder-gray-700 focus:outline-none focus:ring-1 focus:ring-[#836354] focus:border-[#836354]"
+                style="background-color: rgb(234, 220, 200)"
+                placeholder="Maks. kaina"
+                value="{{ request('max_price') }}"
+                min="0.20"
+                max="99999"
+                step="0.01"
+            >
+
+            <!-- City -->
+            <div
+                class="relative"
+                x-data='{
+                    open: false,
+                    selected: @js((string) request("city_id", "")),
+                    cities: @js($cities)
+                }'
+                x-on:keydown.escape.window="open = false"
+            >
+                <input type="hidden" name="city_id" x-bind:value="selected">
+
+                <button
+                    type="button"
+                    x-on:click.stop="open = !open"
+                    :class="open ? 'ring-1 ring-[#836354] border-[#836354]' : 'border-gray-500'"
+                    class="w-full rounded border py-2 px-3 text-left focus:outline-none focus:ring-1 focus:ring-[#836354] focus:border-[#836354] flex justify-between items-center"
+                    style="background-color: rgb(234, 220, 200)"
+                    aria-label="Pasirinkti miestą"
+                >
+                    <span class="text-black" x-text="selected === '' ? 'Miestas' : (cities[selected] ?? 'Miestas')"></span>
+
+                    <svg class="h-5 w-5 text-black" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                        <path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 11.06l3.71-3.83a.75.75 0 111.08 1.04l-4.25 4.4a.75.75 0 01-1.08 0L5.21 8.27a.75.75 0 01.02-1.06z" clip-rule="evenodd" />
+                    </svg>
+                </button>
+
+                <div
+                    x-show="open"
+                    x-cloak
+                    x-transition
+                    x-on:click.outside="open = false"
+                    class="absolute left-0 right-0 mt-1 rounded border shadow overflow-hidden z-50 max-h-60 overflow-y-auto"
+                    style="background-color: rgb(234, 220, 200); border-color: #836354"
+                >
+                    <div
+                        x-on:click="selected = ''; open = false"
+                        class="block w-full px-3 py-2 text-black cursor-pointer hover:bg-[#cfae86]"
+                    >
+                        Miestas
+                    </div>
+
+                    @foreach(\App\Models\City::orderBy('pavadinimas')->get() as $city)
+                        <div
+                            x-on:click="selected = @js((string) $city->id); open = false"
+                            class="block w-full px-3 py-2 text-black cursor-pointer hover:bg-[#cfae86]"
+                        >
+                            {{ $city->pavadinimas }}
+                        </div>
+                    @endforeach
+                </div>
+            </div>
 
                 <!-- Submit -->
                 <div class="col-span-full flex flex-wrap gap-3 pt-1">

@@ -359,12 +359,13 @@
                                 class="sort-menu absolute left-0 right-0 mt-1 rounded border shadow overflow-hidden z-50 hidden"
                                 style="background-color: rgb(234, 220, 200); border-color: #836354"
                             >
-                                <div
-                                    x-on:click="selectedSort = ''; sortOpen = false; $nextTick(() => $el.closest('form').submit())"
-                                    class="block w-full px-3 py-2 text-black cursor-pointer hover:bg-[#836354]"
+                               <button
+                                    type="button"
+                                    class="sort-option block w-full px-3 py-2 text-left text-black cursor-pointer hover:bg-[#836354]"
+                                    data-value=""
                                 >
                                     Rūšiuoti
-                                </div>
+                                </button>
 
                                 <button
                                     type="button"

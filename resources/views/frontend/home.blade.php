@@ -1,5 +1,6 @@
 <x-app-layout>
     <x-slot name="title">Pagrindinis puslapis</x-slot>
+    <x-slot name="description">Pagrindinis puslapis su skelbimais ir paieška.</x-slot>
     <div class="min-h-screen flex flex-col" style="background-color: rgb(234, 220, 200)">
         <div
             x-data

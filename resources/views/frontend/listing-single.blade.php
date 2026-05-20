@@ -145,7 +145,7 @@ input[type=number] {
                 {{-- RENEWABLE BADGE --}}
                 @if($listing->is_renewable)
                     <div class="mb-4">
-                        <span class="inline-block px-3 py-1 rounded text-sm text-black"
+                        <span class="inline-block px-3 py-1 rounded text-sm "
                               style="background-color: rgb(104, 79, 67)">
                             Atsinaujinanti prekė – pardavėjas papildo atsargas
                         </span>

@@ -601,6 +601,10 @@ document.addEventListener('DOMContentLoaded', () => {
             openIcon?.classList.toggle('hidden', willOpen);
             closeIcon?.classList.toggle('hidden', !willOpen);
         });
+
+        mobileMenu.addEventListener('click', (e) => {
+            e.stopPropagation();
+        });
     }
 
     const filtersToggle = document.getElementById('filters-toggle');
@@ -613,9 +617,17 @@ document.addEventListener('DOMContentLoaded', () => {
             filtersPanel.classList.toggle('hidden', !willOpen);
             filtersToggle.setAttribute('aria-expanded', willOpen ? 'true' : 'false');
         });
+
+        filtersPanel.addEventListener('click', (e) => {
+            e.stopPropagation();
+        });
     }
 
     document.querySelectorAll('.sort-dropdown').forEach((dropdown) => {
+        dropdown.addEventListener('click', (e) => {
+            e.stopPropagation();
+        });
+
         const toggle = dropdown.querySelector('.sort-toggle');
         const menu = dropdown.querySelector('.sort-menu');
         const input = dropdown.querySelector('input[name="sort"]');
@@ -650,6 +662,10 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     document.querySelectorAll('.filter-dropdown').forEach((dropdown) => {
+        dropdown.addEventListener('click', (e) => {
+            e.stopPropagation();
+        });
+
         const toggle = dropdown.querySelector('.filter-toggle');
         const menu = dropdown.querySelector('.filter-menu');
         const input = dropdown.querySelector('input[type="hidden"]');

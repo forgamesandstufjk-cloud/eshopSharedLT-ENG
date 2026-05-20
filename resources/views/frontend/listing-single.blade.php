@@ -125,11 +125,11 @@ input[type=number] {
 
                 {{-- PRICE --}}
                 <div class="text-xl sm:text-2xl font-semibold text-black mb-2">
-                    {{ number_format($listing->kaina, 2, ',', '.') }} €
-                    <span class="text-black text-sm">
-                        @if($listing->tipas === 'preke') / vnt @else / paslauga @endif
-                    </span>
-                </div>
+                   {{ number_format($listing->kaina, 2, ',', '.') }} €
+                   <span class="text-black text-sm">
+                       @if($listing->tipas === 'preke') / vnt @else / paslauga @endif
+                   </span>
+               </div>
 
                 {{-- AVAILABLE --}}
                 @if($listing->tipas === 'preke')

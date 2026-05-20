@@ -107,7 +107,7 @@
             <button
                 type="submit"
                 class="text-white px-6 py-3 rounded hover:text-black"
-                style="background-color: rgb(131, 99, 84)"
+                style="background-color: rgb(104, 79, 67)"
             >
                 {{ __('Registruotis') }}
             </button>

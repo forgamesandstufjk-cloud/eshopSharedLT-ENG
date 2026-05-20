@@ -105,7 +105,7 @@
 
                             @if(session('cart_count', 0) > 0)
                                 <span class="absolute -top-2 -right-2 text-white text-xs rounded-full min-w-[18px] h-[18px] flex items-center justify-center px-1"
-                                      style="background-color: rgb(131, 99, 84)">
+                                      style="background-color: rgb(104, 79, 67)">
                                     {{ session('cart_count') }}
                                 </span>
                             @endif
@@ -291,7 +291,7 @@
                         value="{{ request('q') }}"
                     >
                     <button class="text-white px-4 py-2 rounded-r hover:text-black"
-                            style="background-color: rgb(131, 99, 84)">
+                            style="background-color: rgb(104, 79, 67)">
                         Ieškoti
                     </button>
                 </form>
@@ -302,7 +302,7 @@
                         type="button"
                         x-on:click.stop="filtersOpen = !filtersOpen"
                         class="px-4 py-2 rounded hover:text-black text-white w-full sm:w-auto"
-                        style="background-color: rgb(131, 99, 84)"
+                        style="background-color: rgb(104, 79, 67)"
                     >
                         Filtrai
                     </button>
@@ -605,7 +605,7 @@
                 <div class="col-span-full flex flex-wrap gap-3 pt-1">
                     <button
                         class="text-white px-4 py-2 rounded w-32 hover:text-black"
-                        style="background-color: rgb(131, 99, 84)"
+                        style="background-color: rgb(104, 79, 67)"
                     >
                         Taikyti
                     </button>

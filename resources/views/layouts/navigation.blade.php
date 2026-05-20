@@ -300,7 +300,9 @@
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:flex sm:gap-3 justify-center">
                     <button
                         type="button"
-                        x-on:click.stop="filtersOpen = !filtersOpen"
+                        id="filters-toggle"
+                        aria-expanded="false"
+                        aria-controls="filters-panel"
                         class="px-4 py-2 rounded hover:text-black text-white w-full sm:w-auto"
                         style="background-color: rgb(104, 79, 67)"
                     >
@@ -318,19 +320,18 @@
                             @endif
                         @endforeach
 
-                        <div class="relative" x-data="{ sortOpen: false, selectedSort: '{{ request('sort', '') }}' }" @keydown.escape.window="sortOpen = false">
-                            <input type="hidden" name="sort" x-bind:value="selectedSort">
+                        <div class="relative sort-dropdown" data-selected-sort="{{ request('sort', '') }}">
+                            <input type="hidden" name="sort" value="{{ request('sort', '') }}">
 
                             <button
                                 type="button"
-                                x-on:click.stop="sortOpen = !sortOpen"
+                                class="sort-toggle px-3 py-2 rounded border border-[#836354] text-black focus-visible:outline focus-visible:outline-2 focus-visible:outline-black focus:outline-none focus:ring-1 focus:ring-[#836354] focus:border-[#836354] flex justify-between items-center w-full sm:w-auto sm:min-w-[220px]"
+                                style="background-color: rgba(234, 220, 200, 0.8)"
                                 aria-label="Rūšiuoti"
                                 title="Rūšiuoti"
-                                :class="sortOpen ? 'ring-1 ring-[#836354] border-[#836354]' : 'border-[#836354]'"
-                                class="px-3 py-2 rounded border text-black focus-visible:outline focus-visible:outline-2 focus-visible:outline-black focus:outline-none focus:ring-1 focus:ring-[#836354] focus:border-[#836354] flex justify-between items-center w-full sm:w-auto sm:min-w-[220px]"
-                                style="background-color: rgba(234, 220, 200, 0.8)"
+                                aria-expanded="false"
                             >
-                                <span>
+                                <span class="sort-label text-black">
                                     @switch(request('sort', ''))
                                         @case('newest')
                                             Naujausi pirmiausia
@@ -355,11 +356,7 @@
                             </button>
 
                             <div
-                                x-show="sortOpen"
-                                x-cloak
-                                x-transition
-                                x-on:click.outside="sortOpen = false"
-                                class="absolute left-0 right-0 mt-1 rounded border shadow overflow-hidden z-50"
+                                class="sort-menu absolute left-0 right-0 mt-1 rounded border shadow overflow-hidden z-50 hidden"
                                 style="background-color: rgb(234, 220, 200); border-color: #836354"
                             >
                                 <div
@@ -369,33 +366,37 @@
                                     Rūšiuoti
                                 </div>
 
-                                <div
-                                    x-on:click="selectedSort = 'newest'; sortOpen = false; $nextTick(() => $el.closest('form').submit())"
-                                    class="block w-full px-3 py-2 text-black cursor-pointer hover:bg-[#836354]"
+                                <button
+                                    type="button"
+                                    class="sort-option block w-full px-3 py-2 text-left text-black cursor-pointer hover:bg-[#836354]"
+                                    data-value="newest"
                                 >
                                     Naujausi pirmiausia
-                                </div>
+                                </button>
 
-                                <div
-                                    x-on:click="selectedSort = 'oldest'; sortOpen = false; $nextTick(() => $el.closest('form').submit())"
-                                    class="block w-full px-3 py-2 text-black cursor-pointer hover:bg-[#836354]"
+                               <button
+                                    type="button"
+                                    class="sort-option block w-full px-3 py-2 text-left text-black cursor-pointer hover:bg-[#836354]"
+                                    data-value="oldest"
                                 >
                                     Seniausi pirmiausia
-                                </div>
-
-                                <div
-                                    x-on:click="selectedSort = 'price_asc'; sortOpen = false; $nextTick(() => $el.closest('form').submit())"
-                                    class="block w-full px-3 py-2 text-black cursor-pointer hover:bg-[#836354]"
+                                </button>
+                                
+                                <button
+                                    type="button"
+                                    class="sort-option block w-full px-3 py-2 text-left text-black cursor-pointer hover:bg-[#836354]"
+                                    data-value="price_asc"
                                 >
                                     Kaina: nuo mažiausios
-                                </div>
-
-                                <div
-                                    x-on:click="selectedSort = 'price_desc'; sortOpen = false; $nextTick(() => $el.closest('form').submit())"
-                                    class="block w-full px-3 py-2 text-black cursor-pointer hover:bg-[#836354]"
+                                </button>
+                                
+                                <button
+                                    type="button"
+                                    class="sort-option block w-full px-3 py-2 text-left text-black cursor-pointer hover:bg-[#836354]"
+                                    data-value="price_desc"
                                 >
                                     Kaina: nuo didžiausios
-                                </div>
+                                </button>
                             </div>
                         </div>
                     </form>

@@ -1,5 +1,6 @@
 <x-guest-layout>
       <x-slot name="title">Prisijungimas</x-slot>
+       <x-slot name="description">Prisijungimo forma.</x-slot>
     <x-auth-session-status class="mb-4 text-black" :status="session('status')" />
 
     <form method="POST" action="{{ route('login') }}">

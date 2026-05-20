@@ -764,6 +764,7 @@ input[type=number] {
                         <button
                             type="button"
                             x-on:click="sortOpen = !sortOpen"
+                            aria-label="Rūšiuoti atsiliepimus"
                             :class="sortOpen ? 'ring-1 ring-[#836354] border-[#836354]' : 'border-gray-500'"
                             class="w-full rounded border py-2 px-3 text-left text-black focus:outline-none focus:ring-1 focus:ring-[#836354] focus:border-[#836354] flex justify-between items-center"
                             style="background-color: rgb(227, 197, 157)"

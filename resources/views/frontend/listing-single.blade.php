@@ -1,14 +1,11 @@
 <x-app-layout>
  <x-slot name="title">Konkretus skelbimas</x-slot>
- <style>
-/* Remove number input arrows (Chrome, Safari, Edge) */
+<style>
 input[type=number]::-webkit-inner-spin-button,
 input[type=number]::-webkit-outer-spin-button {
     -webkit-appearance: none;
     margin: 0;
 }
-
-/* Remove number input arrows (Firefox) */
 input[type=number] {
     -moz-appearance: textfield;
 }
@@ -343,13 +340,13 @@ input[type=number] {
                                 class="w-full rounded border py-2 px-3 text-left text-black focus:outline-none focus:ring-1 focus:ring-[#836354] focus:border-[#836354]"
                                 style="background-color: #d7b78e; border-color: #836354"
                             >
-                                <option value="">Pasirinkite priežastį</option>
-                                <option value="fraud">Sukčiavimas</option>
-                                <option value="fake_item">Netikra prekė</option>
-                                <option value="abuse">Įžeidžiantis elgesys</option>
-                                <option value="spam">Šlamštas</option>
-                                <option value="prohibited_items">Draudžiamos prekės</option>
-                                <option value="other">Kita</option>
+                                <option value="" style="background-color: rgb(227, 197, 157); color: #000;">Pasirinkite priežastį</option>
+                                <option value="fraud" style="background-color: rgb(227, 197, 157); color: #000;">Sukčiavimas</option>
+                                <option value="fake_item" style="background-color: rgb(227, 197, 157); color: #000;">Netikra prekė</option>
+                                <option value="abuse" style="background-color: rgb(227, 197, 157); color: #000;">Įžeidžiantis elgesys</option>
+                                <option value="spam" style="background-color: rgb(227, 197, 157); color: #000;">Šlamštas</option>
+                                <option value="prohibited_items" style="background-color: rgb(227, 197, 157); color: #000;">Draudžiamos prekės</option>
+                                <option value="other" style="background-color: rgb(227, 197, 157); color: #000;">Kita</option>
                             </select>
                         </div>
 
@@ -598,10 +595,10 @@ input[type=number] {
                         class="w-full rounded border py-2 px-3 text-left text-black focus:outline-none focus:ring-1 focus:ring-[#836354] focus:border-[#836354]"
                         style="background-color: rgb(227, 197, 157); border-color: #836354"
                     >
-                        <option value="newest" @selected($sort === 'newest')>Naujausi</option>
-                        <option value="oldest" @selected($sort === 'oldest')>Seniausi</option>
-                        <option value="highest" @selected($sort === 'highest')>Geriausi</option>
-                        <option value="lowest" @selected($sort === 'lowest')>Blogiausi</option>
+                        <option value="newest" @selected($sort === 'newest') style="background-color: rgb(227, 197, 157); color: #000;">Naujausi</option>
+                        <option value="oldest" @selected($sort === 'oldest') style="background-color: rgb(227, 197, 157); color: #000;">Seniausi</option>
+                        <option value="highest" @selected($sort === 'highest') style="background-color: rgb(227, 197, 157); color: #000;">Geriausi</option>
+                        <option value="lowest" @selected($sort === 'lowest') style="background-color: rgb(227, 197, 157); color: #000;">Blogiausi</option>
                     </select>
                 </form>
             </div>
@@ -720,12 +717,12 @@ input[type=number] {
                                             class="w-full rounded border py-2 px-3 text-left text-black flex justify-between items-center focus:outline-none focus:ring-1 focus:ring-[#836354] focus:border-[#836354]"
                                             style="background-color: rgb(234, 220, 200); border-color: #836354"
                                         >
-                                            <option value="">Pasirinkite priežastį</option>
-                                            <option value="abuse">Įžeidžiantis tekstas</option>
-                                            <option value="spam">Šlamštas</option>
+                                            <option value="" style="background-color: rgb(227, 197, 157); color: #000;">Pasirinkite priežastį</option>
+                                            <option value="abuse" style="background-color: rgb(227, 197, 157); color: #000;">Įžeidžiantis tekstas</option>
+                                            <option value="spam" style="background-color: rgb(227, 197, 157); color: #000;">Šlamštas</option>
                                             <option value="fake_review">Netikras atsiliepimas</option>
                                             <option value="harassment">Priekabiavimas</option>
-                                            <option value="other">Kita</option>
+                                            <option value="other" style="background-color: rgb(227, 197, 157); color: #000;">Kita</option>
                                         </select>
                                     </div>
 
@@ -799,7 +796,7 @@ input[type=number] {
                             class="w-full border border-gray-500 rounded p-3 text-black focus:outline-none focus:ring-1 focus:ring-[#836354] focus:border-[#836354]"
                             style="background-color: rgb(227, 197, 157)"
                         >
-                            <option value="">Pasirinkite įvertinimą</option>
+                            <option value="" style="background-color: rgb(227, 197, 157); color: #000;">Pasirinkite įvertinimą</option>
                             @for($n = 1; $n <= 5; $n++)
                                 <option value="{{ $n }}">{{ $n }} / 5</option>
                             @endfor
@@ -1030,6 +1027,8 @@ document.addEventListener('DOMContentLoaded', function () {
 });
 </script>
 @endauth
-@include('components.footer')
+    </div>
+
+    @include('components.footer')
 </div>
 </x-app-layout>

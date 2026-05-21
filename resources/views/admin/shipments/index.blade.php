@@ -16,9 +16,9 @@
         @endif
 
         {{-- PAPRASTOS SIUNTOS --}}
-        <div class="shadow rounded overflow-hidden" style="background-color: rgb(215, 183, 142)">
+        <div class="shadow rounded overflow-hidden" style="background-color: rgb(227, 197, 157)">
             <table class="w-full text-sm text-black">
-                <thead class="border-b hidden sm:table-header-group" style="background-color: rgb(131, 99, 84); border-color: #836354">
+                <thead class="border-b hidden sm:table-header-group" style="background-color: rgb(104, 79, 67); border-color: #684F43">
                     <tr>
                         <th class="p-3 text-left text-white">Užsakymas</th>
                         <th class="p-3 text-left text-white">Pardavėjas</th>
@@ -32,7 +32,7 @@
 
                 <tbody>
                 @forelse($shipments as $s)
-                    <tr class="block sm:table-row border-b" style="border-color: #836354;">
+                    <tr class="block sm:table-row border-b" style="border-color: #684F43;">
                         <td class="p-3 block sm:table-cell">
                             <span class="font-semibold sm:hidden">Užsakymas: </span>
                             #{{ $s->order_id }}
@@ -66,7 +66,7 @@
                                 <a href="{{ $proofUrl }}"
                                    target="_blank"
                                    class="underline"
-                                   style="color: rgb(131, 99, 84)">
+                                   style="color: rgb(104, 79, 67)">
                                     Peržiūrėti įrodymą
                                 </a>
                             @else
@@ -84,7 +84,7 @@
                                 <form method="POST" action="{{ route('admin.shipments.approve', $s) }}">
                                     @csrf
                                     <button class="text-white px-3 py-1 rounded w-full sm:w-auto hover:text-black"
-                                            style="background-color: rgb(131, 99, 84)">
+                                            style="background-color: rgb(104, 79, 67)">
                                         Patvirtinti
                                     </button>
                                 </form>
@@ -115,11 +115,11 @@
         </div>
 
         {{-- PASLAUGŲ UŽSAKYMŲ SIUNTOS --}}
-        <div class="shadow rounded overflow-hidden mt-8" style="background-color: rgb(215, 183, 142)">
+        <div class="shadow rounded overflow-hidden mt-8" style="background-color: rgb(227, 197, 157)">
             <div class="p-4 font-bold text-black">Paslaugų užsakymų siuntų peržiūra</div>
 
             <table class="w-full text-sm text-black">
-                <thead class="border-b hidden sm:table-header-group" style="background-color: rgb(131, 99, 84); border-color: #836354">
+                <thead class="border-b hidden sm:table-header-group" style="background-color: rgb(104, 79, 67); border-color: #684F43">
                     <tr>
                         <th class="p-3 text-left text-white">Užsakymas</th>
                         <th class="p-3 text-left text-white">Pardavėjas</th>
@@ -133,7 +133,7 @@
 
                 <tbody>
                 @forelse($serviceShipments as $s)
-                    <tr class="block sm:table-row border-b" style="border-color: #836354;">
+                    <tr class="block sm:table-row border-b" style="border-color: #684F43;">
                         <td class="p-3 block sm:table-cell">
                             <span class="font-semibold sm:hidden">Užsakymas: </span>
                             #{{ $s->id }}
@@ -171,7 +171,7 @@
                                 <a href="{{ $proofUrl }}"
                                    target="_blank"
                                    class="underline"
-                                   style="color: rgb(131, 99, 84)">
+                                   style="color: rgb(104, 79, 67)">
                                     Peržiūrėti įrodymą
                                 </a>
                             @else
@@ -189,7 +189,7 @@
                                 <form method="POST" action="{{ route('admin.service-shipments.approve', $s) }}">
                                     @csrf
                                     <button class="text-white px-3 py-1 rounded w-full sm:w-auto hover:text-black"
-                                            style="background-color: rgb(131, 99, 84)">
+                                            style="background-color: rgb(104, 79, 67)">
                                         Patvirtinti
                                     </button>
                                 </form>

@@ -1,9 +1,7 @@
 <x-app-layout>
     <x-slot name="title">Skelbimų paieška</x-slot>
     <div class="min-h-screen flex flex-col" style="background-color: rgb(234, 220, 200)">
-        <div x-data
-            x-init="if ({{ auth()->check() ? 'true' : 'false' }}) Alpine.store('favorites').load()"
-            class="relative flex-1 w-full px-3 sm:px-4 mt-6 sm:mt-10 pb-10">
+        <div class="relative flex-1 w-full px-3 sm:px-4 mt-6 sm:mt-10 pb-10">
             <div
                 class="fixed inset-0 pointer-events-none bg-no-repeat bg-center bg-contain"
                 style="background-image: url('{{ asset('images/vytis.png') }}'); background-size: 500px 500px; background-position: center calc(50% + 60px); opacity: 0.3"
@@ -121,23 +119,12 @@
                                     @if(auth()->id() !== $item->user_id && auth()->user()->role !== 'admin')
                                         <button
                                             type="button"
-                                            x-on:click.stop.prevent="Alpine.store('favorites').toggle({{ $item->id }})"
-                                            class="absolute top-2 right-2 z-30 w-10 h-10 sm:w-9 sm:h-9 flex items-center justify-center overflow-hidden"
+                                            class="favorite-toggle absolute top-2 right-2 z-30 w-10 h-10 sm:w-9 sm:h-9 flex items-center justify-center overflow-hidden"
+                                            data-listing-id="{{ $item->id }}"
                                             aria-label="Pažymėti kaip mėgstamą"
                                         >
-                                            <span
-                                                x-show="Alpine.store('favorites').has({{ $item->id }})"
-                                                class="text-red-500 text-2xl leading-none"
-                                            >
-                                                🤎
-                                            </span>
-
-                                            <span
-                                                x-show="!Alpine.store('favorites').has({{ $item->id }})"
-                                                class="text-gray-200 text-2xl leading-none"
-                                            >
-                                                🤍
-                                            </span>
+                                            <span class="favorite-on text-red-500 text-2xl leading-none hidden">🤎</span>
+                                            <span class="favorite-off text-gray-200 text-2xl leading-none">🤍</span>
                                         </button>
                                     @endif
                                 @endauth
@@ -186,7 +173,7 @@
                                         )
                                             @auth
                                                 @if($remainingToAdd > 0)
-                                                    <form method="POST" action="{{ route('cart.add', $item->id) }}" x-on:click.stop class="relative z-20">
+                                                    <form method="POST" action="{{ route('cart.add', $item->id) }}" onclick="event.stopPropagation()" class="relative z-20">
                                                         @csrf
                                                         <button type="submit"
                                                             class="p-2 rounded text-black hover:text-white transition"
@@ -225,7 +212,7 @@
                                                    class="relative z-20 p-2 rounded text-black hover:text-white transition"
                                                    aria-label="Prisijunkite, kad pridėtumėte į krepšelį"
                                                    title="Prisijunkite, kad pridėtumėte į krepšelį"
-                                                   x-on:click.stop>
+                                                   onclick="event.stopPropagation()">
                                                     <svg xmlns="http://www.w3.org/2000/svg"
                                                          fill="none"
                                                          viewBox="0 0 24 24"
@@ -269,4 +256,116 @@
             @include('components.footer')
         </div>
     </div>
+
+@auth
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const buttons = Array.from(document.querySelectorAll('.favorite-toggle'));
+    if (!buttons.length) return;
+
+    let favorites = [];
+
+    function normalizeIds(values) {
+        return (values || []).map(v => String(v));
+    }
+
+    function hasFavorite(id) {
+        return favorites.includes(String(id));
+    }
+
+    function renderFavorites() {
+        buttons.forEach((button) => {
+            const id = String(button.dataset.listingId);
+            const on = button.querySelector('.favorite-on');
+            const off = button.querySelector('.favorite-off');
+
+            if (hasFavorite(id)) {
+                on.classList.remove('hidden');
+                off.classList.add('hidden');
+            } else {
+                on.classList.add('hidden');
+                off.classList.remove('hidden');
+            }
+        });
+    }
+
+    async function loadFavorites() {
+        try {
+            const res = await fetch('/api/favorites/ids', {
+                method: 'GET',
+                headers: {
+                    'Accept': 'application/json',
+                    'X-Requested-With': 'XMLHttpRequest',
+                },
+                credentials: 'same-origin',
+            });
+
+            if (!res.ok) return;
+
+            const data = await res.json();
+            favorites = normalizeIds(data);
+            renderFavorites();
+        } catch (e) {
+            console.error('Failed to load favorites', e);
+        }
+    }
+
+    async function addFavorite(id) {
+        return fetch('/api/favorite', {
+            method: 'POST',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                'X-Requested-With': 'XMLHttpRequest',
+            },
+            credentials: 'same-origin',
+            body: JSON.stringify({ listing_id: Number(id) }),
+        });
+    }
+
+    async function removeFavorite(id) {
+        return fetch(`/api/favorite/${encodeURIComponent(id)}`, {
+            method: 'DELETE',
+            headers: {
+                'Accept': 'application/json',
+                'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                'X-Requested-With': 'XMLHttpRequest',
+            },
+            credentials: 'same-origin',
+        });
+    }
+
+    async function toggleFavorite(id) {
+        try {
+            const isFav = hasFavorite(id);
+            const res = isFav ? await removeFavorite(id) : await addFavorite(id);
+
+            if (!res.ok) return;
+
+            if (isFav) {
+                favorites = favorites.filter(favId => favId !== String(id));
+            } else if (!hasFavorite(id)) {
+                favorites.push(String(id));
+            }
+
+            renderFavorites();
+        } catch (e) {
+            console.error('Failed to toggle favorite', e);
+        }
+    }
+
+    buttons.forEach((button) => {
+        button.addEventListener('click', function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+            toggleFavorite(this.dataset.listingId);
+        });
+    });
+
+    loadFavorites();
+});
+</script>
+@endauth
+
 </x-app-layout>

@@ -824,7 +824,7 @@ input[type=number] {
 
 </div>
 </section>
-
+</div>
 @auth
 <script>
 document.addEventListener('DOMContentLoaded', function () {

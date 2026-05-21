@@ -1,7 +1,7 @@
 <x-guest-layout>
     <x-slot name="title">Registracija</x-slot>
     <form method="POST" action="{{ route('register') }}">
-        @csrf
+        <input type="hidden" name="_token" value="{{ csrf_token() }}">
         <div class="mb-6">
         <h1 class="text-2xl font-bold text-black">
             Registracija

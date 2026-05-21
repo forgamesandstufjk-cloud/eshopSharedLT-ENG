@@ -16,7 +16,7 @@
     <div class="max-w-6xl mx-auto py-6 sm:py-10 px-3 sm:px-4" style="background-color: rgb(234, 220, 200)">
         @if(session('success'))
             <div class="mb-6 px-0 sm:px-4">
-                <div class="px-4 py-3 rounded text-black" style="background-color: rgb(207, 174, 134); border: 1px solid #836354">
+                <div class="px-4 py-3 rounded text-black" style="background-color: rgb(207, 174, 134); border: 1px solid #684F43">
                     {{ session('success') }}
                 </div>
             </div>
@@ -24,7 +24,7 @@
 
         @if($errors->any())
             <div class="mb-6 px-0 sm:px-4">
-                <div class="px-4 py-3 rounded text-black" style="background-color: rgb(230, 190, 190); border: 1px solid #836354">
+                <div class="px-4 py-3 rounded text-black" style="background-color: rgb(230, 190, 190); border: 1px solid #684F43">
                     {{ $errors->first() }}
                 </div>
             </div>
@@ -33,12 +33,12 @@
         <div class="mb-4">
             <a href="{{ request('back') ?: route('admin.reported-listings.index') }}"
                class="inline-block px-4 py-2 rounded text-white hover:text-black"
-               style="background-color: rgb(131, 99, 84)">
+               style="background-color: rgb(104, 79, 67)">
                 ← Atgal
             </a>
         </div>
 
-        <div class="rounded-lg shadow p-4 sm:p-6" style="background-color: rgb(215, 183, 142)">
+        <div class="rounded-lg shadow p-4 sm:p-6" style="background-color: rgb(227, 197, 157)">
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-10">
                 <div class="relative">
                     <img
@@ -55,7 +55,7 @@
                                 <img
                                     src="{{ \Illuminate\Support\Facades\Storage::disk('photos')->url($photo->failo_url) }}"
                                     class="w-16 h-16 sm:w-20 sm:h-20 rounded object-cover cursor-pointer border"
-                                    style="border-color: #836354"
+                                    style="border-color: #684F43"
                                     onclick="document.getElementById('mainImage').src=this.src">
                             @endforeach
                         </div>
@@ -65,7 +65,7 @@
                 <div class="flex flex-col">
                     <div class="mb-3">
                         <span class="inline-block px-3 py-1 rounded text-sm text-white"
-                              style="background-color: rgb(131, 99, 84)">
+                              style="background-color: rgb(104, 79, 67)">
                             {{ $listing->Category->pavadinimas ?? 'Kategorija' }}
                         </span>
                     </div>
@@ -100,7 +100,7 @@
                     @if($listing->is_renewable)
                         <div class="mb-4">
                             <span class="inline-block px-3 py-1 rounded text-sm text-black"
-                                  style="background-color: rgb(131, 99, 84)">
+                                  style="background-color: rgb(104, 79, 67)">
                                 Atsinaujinanti prekė – pardavėjas papildo atsargas
                             </span>
                         </div>
@@ -109,16 +109,16 @@
                     <div class="flex flex-col sm:flex-row gap-3 sm:gap-4 mt-4">
                         <a href="{{ route('listing.edit', ['listing' => $listing->id, 'back' => route('admin.reported-listings.show', $listing->id)]) }}"
                            class="px-6 py-3 text-white rounded hover:text-black transition text-center w-full sm:w-40 whitespace-nowrap"
-                           style="background-color: rgb(131, 99, 84)">
+                           style="background-color: rgb(104, 79, 67)">
                             Redaguoti
                         </a>
                     </div>
 
-                    <div class="mt-8 sm:mt-10 border-t pt-6" style="border-color: #836354">
+                    <div class="mt-8 sm:mt-10 border-t pt-6" style="border-color: #684F43">
                         <h3 class="font-semibold text-black mb-2">Moderavimo informacija</h3>
 
                         <div class="p-4 rounded border text-sm"
-                             style="background-color: rgb(234, 220, 200); border-color: #836354">
+                             style="background-color: rgb(234, 220, 200); border-color: #684F43">
                             <div class="text-black font-semibold text-base sm:text-lg">
                                 {{ $seller->vardas }} {{ $seller->pavarde }}
                             </div>
@@ -134,13 +134,13 @@
                             <div class="flex flex-col sm:flex-row gap-2 mt-4">
                                 <a href="{{ route('admin.reported-listings.user-listings', $seller) }}"
                                    class="px-4 py-2 rounded text-white text-center hover:text-black"
-                                   style="background-color: rgb(131, 99, 84)">
+                                   style="background-color: rgb(104, 79, 67)">
                                     Visi pardavėjo skelbimai
                                 </a>
 
                                 <a href="{{ route('admin.reported-listings.user-comments', $seller) }}"
                                    class="px-4 py-2 rounded text-white text-center hover:text-black"
-                                   style="background-color: rgb(131, 99, 84)">
+                                   style="background-color: rgb(104, 79, 67)">
                                     Visi atsiliepimai
                                 </a>
                             </div>
@@ -160,8 +160,8 @@
                                 <button
                                     type="button"
                                     x-on:click.stop="removalOpen = !removalOpen"
-                                    :class="removalOpen ? 'ring-1 ring-[#836354] border-[#836354]' : 'border-[#836354]'"
-                                    class="w-full rounded border py-2 px-3 text-left focus:outline-none focus:ring-1 focus:ring-[#836354] focus:border-[#836354] flex justify-between items-center text-black mb-2"
+                                    :class="removalOpen ? 'ring-1 ring-[#684F43] border-[#684F43]' : 'border-[#684F43]'"
+                                    class="w-full rounded border py-2 px-3 text-left focus:outline-none focus:ring-1 focus:ring-[#684F43] focus:border-[#684F43] flex justify-between items-center text-black mb-2"
                                     style="background-color: rgb(234, 220, 200)">
                                     <span x-text="
                                         removalReason === '' ? 'Pasirinkite pašalinimo priežastį' :
@@ -184,7 +184,7 @@
                                     x-transition
                                     x-on:click.outside="removalOpen = false"
                                     class="absolute left-0 right-0 mt-1 rounded border shadow overflow-hidden z-50"
-                                    style="background-color: rgb(234, 220, 200); border-color: #836354">
+                                    style="background-color: rgb(234, 220, 200); border-color: #684F43">
                                     <div
                                         x-on:click="removalReason = ''; removalOpen = false"
                                         class="block w-full px-3 py-2 text-black cursor-pointer hover:bg-[#cfae86]">
@@ -232,10 +232,10 @@
                             <div x-show="removalReason === 'other'" x-cloak>
                                 <textarea
                                     name="admin_note"
-                                    class="border p-2 rounded w-full mb-2 text-black focus:outline-none focus:ring-1 focus:ring-[#836354] focus:border-[#836354]"
+                                    class="border p-2 rounded w-full mb-2 text-black focus:outline-none focus:ring-1 focus:ring-[#684F43] focus:border-[#684F43]"
                                     rows="3"
                                     placeholder="Administratoriaus pastaba. Įrašykite pašalinimo priežastį."
-                                    style="background-color: rgb(234, 220, 200); border-color: #836354">{{ old('admin_note') }}</textarea>
+                                    style="background-color: rgb(234, 220, 200); border-color: #684F43">{{ old('admin_note') }}</textarea>
                             </div>
 
                             <button type="submit"
@@ -254,7 +254,7 @@
                                 <button
                                     type="submit"
                                     class="w-full px-4 py-2 rounded text-white hover:text-black"
-                                    style="background-color: rgb(131, 99, 84)">
+                                    style="background-color: rgb(104, 79, 67)">
                                     Atblokuoti naudotoją
                                 </button>
                             </form>
@@ -266,10 +266,10 @@
 
                                 <textarea
                                     name="admin_note"
-                                    class="border p-2 rounded w-full mb-2 text-black focus:outline-none focus:ring-1 focus:ring-[#836354] focus:border-[#836354]"
+                                    class="border p-2 rounded w-full mb-2 text-black focus:outline-none focus:ring-1 focus:ring-[#684F43] focus:border-[#684F43]"
                                     rows="3"
                                     placeholder="Administratoriaus pastaba"
-                                    style="background-color: rgb(234, 220, 200); border-color: #836354"
+                                    style="background-color: rgb(234, 220, 200); border-color: #684F43"
                                     required></textarea>
 
                                 <button
@@ -289,7 +289,7 @@
 
             <div class="space-y-4">
                 @forelse($reportsByReason as $reason => $reports)
-                    <div class="p-4 rounded border" style="background-color: rgb(215, 183, 142); border-color: #836354">
+                    <div class="p-4 rounded border" style="background-color: rgb(227, 197, 157); border-color: #684F43">
                         <div class="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4 mb-4">
                             <div>
                                 <div class="font-semibold text-black">
@@ -317,14 +317,14 @@
 
                                     <textarea
                                         name="admin_note"
-                                        class="border p-2 rounded w-full mb-2 text-black focus:outline-none focus:ring-1 focus:ring-[#836354] focus:border-[#836354]"
+                                        class="border p-2 rounded w-full mb-2 text-black focus:outline-none focus:ring-1 focus:ring-[#684F43] focus:border-[#684F43]"
                                         rows="2"
                                         placeholder="Administratoriaus pastaba"
-                                        style="background-color: rgb(234, 220, 200); border-color: #836354"></textarea>
+                                        style="background-color: rgb(234, 220, 200); border-color: #684F43"></textarea>
 
                                     <button
                                         class="text-white px-3 py-2 rounded w-full hover:text-black"
-                                        style="background-color: rgb(131, 99, 84)">
+                                        style="background-color: rgb(104, 79, 67)">
                                         Atmesti šios priežasties pranešimus
                                     </button>
                                 </form>
@@ -333,7 +333,7 @@
 
                         <div class="space-y-3">
                             @foreach($reports as $report)
-                                <div class="p-4 rounded border" style="background-color: rgb(234, 220, 200); border-color: #836354">
+                                <div class="p-4 rounded border" style="background-color: rgb(234, 220, 200); border-color: #684F43">
                                     <div class="flex items-center justify-between gap-3 mb-2">
                                         <strong class="text-black">
                                             {{ $report->reporterUser->vardas ?? '—' }} {{ $report->reporterUser->pavarde ?? '' }}
@@ -359,7 +359,7 @@
                                     <a
                                         href="{{ route('admin.reported-listings.reporter-reports', $report->reporterUser->id) }}"
                                         class="inline-block mt-3 px-3 py-2 rounded text-white text-sm hover:text-black"
-                                        style="background-color: rgb(131, 99, 84)">
+                                        style="background-color: rgb(104, 79, 67)">
                                         Visi šio naudotojo pranešimai
                                     </a>
 

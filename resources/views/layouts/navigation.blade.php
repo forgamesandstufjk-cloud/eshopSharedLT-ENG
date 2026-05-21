@@ -4,7 +4,7 @@
     @endphp
 
     <!-- TOP BAR — Logo + Main Links -->
-    <div style="background-color: rgb(215, 183, 142)">
+    <div style="background-color: rgb(227, 197, 157)">
         <div class="w-full px-4 sm:px-6 lg:px-8 min-h-16 flex items-center justify-between gap-3">
 
             <!-- LEFT -->
@@ -117,7 +117,7 @@
                         <x-dropdown align="right" width="48">
                             <x-slot name="trigger">
                                 <button class="inline-flex items-center px-3 py-2 text-sm font-medium text-black font-bold max-w-[140px]"
-                                        style="background-color: rgb(215, 183, 142)">
+                                        style="background-color: rgb(227, 197, 157)">
                                     <span class="truncate">{{ Auth::user()->vardas }}</span>
                                     <svg class="ms-1 h-4 w-4 shrink-0" fill="currentColor" viewBox="0 0 20 20">
                                         <path fill-rule="evenodd"
@@ -287,7 +287,7 @@
                     <input
                         type="text"
                         name="q"
-                        class="col-span-2 sm:flex-grow border rounded-l px-4 py-2 focus:outline-none focus:ring-1 focus:ring-[#836354] focus:border-[#836354]"
+                        class="col-span-2 sm:flex-grow border rounded-l px-4 py-2 focus:outline-none focus:ring-1 focus:ring-[#684F43] focus:border-[#684F43]"
                         style="background-color: rgb(234, 220, 200, 0.8)"
                         placeholder="Ieškoti skelbimo..."
                         value="{{ request('q') }}"
@@ -327,7 +327,7 @@
 
                             <button
                                 type="button"
-                                class="sort-toggle px-3 py-2 rounded border border-[#836354] text-black focus-visible:outline focus-visible:outline-2 focus-visible:outline-black focus:outline-none focus:ring-1 focus:ring-[#836354] focus:border-[#836354] flex justify-between items-center w-full sm:w-auto sm:min-w-[220px]"
+                                class="sort-toggle px-3 py-2 rounded border border-[#684F43] text-black focus-visible:outline focus-visible:outline-2 focus-visible:outline-black focus:outline-none focus:ring-1 focus:ring-[#684F43] focus:border-[#684F43] flex justify-between items-center w-full sm:w-auto sm:min-w-[220px]"
                                 style="background-color: rgba(234, 220, 200, 0.8)"
                                 aria-label="Rūšiuoti"
                                 title="Rūšiuoti"
@@ -359,25 +359,25 @@
 
                             <div
                                 class="sort-menu absolute left-0 right-0 mt-1 rounded border shadow overflow-hidden z-50 hidden"
-                                style="background-color: rgb(234, 220, 200); border-color: #836354"
+                                style="background-color: rgb(234, 220, 200); border-color: #684F43"
                             >
-                                <button type="button" class="sort-option block w-full px-3 py-2 text-left text-black cursor-pointer hover:bg-[#836354]" data-value="">
+                                <button type="button" class="sort-option block w-full px-3 py-2 text-left text-black cursor-pointer hover:bg-[#684F43]" data-value="">
                                     Rūšiuoti
                                 </button>
 
-                                <button type="button" class="sort-option block w-full px-3 py-2 text-left text-black cursor-pointer hover:bg-[#836354]" data-value="newest">
+                                <button type="button" class="sort-option block w-full px-3 py-2 text-left text-black cursor-pointer hover:bg-[#684F43]" data-value="newest">
                                     Naujausi pirmiausia
                                 </button>
 
-                                <button type="button" class="sort-option block w-full px-3 py-2 text-left text-black cursor-pointer hover:bg-[#836354]" data-value="oldest">
+                                <button type="button" class="sort-option block w-full px-3 py-2 text-left text-black cursor-pointer hover:bg-[#684F43]" data-value="oldest">
                                     Seniausi pirmiausia
                                 </button>
 
-                                <button type="button" class="sort-option block w-full px-3 py-2 text-left text-black cursor-pointer hover:bg-[#836354]" data-value="price_asc">
+                                <button type="button" class="sort-option block w-full px-3 py-2 text-left text-black cursor-pointer hover:bg-[#684F43]" data-value="price_asc">
                                     Kaina: nuo mažiausios
                                 </button>
 
-                                <button type="button" class="sort-option block w-full px-3 py-2 text-left text-black cursor-pointer hover:bg-[#836354]" data-value="price_desc">
+                                <button type="button" class="sort-option block w-full px-3 py-2 text-left text-black cursor-pointer hover:bg-[#684F43]" data-value="price_desc">
                                     Kaina: nuo didžiausios
                                 </button>
                             </div>
@@ -407,13 +407,13 @@
     <div
         id="filters-panel"
         class="pb-4 origin-top hidden"
-        style="background-color: rgb(215, 183, 142)"
+        style="background-color: rgb(227, 197, 157)"
     >
         <div class="w-full pt-2 px-2 sm:px-3">
             <form method="GET"
                   action="{{ route('search.listings') }}"
                   class="grid grid-cols-1 sm:grid-cols-5 gap-4 border-0 shadow-none outline-none"
-                  style="background-color: rgb(215, 183, 142)">
+                  style="background-color: rgb(227, 197, 157)">
 
                 <input type="hidden" name="q" value="{{ request('q') }}">
 
@@ -423,7 +423,7 @@
 
                     <button
                         type="button"
-                        class="filter-toggle w-full rounded border border-gray-500 py-2 px-3 text-left focus:outline-none focus:ring-1 focus:ring-[#836354] focus:border-[#836354] flex justify-between items-center"
+                        class="filter-toggle w-full rounded border border-gray-500 py-2 px-3 text-left focus:outline-none focus:ring-1 focus:ring-[#684F43] focus:border-[#684F43] flex justify-between items-center"
                         style="background-color: rgb(234, 220, 200)"
                         aria-label="Pasirinkti kategoriją"
                         aria-expanded="false"
@@ -437,7 +437,7 @@
 
                     <div
                         class="filter-menu absolute left-0 right-0 mt-1 rounded border shadow overflow-hidden z-50 max-h-60 overflow-y-auto hidden"
-                        style="background-color: rgb(234, 220, 200); border-color: #836354"
+                        style="background-color: rgb(234, 220, 200); border-color: #684F43"
                     >
                         <button type="button" class="filter-option block w-full px-3 py-2 text-left text-black cursor-pointer hover:bg-[#cfae86]" data-value="">
                             Kategorija
@@ -461,7 +461,7 @@
 
                     <button
                         type="button"
-                        class="filter-toggle w-full rounded border border-gray-500 py-2 px-3 text-left focus:outline-none focus:ring-1 focus:ring-[#836354] focus:border-[#836354] flex justify-between items-center"
+                        class="filter-toggle w-full rounded border border-gray-500 py-2 px-3 text-left focus:outline-none focus:ring-1 focus:ring-[#684F43] focus:border-[#684F43] flex justify-between items-center"
                         style="background-color: rgb(234, 220, 200)"
                         aria-label="Pasirinkti tipą"
                         aria-expanded="false"
@@ -483,7 +483,7 @@
 
                     <div
                         class="filter-menu absolute left-0 right-0 mt-1 rounded border shadow overflow-hidden z-50 hidden"
-                        style="background-color: rgb(234, 220, 200); border-color: #836354"
+                        style="background-color: rgb(234, 220, 200); border-color: #684F43"
                     >
                         <button type="button" class="filter-option block w-full px-3 py-2 text-left text-black cursor-pointer hover:bg-[#cfae86]" data-value="">
                             Tipas
@@ -501,7 +501,7 @@
                 <input
                     type="number"
                     name="min_price"
-                    class="border border-gray-500 rounded px-3 py-2 text-black placeholder-gray-700 focus:outline-none focus:ring-1 focus:ring-[#836354] focus:border-[#836354]"
+                    class="border border-gray-500 rounded px-3 py-2 text-black placeholder-gray-700 focus:outline-none focus:ring-1 focus:ring-[#684F43] focus:border-[#684F43]"
                     style="background-color: rgb(234, 220, 200)"
                     placeholder="Min. kaina"
                     value="{{ request('min_price') }}"
@@ -514,7 +514,7 @@
                 <input
                     type="number"
                     name="max_price"
-                    class="border border-gray-500 rounded px-3 py-2 text-black placeholder-gray-700 focus:outline-none focus:ring-1 focus:ring-[#836354] focus:border-[#836354]"
+                    class="border border-gray-500 rounded px-3 py-2 text-black placeholder-gray-700 focus:outline-none focus:ring-1 focus:ring-[#684F43] focus:border-[#684F43]"
                     style="background-color: rgb(234, 220, 200)"
                     placeholder="Maks. kaina"
                     value="{{ request('max_price') }}"
@@ -529,7 +529,7 @@
 
                     <button
                         type="button"
-                        class="filter-toggle w-full rounded border border-gray-500 py-2 px-3 text-left focus:outline-none focus:ring-1 focus:ring-[#836354] focus:border-[#836354] flex justify-between items-center"
+                        class="filter-toggle w-full rounded border border-gray-500 py-2 px-3 text-left focus:outline-none focus:ring-1 focus:ring-[#684F43] focus:border-[#684F43] flex justify-between items-center"
                         style="background-color: rgb(234, 220, 200)"
                         aria-label="Pasirinkti miestą"
                         aria-expanded="false"
@@ -543,7 +543,7 @@
 
                     <div
                         class="filter-menu absolute left-0 right-0 mt-1 rounded border shadow overflow-hidden z-50 max-h-60 overflow-y-auto hidden"
-                        style="background-color: rgb(234, 220, 200); border-color: #836354"
+                        style="background-color: rgb(234, 220, 200); border-color: #684F43"
                     >
                         <button type="button" class="filter-option block w-full px-3 py-2 text-left text-black cursor-pointer hover:bg-[#cfae86]" data-value="">
                             Miestas

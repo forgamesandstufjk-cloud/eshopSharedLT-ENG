@@ -8,31 +8,31 @@
             <a
                 href="{{ url()->previous() }}"
                 class="inline-block px-4 py-2 rounded text-white"
-                style="background-color: rgb(131, 99, 84)"
+                style="background-color: rgb(104, 79, 67)"
             >
                 ← Atgal
             </a>
         </div>
 
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-            <div class="p-4 rounded shadow" style="background-color: rgb(215, 183, 142)">
+            <div class="p-4 rounded shadow" style="background-color: rgb(227, 197, 157)">
                 <div class="text-sm text-black">Viso pranešimų</div>
                 <div class="text-2xl font-bold text-black">{{ $stats['total'] }}</div>
             </div>
 
-            <div class="p-4 rounded shadow" style="background-color: rgb(215, 183, 142)">
+            <div class="p-4 rounded shadow" style="background-color: rgb(227, 197, 157)">
                 <div class="text-sm text-black">Laukiama</div>
                 <div class="text-2xl font-bold text-black">{{ $stats['pending'] }}</div>
             </div>
 
-            <div class="p-4 rounded shadow" style="background-color: rgb(215, 183, 142)">
+            <div class="p-4 rounded shadow" style="background-color: rgb(227, 197, 157)">
                 <div class="text-sm text-black">Atmesta</div>
                 <div class="text-2xl font-bold" style="color: rgb(184, 80, 54)">
                     {{ $stats['dismissed'] }}
                 </div>
             </div>
 
-            <div class="p-4 rounded shadow" style="background-color: rgb(215, 183, 142)">
+            <div class="p-4 rounded shadow" style="background-color: rgb(227, 197, 157)">
                 <div class="text-sm text-black">Išspręsta</div>
                 <div class="text-2xl font-bold text-black">{{ $stats['resolved'] }}</div>
             </div>
@@ -44,7 +44,7 @@
             @endphp
 
             <div class="mb-6 p-4 rounded border text-sm"
-                 style="background-color: rgb(234, 220, 200); border-color: #836354">
+                 style="background-color: rgb(234, 220, 200); border-color: #684F43">
                 <div class="text-black">
                     Atmestų pranešimų dalis:
                     <strong>{{ $dismissedRate }}%</strong>
@@ -59,7 +59,7 @@
         @endif
 
         <div class="mb-6 p-4 rounded border"
-     style="background-color: rgb(234, 220, 200); border-color: #836354">
+     style="background-color: rgb(234, 220, 200); border-color: #684F43">
     <div class="text-black font-semibold text-base mb-3">
         Naudotojo valdymas
     </div>
@@ -77,7 +77,7 @@
             <button
                 type="submit"
                 class="px-4 py-2 rounded text-white"
-                style="background-color: rgb(131, 99, 84)"
+                style="background-color: rgb(104, 79, 67)"
             >
                 Atblokuoti naudotoją
             </button>

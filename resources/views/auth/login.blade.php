@@ -18,7 +18,7 @@
             </label>
             <input
                 id="el_pastas"
-                class="block mt-1 w-full rounded-md border border-gray-500 text-black focus:outline-none focus:ring-1 focus:ring-[#836354] focus:border-[#836354]"
+                class="block mt-1 w-full rounded-md border border-gray-500 text-black focus:outline-none focus:ring-1 focus:ring-[#684F43] focus:border-[#684F43]"
                 style="background-color: rgb(234, 220, 200)"
                 type="text"
                 name="el_pastas"
@@ -34,7 +34,7 @@
             </label>
             <input
                 id="password"
-                class="block mt-1 w-full rounded-md border border-gray-500 text-black focus:outline-none focus:ring-1 focus:ring-[#836354] focus:border-[#836354]"
+                class="block mt-1 w-full rounded-md border border-gray-500 text-black focus:outline-none focus:ring-1 focus:ring-[#684F43] focus:border-[#684F43]"
                 style="background-color: rgb(234, 220, 200)"
                 type="password"
                 name="password"
@@ -49,7 +49,7 @@
                 <input
                     id="remember_me"
                     type="checkbox"
-                    class="rounded border-gray-500 focus:outline-none focus:ring-1 focus:ring-[#836354] focus:border-[#836354]"
+                    class="rounded border-gray-500 focus:outline-none focus:ring-1 focus:ring-[#684F43] focus:border-[#684F43]"
                     style="background-color: rgb(234, 220, 200)"
                     name="remember"
                 >
@@ -63,7 +63,7 @@
             @if (Route::has('password.request'))
                 <a
                     href="{{ route('password.request') }}"
-                    class="underline text-sm text-black hover:text-[#836354]"
+                    class="underline text-sm text-black hover:text-[#684F43]"
                 >
                     {{ __('Pamiršote slaptažodį?') }}
                 </a>
@@ -73,14 +73,14 @@
         <div class="mt-6 grid grid-cols-2 gap-4">
     <x-primary-button
         class="w-full justify-center text-white hover:text-black"
-        style="background-color: rgb(131, 99, 84)"
+        style="background-color: rgb(104, 79, 67)"
     >
         {{ __('Prisijungti') }}
     </x-primary-button>
 
     <a
         href="{{ route('register') }}"
-        class="inline-flex w-full items-center justify-center px-4 py-2 rounded-md border text-black hover:text-[#836354]"
+        class="inline-flex w-full items-center justify-center px-4 py-2 rounded-md border text-black hover:text-[#684F43]"
         style="background-color: rgb(234, 220, 200)"
     >
         {{ __('Sukurti paskyrą') }}

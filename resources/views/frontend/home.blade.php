@@ -10,9 +10,7 @@
                 style="background-image: url('{{ asset('images/vytis.png') }}'); background-size: 500px 500px; background-position: center calc(50% + 60px); opacity: 0.3"
             ></div>
 
-            <div x-data="{}"
-            x-init="if ({{ auth()->check() ? 'true' : 'false' }}) Alpine.store('favorites').load()"
-            class="container mx-auto relative z-10">
+            <div class="container mx-auto relative z-10">
                 <div class="grid grid-cols-[repeat(auto-fit,minmax(260px,320px))] gap-4 sm:gap-6 justify-center">
                     @forelse ($listings as $item)
                         <div
@@ -197,15 +195,13 @@
         </div>
 
 
-        @auth
-            <script>
-                document.addEventListener('DOMContentLoaded', function () {
-                    if (window.Alpine && Alpine.store('favorites')) {
-                        Alpine.store('favorites').load();
-                    }
-                });
-            </script>
-        @endauth
+      @auth
+        <script>
+            document.addEventListener('alpine:init', () => {
+            Alpine.store('favorites').load();
+            });
+        </script>
+    @endauth
 
         @include('components.footer')
     </div>

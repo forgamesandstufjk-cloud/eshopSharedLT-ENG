@@ -1,7 +1,7 @@
 <x-app-layout>
  <x-slot name="title">Redaguoti skelbimą</x-slot>
     <div class="max-w-4xl mx-auto mt-10 shadow p-6 rounded"
-         style="background-color: rgb(215, 183, 142)"
+         style="background-color: rgb(227, 197, 157)"
          x-data="{ type: '{{ old('tipas', $listing->tipas) }}' }">
 
         <h1 class="text-2xl font-bold mb-6 text-black">Redaguoti skelbimą</h1>
@@ -39,7 +39,7 @@
                     type="text" 
                     name="pavadinimas"
                     value="{{ old('pavadinimas', $listing->pavadinimas) }}"
-                    class="w-full border border-gray-500 rounded px-3 py-2 text-black focus:outline-none focus:ring-1 focus:ring-[#836354] focus:border-[#836354]"
+                    class="w-full border border-gray-500 rounded px-3 py-2 text-black focus:outline-none focus:ring-1 focus:ring-[#684F43] focus:border-[#684F43]"
                     style="background-color: rgb(234, 220, 200)"
                     required>
             </div>
@@ -50,7 +50,7 @@
                 <textarea 
                     name="aprasymas" 
                     rows="5"
-                    class="w-full border border-gray-500 rounded px-3 py-2 text-black focus:outline-none focus:ring-1 focus:ring-[#836354] focus:border-[#836354]"
+                    class="w-full border border-gray-500 rounded px-3 py-2 text-black focus:outline-none focus:ring-1 focus:ring-[#684F43] focus:border-[#684F43]"
                     style="background-color: rgb(234, 220, 200)"
                     required>{{ old('aprasymas', $listing->aprasymas) }}</textarea>
             </div>
@@ -65,7 +65,7 @@
                     step="0.01" 
                     name="kaina"
                     value="{{ old('kaina', $listing->kaina) }}"
-                    class="w-full border border-gray-500 rounded px-3 py-2 text-black focus:outline-none focus:ring-1 focus:ring-[#836354] focus:border-[#836354]"
+                    class="w-full border border-gray-500 rounded px-3 py-2 text-black focus:outline-none focus:ring-1 focus:ring-[#684F43] focus:border-[#684F43]"
                     style="background-color: rgb(234, 220, 200)"
                     required>
             </div>
@@ -79,8 +79,8 @@
                 <button
                     type="button"
                     @click="open = !open"
-                    :class="open ? 'ring-1 ring-[#836354] border-[#836354]' : 'border-gray-500'"
-                    class="w-full rounded border py-2 px-3 text-left focus:outline-none focus:ring-1 focus:ring-[#836354] focus:border-[#836354] flex justify-between items-center"
+                    :class="open ? 'ring-1 ring-[#684F43] border-[#684F43]' : 'border-gray-500'"
+                    class="w-full rounded border py-2 px-3 text-left focus:outline-none focus:ring-1 focus:ring-[#684F43] focus:border-[#684F43] flex justify-between items-center"
                     style="background-color: rgb(234, 220, 200)"
                 >
                     <span class="text-black" x-text="type === 'preke' ? 'Prekė' : 'Paslauga'"></span>
@@ -94,7 +94,7 @@
                     x-show="open"
                     @click.outside="open = false"
                     class="absolute left-0 right-0 mt-1 rounded border shadow overflow-hidden z-50"
-                    style="background-color: rgb(234, 220, 200); border-color: #836354"
+                    style="background-color: rgb(234, 220, 200); border-color: #684F43"
                 >
                     <div
                         @click="type = 'preke'; open = false"
@@ -128,8 +128,8 @@
                     <button
                         type="button"
                         @click="open = !open"
-                        :class="open ? 'ring-1 ring-[#836354] border-[#836354]' : 'border-gray-500'"
-                        class="w-full rounded border py-2 px-3 text-left focus:outline-none focus:ring-1 focus:ring-[#836354] focus:border-[#836354] flex justify-between items-center"
+                        :class="open ? 'ring-1 ring-[#684F43] border-[#684F43]' : 'border-gray-500'"
+                        class="w-full rounded border py-2 px-3 text-left focus:outline-none focus:ring-1 focus:ring-[#684F43] focus:border-[#684F43] flex justify-between items-center"
                         style="background-color: rgb(234, 220, 200)"
                     >
                         <span
@@ -146,7 +146,7 @@
                         x-show="open"
                         @click.outside="open = false"
                         class="absolute left-0 right-0 mt-1 rounded border shadow overflow-hidden z-50 max-h-60 overflow-y-auto"
-                        style="background-color: rgb(234, 220, 200); border-color: #836354"
+                        style="background-color: rgb(234, 220, 200); border-color: #684F43"
                     >
                         @foreach($categories as $cat)
                             <div
@@ -175,8 +175,8 @@
                     <button
                         type="button"
                         @click="if (type === 'preke') open = !open"
-                        :class="open ? 'ring-1 ring-[#836354] border-[#836354]' : 'border-gray-500'"
-                        class="w-full rounded border py-2 px-3 text-left focus:outline-none focus:ring-1 focus:ring-[#836354] focus:border-[#836354] flex justify-between items-center"
+                        :class="open ? 'ring-1 ring-[#684F43] border-[#684F43]' : 'border-gray-500'"
+                        class="w-full rounded border py-2 px-3 text-left focus:outline-none focus:ring-1 focus:ring-[#684F43] focus:border-[#684F43] flex justify-between items-center"
                         style="background-color: rgb(234, 220, 200)"
                     >
                         <span
@@ -193,7 +193,7 @@
                         x-show="open"
                         @click.outside="open = false"
                         class="absolute left-0 right-0 mt-1 rounded border shadow overflow-hidden z-50"
-                        style="background-color: rgb(234, 220, 200); border-color: #836354"
+                        style="background-color: rgb(234, 220, 200); border-color: #684F43"
                     >
                         <div @click="selected = 'XS'; open = false" class="block w-full px-3 py-2 text-black cursor-pointer hover:bg-[#cfae86]">XS – Vokas</div>
                         <div @click="selected = 'S'; open = false" class="block w-full px-3 py-2 text-black cursor-pointer hover:bg-[#cfae86]">S – Maža dėžė</div>
@@ -211,7 +211,7 @@
                         max="999"
                         name="kiekis"
                         value="{{ old('kiekis', $listing->kiekis) }}"
-                        class="w-full border border-gray-500 rounded px-3 py-2 text-black focus:outline-none focus:ring-1 focus:ring-[#836354] focus:border-[#836354]"
+                        class="w-full border border-gray-500 rounded px-3 py-2 text-black focus:outline-none focus:ring-1 focus:ring-[#684F43] focus:border-[#684F43]"
                         style="background-color: rgb(234, 220, 200)"
                         x-bind:required="type === 'preke'"
                         x-bind:disabled="type !== 'preke'">
@@ -224,7 +224,7 @@
                         name="is_renewable"
                         value="1"
                         @checked($listing->is_renewable == 1)
-                        class="rounded border-gray-500 text-[#836354] focus:ring-1 focus:ring-[#836354] focus:ring-offset-0"
+                        class="rounded border-gray-500 text-[#684F43] focus:ring-1 focus:ring-[#684F43] focus:ring-offset-0"
                         style="background-color: rgb(234, 220, 200)"
                     >
                     <label class="text-black">Ar ši prekė atnaujinama (galima papildyti)?</label>
@@ -247,14 +247,14 @@
                 <label
                     for="photoInput"
                     class="inline-flex items-center px-4 py-2 rounded cursor-pointer text-white hover:text-black transition-colors"
-                    style="background-color: rgb(131, 99, 84)"
+                    style="background-color: rgb(104, 79, 67)"
                 >
                     Pasirinkti nuotraukas
                 </label>
     
                 <div
                     class="mt-3 p-3 rounded border text-sm text-black"
-                    style="background-color: rgb(234, 220, 200); border-color: #836354"
+                    style="background-color: rgb(234, 220, 200); border-color: #684F43"
                 >
                     <span x-show="!fileNames">Nepasirinkta jokių failų</span>
                     <span x-show="fileNames" x-text="fileNames"></span>
@@ -271,7 +271,7 @@
             {{-- SAVE BUTTON --}}
             <button 
                 class="text-white px-6 py-2 rounded hover:text-black"
-                style="background-color: rgb(131, 99, 84)"
+                style="background-color: rgb(104, 79, 67)"
                 type="submit">
                  Išsaugoti pakeitimus
             </button>
@@ -293,7 +293,7 @@
             @else
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 mt-4">
                     @foreach($listing->photos as $photo)
-                        <div class="relative border rounded overflow-hidden" style="border-color: #836354">
+                        <div class="relative border rounded overflow-hidden" style="border-color: #684F43">
 
                             <img 
                                 src="{{ \Illuminate\Support\Facades\Storage::disk('photos')->url($photo->failo_url) }}" 

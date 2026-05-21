@@ -15,7 +15,7 @@
         <div class="grid md:grid-cols-2 gap-6">
 
             {{-- LEFT: SHIPPING + PAYMENT --}}
-            <div class="p-6 rounded shadow" style="background-color: rgb(215, 183, 142)">
+            <div class="p-6 rounded shadow" style="background-color: rgb(227, 197, 157)">
                 <form id="checkout-form">
 
                     <h2 class="font-semibold mb-3 text-black">Pristatymo adresas</h2>
@@ -39,7 +39,7 @@
                                         ])->filter()->implode(' '))
                                         : ''
                                 ) }}"
-                                class="w-full border border-gray-500 rounded px-3 py-2 text-black focus:outline-none focus:ring-1 focus:ring-[#836354] focus:border-[#836354]"
+                                class="w-full border border-gray-500 rounded px-3 py-2 text-black focus:outline-none focus:ring-1 focus:ring-[#684F43] focus:border-[#684F43]"
                                 style="background-color: rgb(234, 220, 200)"
                                 required
                             >
@@ -54,7 +54,7 @@
                                 type="text"
                                 name="city"
                                 value="{{ old('city', $user->address->city->pavadinimas ?? '') }}"
-                                class="w-full border border-gray-500 rounded px-3 py-2 text-black focus:outline-none focus:ring-1 focus:ring-[#836354] focus:border-[#836354]"
+                                class="w-full border border-gray-500 rounded px-3 py-2 text-black focus:outline-none focus:ring-1 focus:ring-[#684F43] focus:border-[#684F43]"
                                 style="background-color: rgb(234, 220, 200)"
                                 required
                             >
@@ -69,7 +69,7 @@
                                 type="text"
                                 name="country"
                                 value="{{ old('country', 'Lithuania') }}"
-                                class="w-full border border-gray-500 rounded px-3 py-2 text-black focus:outline-none focus:ring-1 focus:ring-[#836354] focus:border-[#836354]"
+                                class="w-full border border-gray-500 rounded px-3 py-2 text-black focus:outline-none focus:ring-1 focus:ring-[#684F43] focus:border-[#684F43]"
                                 style="background-color: rgb(234, 220, 200)"
                                 required
                             >
@@ -83,7 +83,7 @@
                             <input
                                 id="postal_code"
                                 name="postal_code"
-                                class="w-full border border-gray-500 rounded px-3 py-2 text-black focus:outline-none focus:ring-1 focus:ring-[#836354] focus:border-[#836354]"
+                                class="w-full border border-gray-500 rounded px-3 py-2 text-black focus:outline-none focus:ring-1 focus:ring-[#684F43] focus:border-[#684F43]"
                                 style="background-color: rgb(234, 220, 200)"
                                 required
                             >
@@ -103,8 +103,8 @@
                         <button
                             type="button"
                             @click="open = !open"
-                            :class="open ? 'ring-1 ring-[#836354] border-[#836354]' : 'border-gray-500'"
-                            class="w-full rounded border py-2 px-3 text-left text-black focus:outline-none focus:ring-1 focus:ring-[#836354] focus:border-[#836354] flex justify-between items-center"
+                            :class="open ? 'ring-1 ring-[#684F43] border-[#684F43]' : 'border-gray-500'"
+                            class="w-full rounded border py-2 px-3 text-left text-black focus:outline-none focus:ring-1 focus:ring-[#684F43] focus:border-[#684F43] flex justify-between items-center"
                             style="background-color: rgb(234, 220, 200)"
                         >
                             <span x-text="selected === '' ? 'Pasirinkite pristatymo būdą' : (selected === 'omniva' ? 'Omniva (paštomatas)' : 'Venipak (kurjeris)')"></span>
@@ -119,7 +119,7 @@
                             x-cloak
                             @click.outside="open = false"
                             class="absolute left-0 right-0 top-full mt-1 rounded border shadow overflow-hidden z-50"
-                            style="background-color: rgb(234, 220, 200); border-color: #836354"
+                            style="background-color: rgb(234, 220, 200); border-color: #684F43"
                         >
 
                             <div
@@ -187,7 +187,7 @@
                             id="pay-button"
                             type="submit"
                             class="text-white py-3 rounded font-semibold hover:text-black"
-                            style="background-color: rgb(131, 99, 84)"
+                            style="background-color: rgb(104, 79, 67)"
                         >
                             Mokėti
                         </button>
@@ -196,7 +196,7 @@
             </div>
 
             {{-- RIGHT: ORDER SUMMARY --}}
-            <div class="p-6 rounded shadow" style="background-color: rgb(215, 183, 142)">
+            <div class="p-6 rounded shadow" style="background-color: rgb(227, 197, 157)">
                 <h2 class="text-xl font-semibold mb-4 text-black">Užsakymo suvestinė</h2>
 
                 @if($checkoutMode === 'service')
@@ -230,7 +230,7 @@
                     @endforeach
                 @endif
 
-                <hr class="my-3" style="border-color: #836354">
+                <hr class="my-3" style="border-color: #684F43">
 
                 <div class="flex justify-between text-sm text-black">
                     <span>Prekių suma</span>
@@ -249,7 +249,7 @@
                     <span id="shipping-total">—</span>
                 </div>
 
-                <hr class="my-3" style="border-color: #836354">
+                <hr class="my-3" style="border-color: #684F43">
 
                 <div class="flex justify-between font-semibold text-lg text-black">
                     <span>Iš viso</span>

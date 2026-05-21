@@ -195,13 +195,24 @@
         </div>
 
 
-      @auth
-        <script>
-            document.addEventListener('alpine:init', () => {
+     @auth
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const loadFavorites = () => {
+        if (window.Alpine && Alpine.store('favorites')) {
             Alpine.store('favorites').load();
-            });
-        </script>
-    @endauth
+            return true;
+        }
+        return false;
+    };
+
+    if (!loadFavorites()) {
+        document.addEventListener('alpine:init', loadFavorites, { once: true });
+        setTimeout(loadFavorites, 300);
+    }
+});
+</script>
+@endauth
 
         @include('components.footer')
     </div>

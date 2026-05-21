@@ -1,4 +1,4 @@
-<section class="space-y-6 text-black" style="background-color: rgb(215, 183, 142)">
+<section class="space-y-6 text-black" style="background-color: rgb(227, 197, 157)">
     <header>
         <h2 class="text-lg font-medium text-black">
             {{ __('Ištrinti paskyrą') }}
@@ -26,7 +26,7 @@
         <form method="post"
               action="{{ route('profile.destroy') }}"
               class="p-6 text-black"
-              style="background-color: rgb(215, 183, 142)">
+              style="background-color: rgb(227, 197, 157)">
             @csrf
             @method('delete')
 
@@ -45,7 +45,7 @@
                     id="password"
                     name="password"
                     type="password"
-                    class="mt-1 block w-3/4 rounded-md text-black border border-gray-500 focus:outline-none focus:ring-1 focus:ring-[#836354] focus:border-[#836354]"
+                    class="mt-1 block w-3/4 rounded-md text-black border border-gray-500 focus:outline-none focus:ring-1 focus:ring-[#684F43] focus:border-[#684F43]"
                     style="background-color: rgb(234, 220, 200)"
                     placeholder="{{ __('Slaptažodis') }}"
                 />
@@ -58,7 +58,7 @@
                 type="button"
                 x-on:click="$dispatch('close')"
                 class="px-4 py-2 text-white rounded hover:text-black transition"
-                style="background-color: rgb(131, 99, 84)"
+                style="background-color: rgb(104, 79, 67)"
                 >
                 {{ __('Atšaukti') }}
                 </button>

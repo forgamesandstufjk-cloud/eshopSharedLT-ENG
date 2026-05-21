@@ -7,7 +7,7 @@
         <h1 class="text-2xl sm:text-3xl font-bold mb-4 sm:mb-6 text-black">Mano krepšelis</h1>
 
         @if($cartItems->isEmpty())
-            <div class="shadow p-6 rounded text-center" style="background-color: rgb(215, 183, 142)">
+            <div class="shadow p-6 rounded text-center" style="background-color: rgb(227, 197, 157)">
                 <p class="text-black">Jūsų krepšelis yra tuščias.</p>
             </div>
         @else
@@ -44,18 +44,18 @@
 
             <div x-data="cartPage(@js($cartData), '{{ csrf_token() }}')">
                 {{-- CART ITEMS --}}
-                <div class="shadow rounded p-3 sm:p-4" style="background-color: rgb(215, 183, 142)">
+                <div class="shadow rounded p-3 sm:p-4" style="background-color: rgb(227, 197, 157)">
 
                     {{-- HEADER --}}
                     <div class="hidden sm:grid grid-cols-12 font-semibold text-black border-b pb-2 mb-4"
-                         style="border-color: #836354">
+                         style="border-color: #684F43">
                         <div class="col-span-6 px-2">Prekė</div>
                         <div class="col-span-2 text-right px-2">Kaina</div>
                         <div class="col-span-2 text-center px-2">Kiekis</div>
                     </div>
 
                     <template x-for="item in items" :key="item.id">
-                        <div class="border-b py-4" style="border-color: #836354;">
+                        <div class="border-b py-4" style="border-color: #684F43;">
                             <div class="flex flex-col sm:grid sm:grid-cols-12 sm:items-center gap-3 sm:gap-0 text-black">
 
                                 {{-- IMAGE + TITLE --}}
@@ -93,7 +93,7 @@
                                         @click="decrease(item)"
                                         class="px-3 py-1 rounded text-white hover:text-black"
                                         :class="item.kiekis <= 1 || item.loading ? 'opacity-50 cursor-not-allowed' : ''"
-                                        style="background-color: rgb(131, 99, 84)"
+                                        style="background-color: rgb(104, 79, 67)"
                                         :disabled="item.kiekis <= 1 || item.loading"
                                     >
                                         −
@@ -106,7 +106,7 @@
                                          @click="increase(item)"
                                         class="px-3 py-1 rounded text-white hover:text-black"
                                         :class="item.loading || item.kiekis >= item.max ? 'opacity-50 cursor-not-allowed' : ''"
-                                        style="background-color: rgb(131, 99, 84)"
+                                        style="background-color: rgb(104, 79, 67)"
                                         :disabled="item.loading || item.kiekis >= item.max"
                                         >
                                             +
@@ -140,7 +140,7 @@
                 </div>
 
                 {{-- TOTAL SECTION --}}
-                <div class="shadow rounded p-4 sm:p-6 mt-6" style="background-color: rgb(215, 183, 142)">
+                <div class="shadow rounded p-4 sm:p-6 mt-6" style="background-color: rgb(227, 197, 157)">
                     <div class="text-lg sm:text-xl font-bold mb-4 text-center sm:text-left text-black">
                         Viso: <span x-text="formatPrice(total)"></span>
                     </div>
@@ -158,7 +158,7 @@
         <button
             type="submit"
             class="text-white px-6 py-3 rounded hover:text-black w-full"
-            style="background-color: rgb(131, 99, 84)"
+            style="background-color: rgb(104, 79, 67)"
         >
             Eiti į atsiskaitymą
         </button>

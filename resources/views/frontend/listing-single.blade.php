@@ -18,6 +18,25 @@ input[type=number] {
 .custom-select-menu {
     scrollbar-width: thin;
 }
+.review-stars {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+}
+.review-star-btn {
+    background: transparent;
+    border: 0;
+    padding: 0;
+    font-size: 1.875rem;
+    line-height: 1;
+    cursor: pointer;
+}
+.review-star-btn.is-empty {
+    color: #9ca3af;
+}
+.review-star-btn.is-full {
+    color: rgb(104, 79, 67);
+}
 </style>
 <div class="min-h-screen flex flex-col" style="background-color: rgb(234, 220, 200)">
     <div
@@ -694,26 +713,21 @@ input[type=number] {
 
                                     <div>
                                         <label class="block text-black font-medium mb-1" for="edit-rating-{{ $review->id }}">Įvertinimas</label>
-                                        <div class="relative custom-select" data-placeholder="Pasirinkite įvertinimą">
-                                            <input type="hidden" id="edit-rating-{{ $review->id }}" name="ivertinimas" value="{{ $review->ivertinimas }}">
-                                            <button
-                                                type="button"
-                                                class="custom-select-toggle w-full border border-gray-500 rounded p-3 text-black focus:outline-none focus:ring-1 focus:ring-[#836354] focus:border-[#836354] flex items-center justify-between"
-                                                style="background-color: rgb(234, 220, 200)"
-                                                aria-haspopup="listbox"
-                                                aria-expanded="false"
-                                            >
-                                                <span class="custom-select-label">{{ $review->ivertinimas }} / 5</span>
-                                                <svg class="h-5 w-5 text-black shrink-0" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-                                                    <path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 11.06l3.71-3.83a.75.75 0 111.08 1.04l-4.25 4.4a.75.75 0 01-1.08 0L5.21 8.27a.75.75 0 01.02-1.06z" clip-rule="evenodd" />
-                                                </svg>
-                                            </button>
-                                            <div class="custom-select-menu hidden absolute left-0 right-0 mt-1 rounded border shadow overflow-hidden z-50"
-                                                 style="background-color: rgb(234, 220, 200); border-color: #836354">
-                                                @for($n = 1; $n <= 5; $n++)
-                                                    <button type="button" class="custom-select-option block w-full px-3 py-2 text-left text-black" data-value="{{ $n }}">{{ $n }} / 5</button>
-                                                @endfor
-                                            </div>
+                                        <input type="hidden" id="edit-rating-{{ $review->id }}" name="ivertinimas" value="{{ $review->ivertinimas }}">
+
+                                        <div class="review-stars mb-2" data-edit-stars data-input-id="edit-rating-{{ $review->id }}" data-initial="{{ $review->ivertinimas }}">
+                                            @for($n = 1; $n <= 5; $n++)
+                                                <button
+                                                    type="button"
+                                                    class="review-star-btn {{ $review->ivertinimas >= $n ? 'is-full' : 'is-empty' }}"
+                                                    data-star-value="{{ $n }}"
+                                                    aria-label="{{ $n }} žvaigždutės"
+                                                >{{ $review->ivertinimas >= $n ? '★' : '☆' }}</button>
+                                            @endfor
+                                        </div>
+
+                                        <div class="text-sm text-black">
+                                            <span class="review-stars-value">{{ $review->ivertinimas }} / 5</span>
                                         </div>
                                     </div>
 
@@ -1136,6 +1150,49 @@ document.addEventListener('DOMContentLoaded', function () {
             document.querySelectorAll('.custom-select-menu').forEach((menu) => menu.classList.add('hidden'));
             document.querySelectorAll('.custom-select-toggle').forEach((toggle) => toggle.setAttribute('aria-expanded', 'false'));
         }
+    });
+
+
+    document.querySelectorAll('[data-edit-stars]').forEach((wrap) => {
+        const inputId = wrap.dataset.inputId;
+        const input = document.getElementById(inputId);
+        const valueLabel = wrap.parentElement.querySelector('.review-stars-value');
+        const buttons = wrap.querySelectorAll('[data-star-value]');
+        let selected = Number(wrap.dataset.initial || input?.value || 0);
+        let hover = 0;
+
+        const paint = () => {
+            const active = hover || selected;
+            buttons.forEach((btn) => {
+                const value = Number(btn.dataset.starValue);
+                const filled = value <= active;
+                btn.textContent = filled ? '★' : '☆';
+                btn.classList.toggle('is-full', filled);
+                btn.classList.toggle('is-empty', !filled);
+            });
+            if (valueLabel) valueLabel.textContent = `${selected} / 5`;
+            if (input) input.value = selected;
+        };
+
+        buttons.forEach((btn) => {
+            btn.addEventListener('mouseenter', () => {
+                hover = Number(btn.dataset.starValue);
+                paint();
+            });
+            btn.addEventListener('click', () => {
+                selected = Number(btn.dataset.starValue);
+                if (input) input.value = selected;
+                if (valueLabel) valueLabel.textContent = `${selected} / 5`;
+                paint();
+            });
+        });
+
+        wrap.addEventListener('mouseleave', () => {
+            hover = 0;
+            paint();
+        });
+
+        paint();
     });
 
     document.querySelectorAll('.review-card').forEach((card) => {

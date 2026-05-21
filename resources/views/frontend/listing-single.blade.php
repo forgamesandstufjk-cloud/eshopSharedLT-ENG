@@ -50,7 +50,7 @@ input[type=number] {
     {{-- SUCCESS MESSAGE --}}
     @if(session('success'))
         <div class="mb-6 px-0 sm:px-4">
-            <div class="px-4 py-3 rounded text-black" style="background-color: rgb(207, 174, 134); border: 1px solid #836354">
+            <div class="px-4 py-3 rounded text-black" style="background-color: rgb(207, 174, 134); border: 1px solid #684F43">
                 {{ session('success') }}
             </div>
         </div>
@@ -58,7 +58,7 @@ input[type=number] {
 
     @if(session('error'))
         <div class="mb-6 px-0 sm:px-4">
-            <div class="px-4 py-3 rounded text-black" style="background-color: rgb(207, 174, 134); border: 1px solid #836354">
+            <div class="px-4 py-3 rounded text-black" style="background-color: rgb(207, 174, 134); border: 1px solid #684F43">
                 {{ session('error') }}
             </div>
         </div>
@@ -101,7 +101,7 @@ input[type=number] {
                     <div class="flex gap-2 sm:gap-3 overflow-x-auto">
                         @foreach($listing->photos as $photo)
                             <div class="w-16 h-16 sm:w-20 sm:h-20 rounded bg-white border flex items-center justify-center overflow-hidden shrink-0"
-                                 style="border-color: #836354;">
+                                 style="border-color: #684F43;">
                                 <img
                                     src="{{ \Illuminate\Support\Facades\Storage::disk('photos')->url($photo->failo_url) }}"
                                     alt="{{ $listing->pavadinimas }} papildoma nuotrauka"
@@ -231,7 +231,7 @@ input[type=number] {
     <button
         type="button"
         class="qty-decrease w-10 h-10 border rounded flex items-center justify-center text-black transition-colors"
-        style="background-color: rgb(234, 220, 200); border-color: #836354"
+        style="background-color: rgb(234, 220, 200); border-color: #684F43"
     >
         −
     </button>
@@ -244,14 +244,14 @@ input[type=number] {
         min="1"
         max="{{ max(1, $remainingToAdd) }}"
         aria-label="Kiekis"
-        class="qty-input w-12 h-10 text-center border rounded text-black focus:outline-none focus:ring-1 focus:ring-[#836354] focus:border-[#836354]"
-        style="background-color: rgb(234, 220, 200); border-color: #836354"
+        class="qty-input w-12 h-10 text-center border rounded text-black focus:outline-none focus:ring-1 focus:ring-[#684F43] focus:border-[#684F43]"
+        style="background-color: rgb(234, 220, 200); border-color: #684F43"
     >
 
     <button
         type="button"
         class="qty-increase w-10 h-10 border rounded flex items-center justify-center text-black transition-colors"
-        style="background-color: rgb(234, 220, 200); border-color: #836354"
+        style="background-color: rgb(234, 220, 200); border-color: #684F43"
     >
         +
     </button>
@@ -265,13 +265,13 @@ input[type=number] {
                     </form>
                 @endif
 {{-- SELLER INFO --}}
-<div class="mt-8 sm:mt-10 border-t pt-6" style="border-color: #836354">
+<div class="mt-8 sm:mt-10 border-t pt-6" style="border-color: #684F43">
     <h3 class="font-semibold text-black mb-2">Pardavėjas</h3>
 
     <div
         class="relative p-4 rounded border text-sm seller-contact-box"
         data-seller-url="{{ route('listing.seller-contact', $listing->id) }}"
-        style="background-color: rgb(234, 220, 200); border-color: #836354"
+        style="background-color: rgb(234, 220, 200); border-color: #684F43"
     >
 
         @auth
@@ -360,7 +360,7 @@ input[type=number] {
 
         @auth
             @if(auth()->id() !== $listing->user_id)
-                <div class="seller-report-panel hidden mt-4 pt-4 border-t" style="border-color: #836354">
+                <div class="seller-report-panel hidden mt-4 pt-4 border-t" style="border-color: #684F43">
                     <form method="POST" action="{{ route('reports.store', $listing) }}" class="space-y-3">
                         @csrf
 
@@ -370,8 +370,8 @@ input[type=number] {
                                 <input type="hidden" name="reason" value="" required>
                                 <button
                                     type="button"
-                                    class="custom-select-toggle w-full rounded border py-2 px-3 text-left text-black focus:outline-none focus:ring-1 focus:ring-[#836354] focus:border-[#836354] flex items-center justify-between"
-                                    style="background-color: #d7b78e; border-color: #836354"
+                                    class="custom-select-toggle w-full rounded border py-2 px-3 text-left text-black focus:outline-none focus:ring-1 focus:ring-[#684F43] focus:border-[#684F43] flex items-center justify-between"
+                                    style="background-color: #d7b78e; border-color: #684F43"
                                     aria-haspopup="listbox"
                                     aria-expanded="false"
                                 >
@@ -381,7 +381,7 @@ input[type=number] {
                                     </svg>
                                 </button>
                                 <div class="custom-select-menu hidden absolute left-0 right-0 mt-1 rounded border shadow overflow-hidden z-50 max-h-60 overflow-y-auto"
-                                     style="background-color: rgb(227, 197, 157); border-color: #836354">
+                                     style="background-color: rgb(227, 197, 157); border-color: #684F43">
                                     <button type="button" class="custom-select-option block w-full px-3 py-2 text-left text-black" data-value="">Pasirinkite priežastį</button>
                                     <button type="button" class="custom-select-option block w-full px-3 py-2 text-left text-black" data-value="fraud">Sukčiavimas</button>
                                     <button type="button" class="custom-select-option block w-full px-3 py-2 text-left text-black" data-value="fake_item">Netikra prekė</button>
@@ -398,8 +398,8 @@ input[type=number] {
                             <textarea
                                 name="details"
                                 rows="4"
-                                class="border p-2 rounded w-full text-black focus:outline-none focus:ring-1 focus:ring-[#836354] focus:border-[#836354]"
-                                style="background-color: rgb(227, 197, 157); border-color: #836354"
+                                class="border p-2 rounded w-full text-black focus:outline-none focus:ring-1 focus:ring-[#684F43] focus:border-[#684F43]"
+                                style="background-color: rgb(227, 197, 157); border-color: #684F43"
                                 placeholder="Aprašykite situaciją, jei reikia"
                             ></textarea>
                         </div>
@@ -635,8 +635,8 @@ input[type=number] {
                         <input type="hidden" name="sort" value="{{ $sort }}">
                         <button
                             type="button"
-                            class="custom-select-toggle w-full rounded border py-2 px-3 text-left text-black focus:outline-none focus:ring-1 focus:ring-[#836354] focus:border-[#836354] flex items-center justify-between"
-                            style="background-color: rgb(227, 197, 157); border-color: #836354"
+                            class="custom-select-toggle w-full rounded border py-2 px-3 text-left text-black focus:outline-none focus:ring-1 focus:ring-[#684F43] focus:border-[#684F43] flex items-center justify-between"
+                            style="background-color: rgb(227, 197, 157); border-color: #684F43"
                             aria-haspopup="listbox"
                             aria-expanded="false"
                         >
@@ -653,7 +653,7 @@ input[type=number] {
                             </svg>
                         </button>
                         <div class="custom-select-menu hidden absolute left-0 right-0 mt-1 rounded border shadow overflow-hidden z-50"
-                             style="background-color: rgb(227, 197, 157); border-color: #836354">
+                             style="background-color: rgb(227, 197, 157); border-color: #684F43">
                             <button type="button" class="custom-select-option block w-full px-3 py-2 text-left text-black" data-value="newest">Naujausi</button>
                             <button type="button" class="custom-select-option block w-full px-3 py-2 text-left text-black" data-value="oldest">Seniausi</button>
                             <button type="button" class="custom-select-option block w-full px-3 py-2 text-left text-black" data-value="highest">Geriausi</button>
@@ -669,7 +669,7 @@ input[type=number] {
                 <div
                     class="p-4 rounded border relative review-card"
                     data-review-id="{{ $review->id }}"
-                    style="background-color: rgb(227, 197, 157); border-color: #836354"
+                    style="background-color: rgb(227, 197, 157); border-color: #684F43"
                 >
                     @auth
                         @if(auth()->id() === $review->user_id)
@@ -738,7 +738,7 @@ input[type=number] {
                                     <textarea
                                         name="komentaras"
                                         rows="4"
-                                        class="w-full border border-gray-500 rounded p-3 text-black focus:outline-none focus:ring-1 focus:ring-[#836354] focus:border-[#836354]"
+                                        class="w-full border border-gray-500 rounded p-3 text-black focus:outline-none focus:ring-1 focus:ring-[#684F43] focus:border-[#684F43]"
                                         style="background-color: rgb(234, 220, 200)"
                                         placeholder="Parašykite atsiliepimą..."
                                     >{{ $review->komentaras }}</textarea>
@@ -769,7 +769,7 @@ input[type=number] {
                         @if(auth()->id() !== $review->user_id)
                             <div
                                 class="review-report-panel hidden mt-4 pt-4 border-t"
-                                style="border-color: #836354"
+                                style="border-color: #684F43"
                             >
                                 <form method="POST" action="{{ route('review.report', $review->id) }}" class="space-y-3">
                                     @csrf
@@ -780,8 +780,8 @@ input[type=number] {
                                             id="report-reason-{{ $review->id }}"
                                             name="reason"
                                             required
-                                            class="w-full rounded border py-2 px-3 text-left text-black flex justify-between items-center focus:outline-none focus:ring-1 focus:ring-[#836354] focus:border-[#836354]"
-                                            style="background-color: rgb(234, 220, 200); border-color: #836354"
+                                            class="w-full rounded border py-2 px-3 text-left text-black flex justify-between items-center focus:outline-none focus:ring-1 focus:ring-[#684F43] focus:border-[#684F43]"
+                                            style="background-color: rgb(234, 220, 200); border-color: #684F43"
                                         >
                                             <option value="" style="background-color: rgb(227, 197, 157); color: #000;">Pasirinkite priežastį</option>
                                             <option value="abuse" style="background-color: rgb(227, 197, 157); color: #000;">Įžeidžiantis tekstas</option>
@@ -797,8 +797,8 @@ input[type=number] {
                                         <textarea
                                             name="details"
                                             rows="3"
-                                            class="border p-2 rounded w-full text-black focus:outline-none focus:ring-1 focus:ring-[#836354] focus:border-[#836354]"
-                                            style="background-color: rgb(234, 220, 200); border-color: #836354"
+                                            class="border p-2 rounded w-full text-black focus:outline-none focus:ring-1 focus:ring-[#684F43] focus:border-[#684F43]"
+                                            style="background-color: rgb(234, 220, 200); border-color: #684F43"
                                             placeholder="Aprašykite situaciją, jei reikia"
                                         ></textarea>
                                     </div>
@@ -839,7 +839,7 @@ input[type=number] {
 
     @if(auth()->check() && !$isOwner && $purchaseCount > 0 && !$canLeaveReview)
         <div class="p-3 rounded text-black mb-4"
-             style="background-color: rgb(207, 174, 134); border: 1px solid #836354">
+             style="background-color: rgb(207, 174, 134); border: 1px solid #684F43">
             Jūs jau palikote atsiliepimą kiekvienam šio skelbimo pirkimui.
         </div>
     @endif
@@ -859,7 +859,7 @@ input[type=number] {
                             <input type="hidden" id="new-review-rating" name="ivertinimas" value="" required>
                             <button
                                 type="button"
-                                class="custom-select-toggle w-full border border-gray-500 rounded p-3 text-black focus:outline-none focus:ring-1 focus:ring-[#836354] focus:border-[#836354] flex items-center justify-between"
+                                class="custom-select-toggle w-full border border-gray-500 rounded p-3 text-black focus:outline-none focus:ring-1 focus:ring-[#684F43] focus:border-[#684F43] flex items-center justify-between"
                                 style="background-color: rgb(227, 197, 157)"
                                 aria-haspopup="listbox"
                                 aria-expanded="false"
@@ -870,7 +870,7 @@ input[type=number] {
                                 </svg>
                             </button>
                             <div class="custom-select-menu hidden absolute left-0 right-0 mt-1 rounded border shadow overflow-hidden z-50"
-                                 style="background-color: rgb(227, 197, 157); border-color: #836354">
+                                 style="background-color: rgb(227, 197, 157); border-color: #684F43">
                                 <button type="button" class="custom-select-option block w-full px-3 py-2 text-left text-black" data-value="">Pasirinkite įvertinimą</button>
                                 @for($n = 1; $n <= 5; $n++)
                                     <button type="button" class="custom-select-option block w-full px-3 py-2 text-left text-black" data-value="{{ $n }}">{{ $n }} / 5</button>
@@ -882,7 +882,7 @@ input[type=number] {
                     <textarea
                         name="komentaras"
                         rows="4"
-                        class="w-full border border-gray-500 rounded p-3 text-black focus:outline-none focus:ring-1 focus:ring-[#836354] focus:border-[#836354]"
+                        class="w-full border border-gray-500 rounded p-3 text-black focus:outline-none focus:ring-1 focus:ring-[#684F43] focus:border-[#684F43]"
                         style="background-color: rgb(227, 197, 157)"
                         placeholder="Parašykite atsiliepimą..."
                     ></textarea>

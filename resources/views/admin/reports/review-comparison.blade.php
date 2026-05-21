@@ -12,12 +12,12 @@
             <a
                 href="{{ route('admin.reported-listings.user-comments', $user->id) }}"
                 class="inline-block px-4 py-2 rounded text-white hover:text-black"
-                style="background-color: rgb(131, 99, 84)">
+                style="background-color: rgb(104, 79, 67)">
                 ← Atgal į komentarus
             </a>
         </div>
 
-        <div class="rounded-lg shadow p-4 sm:p-6" style="background-color: rgb(215, 183, 142)">
+        <div class="rounded-lg shadow p-4 sm:p-6" style="background-color: rgb(227, 197, 157)">
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-10">
                 <div class="relative">
                     <img
@@ -34,7 +34,7 @@
                                 <img
                                     src="{{ \Illuminate\Support\Facades\Storage::disk('photos')->url($photo->failo_url) }}"
                                     class="w-16 h-16 sm:w-20 sm:h-20 rounded object-cover cursor-pointer border"
-                                    style="border-color: #836354"
+                                    style="border-color: #684F43"
                                     onclick="document.getElementById('mainImage').src=this.src">
                             @endforeach
                         </div>
@@ -45,7 +45,7 @@
                     <div class="mb-3">
                         <span
                             class="inline-block px-3 py-1 rounded text-sm text-white"
-                            style="background-color: rgb(131, 99, 84)">
+                            style="background-color: rgb(104, 79, 67)">
                             {{ $listing->Category->pavadinimas ?? 'Kategorija' }}
                         </span>
                     </div>
@@ -86,7 +86,7 @@
                         <div class="mb-4">
                             <span
                                 class="inline-block px-3 py-1 rounded text-sm text-white"
-                                style="background-color: rgb(131, 99, 84)">
+                                style="background-color: rgb(104, 79, 67)">
                                 Atsinaujinanti prekė – pardavėjas papildo atsargas
                             </span>
                         </div>
@@ -96,17 +96,17 @@
                         <a
                             href="{{ route('listing.edit', ['listing' => $listing->id, 'back' => route('admin.reported-listings.show', $listing->id)]) }}"
                             class="px-6 py-3 text-white rounded hover:text-black transition text-center w-full sm:w-40 whitespace-nowrap"
-                            style="background-color: rgb(131, 99, 84)">
+                            style="background-color: rgb(104, 79, 67)">
                             Redaguoti
                         </a>
                     </div>
 
-                    <div class="mt-8 sm:mt-10 border-t pt-6" style="border-color: #836354">
+                    <div class="mt-8 sm:mt-10 border-t pt-6" style="border-color: #684F43">
                         <h3 class="font-semibold text-black mb-2">Moderavimo informacija</h3>
 
                         <div
                             class="p-4 rounded border text-sm"
-                            style="background-color: rgb(234, 220, 200); border-color: #836354">
+                            style="background-color: rgb(234, 220, 200); border-color: #684F43">
                             <div class="text-black font-semibold text-base sm:text-lg">
                                 {{ $seller->vardas }} {{ $seller->pavarde }}
                             </div>
@@ -123,14 +123,14 @@
                                 <a
                                     href="{{ route('admin.reported-listings.user-listings', $seller) }}"
                                     class="px-4 py-2 rounded text-white text-center hover:text-black"
-                                    style="background-color: rgb(131, 99, 84)">
+                                    style="background-color: rgb(104, 79, 67)">
                                     Visi pardavėjo skelbimai
                                 </a>
 
                                 <a
                                     href="{{ route('admin.reported-listings.user-comments', $seller) }}"
                                     class="px-4 py-2 rounded text-white text-center hover:text-black"
-                                    style="background-color: rgb(131, 99, 84)">
+                                    style="background-color: rgb(104, 79, 67)">
                                     Visi komentarai
                                 </a>
                             </div>
@@ -152,8 +152,8 @@
                                 <button
                                     type="button"
                                     x-on:click.stop="open = !open"
-                                    :class="open ? 'ring-1 ring-[#836354] border-[#836354]' : 'border-gray-500'"
-                                    class="w-full rounded border py-2 px-3 text-left focus:outline-none focus:ring-1 focus:ring-[#836354] focus:border-[#836354] flex justify-between items-center text-black"
+                                    :class="open ? 'ring-1 ring-[#684F43] border-[#684F43]' : 'border-gray-500'"
+                                    class="w-full rounded border py-2 px-3 text-left focus:outline-none focus:ring-1 focus:ring-[#684F43] focus:border-[#684F43] flex justify-between items-center text-black"
                                     style="background-color: rgb(234, 220, 200)">
                                     <span x-text="
                                         removalReason === '' ? 'Pasirinkite pašalinimo priežastį' :
@@ -176,7 +176,7 @@
                                     x-transition
                                     x-on:click.outside="open = false"
                                     class="absolute left-0 right-0 mt-1 rounded border shadow overflow-hidden z-50"
-                                    style="background-color: rgb(234, 220, 200); border-color: #836354">
+                                    style="background-color: rgb(234, 220, 200); border-color: #684F43">
                                     <div
                                         x-on:click="removalReason = ''; open = false"
                                         class="block w-full px-3 py-2 text-black cursor-pointer hover:bg-[#cfae86]">
@@ -224,7 +224,7 @@
                             <div x-show="removalReason === 'other'" x-cloak>
                                 <textarea
                                     name="admin_note"
-                                    class="w-full border border-gray-500 rounded p-3 text-black mb-2 focus:outline-none focus:ring-1 focus:ring-[#836354] focus:border-[#836354]"
+                                    class="w-full border border-gray-500 rounded p-3 text-black mb-2 focus:outline-none focus:ring-1 focus:ring-[#684F43] focus:border-[#684F43]"
                                     rows="3"
                                     style="background-color: rgb(234, 220, 200)"
                                     placeholder="Administratoriaus pastaba. Įrašykite pašalinimo priežastį.">{{ old('admin_note') }}</textarea>
@@ -246,7 +246,7 @@
 
                             <textarea
                                 name="admin_note"
-                                class="w-full border border-gray-500 rounded p-3 text-black mb-2 focus:outline-none focus:ring-1 focus:ring-[#836354] focus:border-[#836354]"
+                                class="w-full border border-gray-500 rounded p-3 text-black mb-2 focus:outline-none focus:ring-1 focus:ring-[#684F43] focus:border-[#684F43]"
                                 rows="3"
                                 style="background-color: rgb(234, 220, 200)"
                                 placeholder="Administratoriaus pastaba"
@@ -272,7 +272,7 @@
             @forelse ($listingReviews as $review)
                 <div
                     class="p-4 rounded border"
-                    style="background-color: {{ $review->id === $selectedReview->id ? 'rgb(207, 174, 134)' : 'rgb(215, 183, 142)' }}; border-color: #836354">
+                    style="background-color: {{ $review->id === $selectedReview->id ? 'rgb(207, 174, 134)' : 'rgb(227, 197, 157)' }}; border-color: #684F43">
                     @if ($review->id === $selectedReview->id)
                         <div class="mb-2 text-sm font-semibold" style="color: rgb(184, 80, 54)">
                             Tiriamas komentaras
@@ -283,7 +283,7 @@
                         <strong class="text-black">
                             {{ $review->user->vardas ?? '—' }} {{ $review->user->pavarde ?? '' }}
                         </strong>
-                        <span class="text-sm" style="color: rgb(131, 99, 84)">
+                        <span class="text-sm" style="color: rgb(104, 79, 67)">
                             {{ str_repeat('★', $review->ivertinimas) }}
                         </span>
                     </div>
@@ -307,7 +307,7 @@
 
                             <textarea
                                 name="admin_note"
-                                class="w-full border border-gray-500 rounded p-3 text-black mb-2 focus:outline-none focus:ring-1 focus:ring-[#836354] focus:border-[#836354]"
+                                class="w-full border border-gray-500 rounded p-3 text-black mb-2 focus:outline-none focus:ring-1 focus:ring-[#684F43] focus:border-[#684F43]"
                                 rows="2"
                                 style="background-color: rgb(234, 220, 200)"
                                 placeholder="Administratoriaus pastaba"

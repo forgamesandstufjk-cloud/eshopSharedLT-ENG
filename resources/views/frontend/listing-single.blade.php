@@ -9,6 +9,15 @@ input[type=number]::-webkit-outer-spin-button {
 input[type=number] {
     -moz-appearance: textfield;
 }
+.custom-select-option:hover,
+.custom-select-option:focus {
+    background-color: rgb(104, 79, 67);
+    color: #fff;
+    outline: none;
+}
+.custom-select-menu {
+    scrollbar-width: thin;
+}
 </style>
 <div class="min-h-screen flex flex-col" style="background-color: rgb(234, 220, 200)">
     <div
@@ -334,20 +343,31 @@ input[type=number] {
 
                         <div>
                             <label class="block text-black font-medium mb-1">Priežastis</label>
-                            <select
-                                name="reason"
-                                required
-                                class="w-full rounded border py-2 px-3 text-left text-black focus:outline-none focus:ring-1 focus:ring-[#836354] focus:border-[#836354]"
-                                style="background-color: #d7b78e; border-color: #836354"
-                            >
-                                <option value="" style="background-color: rgb(227, 197, 157); color: #000;">Pasirinkite priežastį</option>
-                                <option value="fraud" style="background-color: rgb(227, 197, 157); color: #000;">Sukčiavimas</option>
-                                <option value="fake_item" style="background-color: rgb(227, 197, 157); color: #000;">Netikra prekė</option>
-                                <option value="abuse" style="background-color: rgb(227, 197, 157); color: #000;">Įžeidžiantis elgesys</option>
-                                <option value="spam" style="background-color: rgb(227, 197, 157); color: #000;">Šlamštas</option>
-                                <option value="prohibited_items" style="background-color: rgb(227, 197, 157); color: #000;">Draudžiamos prekės</option>
-                                <option value="other" style="background-color: rgb(227, 197, 157); color: #000;">Kita</option>
-                            </select>
+                            <div class="relative custom-select" data-placeholder="Pasirinkite priežastį">
+                                <input type="hidden" name="reason" value="" required>
+                                <button
+                                    type="button"
+                                    class="custom-select-toggle w-full rounded border py-2 px-3 text-left text-black focus:outline-none focus:ring-1 focus:ring-[#836354] focus:border-[#836354] flex items-center justify-between"
+                                    style="background-color: #d7b78e; border-color: #836354"
+                                    aria-haspopup="listbox"
+                                    aria-expanded="false"
+                                >
+                                    <span class="custom-select-label">Pasirinkite priežastį</span>
+                                    <svg class="h-5 w-5 text-black shrink-0" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                                        <path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 11.06l3.71-3.83a.75.75 0 111.08 1.04l-4.25 4.4a.75.75 0 01-1.08 0L5.21 8.27a.75.75 0 01.02-1.06z" clip-rule="evenodd" />
+                                    </svg>
+                                </button>
+                                <div class="custom-select-menu hidden absolute left-0 right-0 mt-1 rounded border shadow overflow-hidden z-50 max-h-60 overflow-y-auto"
+                                     style="background-color: rgb(227, 197, 157); border-color: #836354">
+                                    <button type="button" class="custom-select-option block w-full px-3 py-2 text-left text-black" data-value="">Pasirinkite priežastį</button>
+                                    <button type="button" class="custom-select-option block w-full px-3 py-2 text-left text-black" data-value="fraud">Sukčiavimas</button>
+                                    <button type="button" class="custom-select-option block w-full px-3 py-2 text-left text-black" data-value="fake_item">Netikra prekė</button>
+                                    <button type="button" class="custom-select-option block w-full px-3 py-2 text-left text-black" data-value="abuse">Įžeidžiantis elgesys</button>
+                                    <button type="button" class="custom-select-option block w-full px-3 py-2 text-left text-black" data-value="spam">Šlamštas</button>
+                                    <button type="button" class="custom-select-option block w-full px-3 py-2 text-left text-black" data-value="prohibited_items">Draudžiamos prekės</button>
+                                    <button type="button" class="custom-select-option block w-full px-3 py-2 text-left text-black" data-value="other">Kita</button>
+                                </div>
+                            </div>
                         </div>
 
                         <div>
@@ -585,21 +605,38 @@ input[type=number] {
                 <form
                     method="GET"
                     action="{{ route('listing.single', $listing->id) }}#reviews-section"
-                    class="w-full sm:w-48"
+                    class="w-full sm:w-48 review-sort-form"
                 >
-                    <label for="review-sort" class="sr-only">Rūšiuoti atsiliepimus</label>
-                    <select
-                        id="review-sort"
-                        name="sort"
-                        onchange="this.form.submit()"
-                        class="w-full rounded border py-2 px-3 text-left text-black focus:outline-none focus:ring-1 focus:ring-[#836354] focus:border-[#836354]"
-                        style="background-color: rgb(227, 197, 157); border-color: #836354"
-                    >
-                        <option value="newest" @selected($sort === 'newest') style="background-color: rgb(227, 197, 157); color: #000;">Naujausi</option>
-                        <option value="oldest" @selected($sort === 'oldest') style="background-color: rgb(227, 197, 157); color: #000;">Seniausi</option>
-                        <option value="highest" @selected($sort === 'highest') style="background-color: rgb(227, 197, 157); color: #000;">Geriausi</option>
-                        <option value="lowest" @selected($sort === 'lowest') style="background-color: rgb(227, 197, 157); color: #000;">Blogiausi</option>
-                    </select>
+                    <label class="sr-only">Rūšiuoti atsiliepimus</label>
+                    <div class="relative custom-select custom-select-autosubmit" data-placeholder="Naujausi">
+                        <input type="hidden" name="sort" value="{{ $sort }}">
+                        <button
+                            type="button"
+                            class="custom-select-toggle w-full rounded border py-2 px-3 text-left text-black focus:outline-none focus:ring-1 focus:ring-[#836354] focus:border-[#836354] flex items-center justify-between"
+                            style="background-color: rgb(227, 197, 157); border-color: #836354"
+                            aria-haspopup="listbox"
+                            aria-expanded="false"
+                        >
+                            <span class="custom-select-label">
+                                @switch($sort)
+                                    @case('oldest') Seniausi @break
+                                    @case('highest') Geriausi @break
+                                    @case('lowest') Blogiausi @break
+                                    @default Naujausi
+                                @endswitch
+                            </span>
+                            <svg class="h-5 w-5 text-black shrink-0" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                                <path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 11.06l3.71-3.83a.75.75 0 111.08 1.04l-4.25 4.4a.75.75 0 01-1.08 0L5.21 8.27a.75.75 0 01.02-1.06z" clip-rule="evenodd" />
+                            </svg>
+                        </button>
+                        <div class="custom-select-menu hidden absolute left-0 right-0 mt-1 rounded border shadow overflow-hidden z-50"
+                             style="background-color: rgb(227, 197, 157); border-color: #836354">
+                            <button type="button" class="custom-select-option block w-full px-3 py-2 text-left text-black" data-value="newest">Naujausi</button>
+                            <button type="button" class="custom-select-option block w-full px-3 py-2 text-left text-black" data-value="oldest">Seniausi</button>
+                            <button type="button" class="custom-select-option block w-full px-3 py-2 text-left text-black" data-value="highest">Geriausi</button>
+                            <button type="button" class="custom-select-option block w-full px-3 py-2 text-left text-black" data-value="lowest">Blogiausi</button>
+                        </div>
+                    </div>
                 </form>
             </div>
         @endif
@@ -657,16 +694,27 @@ input[type=number] {
 
                                     <div>
                                         <label class="block text-black font-medium mb-1" for="edit-rating-{{ $review->id }}">Įvertinimas</label>
-                                        <select
-                                            id="edit-rating-{{ $review->id }}"
-                                            name="ivertinimas"
-                                            class="w-full border border-gray-500 rounded p-3 text-black focus:outline-none focus:ring-1 focus:ring-[#836354] focus:border-[#836354]"
-                                            style="background-color: rgb(234, 220, 200)"
-                                        >
-                                            @for($n = 1; $n <= 5; $n++)
-                                                <option value="{{ $n }}" @selected($review->ivertinimas == $n)>{{ $n }} / 5</option>
-                                            @endfor
-                                        </select>
+                                        <div class="relative custom-select" data-placeholder="Pasirinkite įvertinimą">
+                                            <input type="hidden" id="edit-rating-{{ $review->id }}" name="ivertinimas" value="{{ $review->ivertinimas }}">
+                                            <button
+                                                type="button"
+                                                class="custom-select-toggle w-full border border-gray-500 rounded p-3 text-black focus:outline-none focus:ring-1 focus:ring-[#836354] focus:border-[#836354] flex items-center justify-between"
+                                                style="background-color: rgb(234, 220, 200)"
+                                                aria-haspopup="listbox"
+                                                aria-expanded="false"
+                                            >
+                                                <span class="custom-select-label">{{ $review->ivertinimas }} / 5</span>
+                                                <svg class="h-5 w-5 text-black shrink-0" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                                                    <path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 11.06l3.71-3.83a.75.75 0 111.08 1.04l-4.25 4.4a.75.75 0 01-1.08 0L5.21 8.27a.75.75 0 01.02-1.06z" clip-rule="evenodd" />
+                                                </svg>
+                                            </button>
+                                            <div class="custom-select-menu hidden absolute left-0 right-0 mt-1 rounded border shadow overflow-hidden z-50"
+                                                 style="background-color: rgb(234, 220, 200); border-color: #836354">
+                                                @for($n = 1; $n <= 5; $n++)
+                                                    <button type="button" class="custom-select-option block w-full px-3 py-2 text-left text-black" data-value="{{ $n }}">{{ $n }} / 5</button>
+                                                @endfor
+                                            </div>
+                                        </div>
                                     </div>
 
                                     <textarea
@@ -789,18 +837,28 @@ input[type=number] {
 
                     <div>
                         <label class="block text-black font-medium mb-1" for="new-review-rating">Įvertinimas</label>
-                        <select
-                            id="new-review-rating"
-                            name="ivertinimas"
-                            required
-                            class="w-full border border-gray-500 rounded p-3 text-black focus:outline-none focus:ring-1 focus:ring-[#836354] focus:border-[#836354]"
-                            style="background-color: rgb(227, 197, 157)"
-                        >
-                            <option value="" style="background-color: rgb(227, 197, 157); color: #000;">Pasirinkite įvertinimą</option>
-                            @for($n = 1; $n <= 5; $n++)
-                                <option value="{{ $n }}">{{ $n }} / 5</option>
-                            @endfor
-                        </select>
+                        <div class="relative custom-select" data-placeholder="Pasirinkite įvertinimą">
+                            <input type="hidden" id="new-review-rating" name="ivertinimas" value="" required>
+                            <button
+                                type="button"
+                                class="custom-select-toggle w-full border border-gray-500 rounded p-3 text-black focus:outline-none focus:ring-1 focus:ring-[#836354] focus:border-[#836354] flex items-center justify-between"
+                                style="background-color: rgb(227, 197, 157)"
+                                aria-haspopup="listbox"
+                                aria-expanded="false"
+                            >
+                                <span class="custom-select-label">Pasirinkite įvertinimą</span>
+                                <svg class="h-5 w-5 text-black shrink-0" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                                    <path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 11.06l3.71-3.83a.75.75 0 111.08 1.04l-4.25 4.4a.75.75 0 01-1.08 0L5.21 8.27a.75.75 0 01.02-1.06z" clip-rule="evenodd" />
+                                </svg>
+                            </button>
+                            <div class="custom-select-menu hidden absolute left-0 right-0 mt-1 rounded border shadow overflow-hidden z-50"
+                                 style="background-color: rgb(227, 197, 157); border-color: #836354">
+                                <button type="button" class="custom-select-option block w-full px-3 py-2 text-left text-black" data-value="">Pasirinkite įvertinimą</button>
+                                @for($n = 1; $n <= 5; $n++)
+                                    <button type="button" class="custom-select-option block w-full px-3 py-2 text-left text-black" data-value="{{ $n }}">{{ $n }} / 5</button>
+                                @endfor
+                            </div>
+                        </div>
                     </div>
 
                     <textarea
@@ -1003,6 +1061,81 @@ document.addEventListener('DOMContentLoaded', function () {
                 loading?.classList.add('hidden');
             }
         });
+    });
+
+
+    document.querySelectorAll('.custom-select').forEach((wrap) => {
+        const hidden = wrap.querySelector('input[type="hidden"]');
+        const toggle = wrap.querySelector('.custom-select-toggle');
+        const menu = wrap.querySelector('.custom-select-menu');
+        const label = wrap.querySelector('.custom-select-label');
+        const options = wrap.querySelectorAll('.custom-select-option');
+        const placeholder = wrap.dataset.placeholder || '';
+
+        function closeMenu() {
+            menu?.classList.add('hidden');
+            toggle?.setAttribute('aria-expanded', 'false');
+        }
+
+        function setValue(value, text, shouldSubmit = false) {
+            if (hidden) {
+                hidden.value = value;
+                if (hidden.hasAttribute('required')) {
+                    hidden.setCustomValidity(value ? '' : 'Pasirinkite reikšmę');
+                }
+            }
+            if (label) {
+                label.textContent = text || placeholder;
+            }
+            closeMenu();
+            if (shouldSubmit) {
+                const form = wrap.closest('form');
+                form?.submit();
+            }
+        }
+
+        options.forEach((option) => {
+            const value = option.dataset.value ?? '';
+            if (String(hidden?.value ?? '') === String(value)) {
+                label.textContent = option.textContent.trim();
+            }
+
+            option.addEventListener('click', (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                setValue(value, option.textContent.trim(), wrap.classList.contains('custom-select-autosubmit'));
+            });
+        });
+
+        toggle?.addEventListener('click', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            document.querySelectorAll('.custom-select-menu').forEach((otherMenu) => {
+                if (otherMenu !== menu) {
+                    otherMenu.classList.add('hidden');
+                }
+            });
+            document.querySelectorAll('.custom-select-toggle').forEach((otherToggle) => {
+                if (otherToggle !== toggle) {
+                    otherToggle.setAttribute('aria-expanded', 'false');
+                }
+            });
+            const willOpen = menu?.classList.contains('hidden');
+            menu?.classList.toggle('hidden', !willOpen);
+            toggle.setAttribute('aria-expanded', willOpen ? 'true' : 'false');
+        });
+    });
+
+    document.addEventListener('click', () => {
+        document.querySelectorAll('.custom-select-menu').forEach((menu) => menu.classList.add('hidden'));
+        document.querySelectorAll('.custom-select-toggle').forEach((toggle) => toggle.setAttribute('aria-expanded', 'false'));
+    });
+
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') {
+            document.querySelectorAll('.custom-select-menu').forEach((menu) => menu.classList.add('hidden'));
+            document.querySelectorAll('.custom-select-toggle').forEach((toggle) => toggle.setAttribute('aria-expanded', 'false'));
+        }
     });
 
     document.querySelectorAll('.review-card').forEach((card) => {

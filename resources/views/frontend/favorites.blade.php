@@ -92,7 +92,7 @@
                     <template x-for="item in paginatedListings" :key="item.id">
                         <div
                             class="shadow rounded overflow-hidden hover:shadow-lg transition flex flex-col h-full cursor-pointer"
-                            style="background-color: rgb(215, 183, 142)"
+                            style="background-color: rgb(227, 197, 157)"
                             @click="window.location.href = '/listing/' + item.id"
                         >
                             <div class="relative">
@@ -114,7 +114,7 @@
                                     class="absolute top-2 right-2 z-30 w-10 h-10 sm:w-9 sm:h-9 flex items-center justify-center overflow-hidden"
                                     title="Pašalinti iš mėgstamiausių"
                                 >
-                                    <span class="text-2xl leading-none" style="color: rgb(131, 99, 84);">🤎</span>
+                                    <span class="text-2xl leading-none" style="color: rgb(104, 79, 67);">🤎</span>
                                 </button>
                             </div>
 
@@ -132,7 +132,7 @@
                                 <div class="mt-auto pt-3 flex items-center justify-between gap-2">
                                     <span
                                         class="font-bold"
-                                        style="color: rgb(131, 99, 84)"
+                                        style="color: rgb(104, 79, 67)"
                                         x-text="item.kaina + ' €'"
                                     ></span>
 
@@ -237,7 +237,7 @@
                             :disabled="currentPage === 1"
                             class="px-4 py-2 rounded border text-sm"
                             :class="currentPage === 1 ? 'text-gray-500 cursor-not-allowed' : 'text-black'"
-                            style="background-color: rgb(215, 183, 142); border-color: #836354"
+                            style="background-color: rgb(227, 197, 157); border-color: #684F43"
                         >
                             ‹
                         </button>
@@ -249,8 +249,8 @@
                                 class="px-4 py-2 rounded border text-sm"
                                 :class="page === currentPage ? 'text-white font-semibold' : 'text-black'"
                                 :style="page === currentPage
-                                    ? 'background-color: rgb(131, 99, 84); border-color: #836354'
-                                    : 'background-color: rgb(215, 183, 142); border-color: #836354'"
+                                    ? 'background-color: rgb(104, 79, 67); border-color: #684F43'
+                                    : 'background-color: rgb(227, 197, 157); border-color: #684F43'"
                                 x-text="page"
                             ></button>
                         </template>
@@ -261,7 +261,7 @@
                             :disabled="currentPage === totalPages"
                             class="px-4 py-2 rounded border text-sm"
                             :class="currentPage === totalPages ? 'text-gray-500 cursor-not-allowed' : 'text-black'"
-                            style="background-color: rgb(215, 183, 142); border-color: #836354"
+                            style="background-color: rgb(227, 197, 157); border-color: #684F43"
                         >
                             ›
                         </button>

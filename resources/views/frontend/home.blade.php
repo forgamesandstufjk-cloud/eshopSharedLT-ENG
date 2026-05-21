@@ -25,16 +25,12 @@
                                             src="{{ \Illuminate\Support\Facades\Storage::disk('photos')->url($item->photos->first()->failo_url) }}"
                                             class="max-w-full max-h-full object-contain"
                                             alt="{{ $item->pavadinimas ?? 'Produkto nuotrauka' }}"
-                                            width="600"
-                                            height="450"
                                         >
                                     @else
                                         <img
                                             src="https://via.placeholder.com/300"
                                             class="max-w-full max-h-full object-contain"
                                             alt="Nuotraukos nėra"
-                                            width="300"
-                                            height="200"
                                         >
                                     @endif
                                 </div>

@@ -14,7 +14,7 @@
             </label>
             <input
                 id="vardas"
-                class="block mt-1 w-full rounded-md border border-gray-500 text-black focus:outline-none focus:ring-1 focus:ring-[#836354] focus:border-[#836354]"
+                class="block mt-1 w-full rounded-md border border-gray-500 text-black focus:outline-none focus:ring-1 focus:ring-[#684F43] focus:border-[#684F43]"
                 style="background-color: rgb(234, 220, 200)"
                 type="text"
                 name="vardas"
@@ -33,7 +33,7 @@
             </label>
             <input
                 id="pavarde"
-                class="block mt-1 w-full rounded-md border border-gray-500 text-black focus:outline-none focus:ring-1 focus:ring-[#836354] focus:border-[#836354]"
+                class="block mt-1 w-full rounded-md border border-gray-500 text-black focus:outline-none focus:ring-1 focus:ring-[#684F43] focus:border-[#684F43]"
                 style="background-color: rgb(234, 220, 200)"
                 type="text"
                 name="pavarde"
@@ -51,7 +51,7 @@
             </label>
             <input
                 id="el_pastas"
-                class="block mt-1 w-full rounded-md border border-gray-500 text-black focus:outline-none focus:ring-1 focus:ring-[#836354] focus:border-[#836354]"
+                class="block mt-1 w-full rounded-md border border-gray-500 text-black focus:outline-none focus:ring-1 focus:ring-[#684F43] focus:border-[#684F43]"
                 style="background-color: rgb(234, 220, 200)"
                 type="email"
                 name="el_pastas"
@@ -69,7 +69,7 @@
             </label>
             <input
                 id="slaptazodis"
-                class="block mt-1 w-full rounded-md border border-gray-500 text-black focus:outline-none focus:ring-1 focus:ring-[#836354] focus:border-[#836354]"
+                class="block mt-1 w-full rounded-md border border-gray-500 text-black focus:outline-none focus:ring-1 focus:ring-[#684F43] focus:border-[#684F43]"
                 style="background-color: rgb(234, 220, 200)"
                 type="password"
                 name="slaptazodis"
@@ -86,7 +86,7 @@
             </label>
             <input
                 id="slaptazodis_confirmation"
-                class="block mt-1 w-full rounded-md border border-gray-500 text-black focus:outline-none focus:ring-1 focus:ring-[#836354] focus:border-[#836354]"
+                class="block mt-1 w-full rounded-md border border-gray-500 text-black focus:outline-none focus:ring-1 focus:ring-[#684F43] focus:border-[#684F43]"
                 style="background-color: rgb(234, 220, 200)"
                 type="password"
                 name="slaptazodis_confirmation"
@@ -99,7 +99,7 @@
         <div class="flex items-center justify-between mt-6">
             <a
                 href="{{ route('login') }}"
-                class="underline text-sm text-black hover:text-[#836354]"
+                class="underline text-sm text-black hover:text-[#684F43]"
             >
                 {{ __('Jau turite paskyrą?') }}
             </a>

@@ -99,76 +99,87 @@ class ServiceOrderService
     }
 
     public function updateStatus(ServiceOrder $serviceOrder, string $newStatus, User $seller): ServiceOrder
-    {
-        if ((int) $serviceOrder->seller_id !== (int) $seller->id) {
-            abort(403);
+{
+    if ((int) $serviceOrder->seller_id !== (int) $seller->id) {
+        abort(403);
+    }
+
+    return DB::transaction(function () use ($serviceOrder, $newStatus) {
+        $current = $serviceOrder->status;
+
+        $allowedTransitions = [
+            ServiceOrder::STATUS_AGREED => [
+                ServiceOrder::STATUS_DAROMAS,
+                ServiceOrder::STATUS_CANCELLED,
+            ],
+            ServiceOrder::STATUS_DAROMAS => [
+                ServiceOrder::STATUS_AGREED,
+                ServiceOrder::STATUS_READY_TO_SHIP,
+                ServiceOrder::STATUS_CANCELLED,
+            ],
+            ServiceOrder::STATUS_READY_TO_SHIP => [],
+            ServiceOrder::STATUS_COMPLETED => [],
+            ServiceOrder::STATUS_CANCELLED => [],
+        ];
+
+        if (!in_array($newStatus, $allowedTransitions[$current] ?? [], true)) {
+            throw ValidationException::withMessages([
+                'status' => 'Neleistinas būsenos keitimas.',
+            ]);
         }
 
-        return DB::transaction(function () use ($serviceOrder, $newStatus) {
-            $current = $serviceOrder->status;
+        $updates = [
+            'status' => $newStatus,
+            'last_status_change_at' => now(),
+        ];
 
-            $allowedTransitions = [
-                ServiceOrder::STATUS_AGREED => [
-                    ServiceOrder::STATUS_DAROMAS,
-                    ServiceOrder::STATUS_CANCELLED,
-                ],
-                ServiceOrder::STATUS_DAROMAS => [
-                    ServiceOrder::STATUS_AGREED,
-                    ServiceOrder::STATUS_READY_TO_SHIP,
-                    ServiceOrder::STATUS_CANCELLED,
-                ],
-                ServiceOrder::STATUS_READY_TO_SHIP => [],
-                ServiceOrder::STATUS_COMPLETED => [],
-                ServiceOrder::STATUS_CANCELLED => [],
-            ];
+        if ($newStatus === ServiceOrder::STATUS_DAROMAS && !$serviceOrder->started_at) {
+            $updates['started_at'] = now();
+        }
 
-            if (!in_array($newStatus, $allowedTransitions[$current] ?? [], true)) {
-                throw ValidationException::withMessages([
-                    'status' => 'Neleistinas būsenos keitimas.',
-                ]);
+        if ($newStatus === ServiceOrder::STATUS_READY_TO_SHIP) {
+            $updates['ready_to_ship_at'] = now();
+            $updates['shipment_status'] = null;
+
+            if ($serviceOrder->canUsePlatformFlow()) {
+                $updates['payment_status'] = $serviceOrder->paid_at
+                    ? ServiceOrder::PAYMENT_PAID
+                    : ServiceOrder::PAYMENT_PENDING;
+            } else {
+                $updates['payment_status'] = null;
             }
 
-            $updates = [
-                'status' => $newStatus,
-                'last_status_change_at' => now(),
-            ];
+            $updates['completion_method'] = null;
+        }
 
-            if ($newStatus === ServiceOrder::STATUS_DAROMAS && !$serviceOrder->started_at) {
-                $updates['started_at'] = now();
-            }
+        $serviceOrder->update($updates);
+        $serviceOrder->refresh();
 
-            if ($newStatus === ServiceOrder::STATUS_READY_TO_SHIP) {
-                $updates['ready_to_ship_at'] = now();
-        
-                $updates['shipment_status'] = null;
-            
-                if ($serviceOrder->canUsePlatformFlow()) {
-                    $updates['payment_status'] = $serviceOrder->paid_at
-                        ? ServiceOrder::PAYMENT_PAID
-                        : ServiceOrder::PAYMENT_PENDING;
-                } else {
-                    $updates['payment_status'] = null;
+        if (
+            $current !== ServiceOrder::STATUS_READY_TO_SHIP &&
+            $newStatus === ServiceOrder::STATUS_READY_TO_SHIP &&
+            $serviceOrder->buyer_id &&
+            $serviceOrder->buyer?->el_pastas
+        ) {
+            DB::afterCommit(function () use ($serviceOrder) {
+                try {
+                    Mail::to($serviceOrder->buyer->el_pastas)->queue(
+                        new BuyerServiceOrderReadyMail($serviceOrder)
+                    );
+                } catch (\Throwable $e) {
+                    \Log::warning('BuyerServiceOrderReadyMail failed', [
+                        'service_order_id' => $serviceOrder->id,
+                        'buyer_id' => $serviceOrder->buyer_id,
+                        'email' => $serviceOrder->buyer->el_pastas ?? null,
+                        'error' => $e->getMessage(),
+                    ]);
                 }
-            
-                $updates['completion_method'] = null;
-            }
+            });
+        }
 
-            $serviceOrder->update($updates);
-            $serviceOrder->refresh();
-
-            if (
-                $current !== ServiceOrder::STATUS_READY_TO_SHIP &&
-                $newStatus === ServiceOrder::STATUS_READY_TO_SHIP &&
-                $serviceOrder->buyer_id
-            ) {
-                Mail::to($serviceOrder->buyer->el_pastas)->queue(
-                    new BuyerServiceOrderReadyMail($serviceOrder)
-                );
-            }
-
-            return $serviceOrder;
-        });
-    }
+        return $serviceOrder;
+    });
+}
 
     public function submitShipmentProof(ServiceOrder $serviceOrder, array $data, User $seller): ServiceOrder
     {

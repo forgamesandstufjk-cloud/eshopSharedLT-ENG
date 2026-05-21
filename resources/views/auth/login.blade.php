@@ -4,7 +4,7 @@
     <x-auth-session-status class="mb-4 text-black" :status="session('status')" />
 
     <form method="POST" action="{{ route('login') }}">
-        @csrf
+        <input type="hidden" name="_token" value="{{ csrf_token() }}">
 
         <div class="mb-6">
             <h1 class="text-2xl font-bold text-black">

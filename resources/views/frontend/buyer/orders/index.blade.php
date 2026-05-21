@@ -14,7 +14,7 @@
                 <h2 class="text-xl sm:text-2xl font-bold mb-4 text-black">Prekių užsakymai</h2>
 
                 @foreach($orders as $order)
-                    <div class="shadow rounded mb-6 p-5" style="background-color: rgb(215, 183, 142)">
+                    <div class="shadow rounded mb-6 p-5" style="background-color: rgb(227, 197, 157)">
                         <div class="flex justify-between mb-3">
                             <div>
                                 <div class="font-semibold text-black">Užsakymas #{{ $order->id }}</div>
@@ -27,7 +27,7 @@
                             </div>
                         </div>
 
-                      <div class="border-t pt-3" style="border-color: #836354">
+                      <div class="border-t pt-3" style="border-color: #684F43">
                         @foreach($order->orderItem as $item)
                           @php
                             $itemListing = $item->Listing;
@@ -119,7 +119,7 @@
 
                                 <a href="{{ route('listing.single', $item->Listing->id) }}"
                                    class="underline"
-                                   style="color: rgb(131, 99, 84)">
+                                   style="color: rgb(104, 79, 67)">
                                     {{ $canLeaveProductReviewNow ? 'Palikti atsiliepimą' : 'Peržiūrėti skelbimą' }}
                                 </a>
                             </div>
@@ -127,7 +127,7 @@
                       @endforeach
                     </div>
 
-                        <div class="border-t mt-3 pt-3 space-y-2" style="border-color: #836354">
+                        <div class="border-t mt-3 pt-3 space-y-2" style="border-color: #684F43">
                             @foreach($order->shipments as $shipment)
                                 <div class="text-sm flex justify-between items-center text-black">
                                     <div>
@@ -182,7 +182,7 @@
                     </h2>
 
                     @foreach($serviceOrders as $serviceOrder)
-                        <div class="shadow rounded mb-6 p-5" style="background-color: rgb(215, 183, 142)">
+                        <div class="shadow rounded mb-6 p-5" style="background-color: rgb(227, 197, 157)">
                             <div class="flex justify-between mb-3">
                                 <div>
                                     <div class="font-semibold text-black">Paslaugos užsakymas #{{ $serviceOrder->id }}</div>
@@ -195,7 +195,7 @@
                                 </div>
                             </div>
 
-                          <div class="border-t pt-3 space-y-2" style="border-color: #836354">
+                          <div class="border-t pt-3 space-y-2" style="border-color: #684F43">
                              @php
                                 $serviceListing = $serviceOrder->listing;
 
@@ -327,7 +327,7 @@
                                   <a
                                       href="{{ route('checkout.index', ['service_order' => $serviceOrder->id]) }}"
                                       class="inline-block text-white px-4 py-2 rounded hover:text-black"
-                                      style="background-color: rgb(131, 99, 84)"
+                                      style="background-color: rgb(104, 79, 67)"
                                   >
                                       Apmokėti per svetainę
                                   </a>
@@ -358,7 +358,7 @@
 
                                     <a href="{{ route('listing.single', $serviceOrder->listing->id) }}"
                                        class="underline"
-                                       style="color: rgb(131, 99, 84)">
+                                       style="color: rgb(104, 79, 67)">
                                         {{ $canLeaveServiceReviewNow ? 'Palikti atsiliepimą' : 'Peržiūrėti skelbimą' }}
                                     </a>
                                 </div>
@@ -373,7 +373,7 @@
                 @endif
 
             @if(!$hasProductOrders && !$hasServiceOrders)
-                <div class="shadow rounded p-6 text-center text-black" style="background-color: rgb(215, 183, 142)">
+                <div class="shadow rounded p-6 text-center text-black" style="background-color: rgb(227, 197, 157)">
                     Jūs dar nieko nepirkote.
                 </div>
             @endif

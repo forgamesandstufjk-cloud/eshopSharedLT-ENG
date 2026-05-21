@@ -22,7 +22,7 @@
                 name="current_password"
                 type="password"
                 autocomplete="current-password"
-                class="mt-1 block w-full rounded-md shadow-sm border border-gray-500 text-black focus:outline-none focus:ring-1 focus:ring-[#836354] focus:border-[#836354]"
+                class="mt-1 block w-full rounded-md shadow-sm border border-gray-500 text-black focus:outline-none focus:ring-1 focus:ring-[#684F43] focus:border-[#684F43]"
                 style="background-color: rgb(234, 220, 200);"
             />
             <x-input-error :messages="$errors->updatePassword->get('current_password')" class="mt-2" />
@@ -37,7 +37,7 @@
                 name="password"
                 type="password"
                 autocomplete="new-password"
-                class="mt-1 block w-full rounded-md shadow-sm border border-gray-500 text-black focus:outline-none focus:ring-1 focus:ring-[#836354] focus:border-[#836354]"
+                class="mt-1 block w-full rounded-md shadow-sm border border-gray-500 text-black focus:outline-none focus:ring-1 focus:ring-[#684F43] focus:border-[#684F43]"
                 style="background-color: rgb(234, 220, 200);"
             />
             <x-input-error :messages="$errors->updatePassword->get('password')" class="mt-2" />
@@ -52,14 +52,14 @@
                 name="password_confirmation"
                 type="password"
                 autocomplete="new-password"
-                class="mt-1 block w-full rounded-md shadow-sm border border-gray-500 text-black focus:outline-none focus:ring-1 focus:ring-[#836354] focus:border-[#836354]"
+                class="mt-1 block w-full rounded-md shadow-sm border border-gray-500 text-black focus:outline-none focus:ring-1 focus:ring-[#684F43] focus:border-[#684F43]"
                 style="background-color: rgb(234, 220, 200);"
             />
             <x-input-error :messages="$errors->updatePassword->get('password_confirmation')" class="mt-2" />
         </div>
 
         <div class="flex items-center gap-4">
-            <x-primary-button class="text-white hover:text-black" style="background-color: rgb(131, 99, 84);">
+            <x-primary-button class="text-white hover:text-black" style="background-color: rgb(104, 79, 67);">
                 {{ __('Išsaugoti') }}
             </x-primary-button>
 

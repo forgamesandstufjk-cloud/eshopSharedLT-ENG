@@ -18,15 +18,27 @@ input[type=number] {
     color: #fff;
     outline: none;
 }
-
 .custom-select-menu {
     scrollbar-width: thin;
 }
-
 .review-stars {
     display: flex;
     align-items: center;
     gap: 0.25rem;
+}
+.review-star-btn {
+    background: transparent;
+    border: 0;
+    padding: 0;
+    font-size: 1.875rem;
+    line-height: 1;
+    cursor: pointer;
+}
+.review-star-btn.is-empty {
+    color: #9ca3af;
+}
+.review-star-btn.is-full {
+    color: rgb(104, 79, 67);
 }
 </style>
 @endpush

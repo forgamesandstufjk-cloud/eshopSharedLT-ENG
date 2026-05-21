@@ -183,95 +183,131 @@
             </div>
         </div>
 
-
-     @auth
-<script>
-document.addEventListener('DOMContentLoaded', function () {
-    const buttons = Array.from(document.querySelectorAll('.favorite-toggle'));
-    if (!buttons.length) return;
-
-    let favorites = [];
-
-    async function loadFavorites() {
-        try {
-            const res = await fetch('/api/favorites', {
-                headers: {
-                    'Accept': 'application/json',
-                    'X-Requested-With': 'XMLHttpRequest'
-                },
-                credentials: 'same-origin'
+           @auth
+            <script>
+            document.addEventListener('DOMContentLoaded', function () {
+                const buttons = Array.from(document.querySelectorAll('.favorite-toggle'));
+                if (!buttons.length) return;
+            
+                let favorites = [];
+            
+                function normalizeIds(values) {
+                    return (values || []).map(v => String(v));
+                }
+            
+                function hasFavorite(id) {
+                    return favorites.includes(String(id));
+                }
+            
+                function renderFavorites() {
+                    buttons.forEach((button) => {
+                        const id = String(button.dataset.listingId);
+                        const on = button.querySelector('.favorite-on');
+                        const off = button.querySelector('.favorite-off');
+            
+                        if (hasFavorite(id)) {
+                            on.classList.remove('hidden');
+                            off.classList.add('hidden');
+                        } else {
+                            on.classList.add('hidden');
+                            off.classList.remove('hidden');
+                        }
+                    });
+                }
+            
+                async function loadFavorites() {
+                    try {
+                        const res = await fetch('/api/favorites/ids', {
+                            method: 'GET',
+                            headers: {
+                                'Accept': 'application/json',
+                                'X-Requested-With': 'XMLHttpRequest',
+                            },
+                            credentials: 'same-origin',
+                        });
+            
+                        if (!res.ok) {
+                            console.error('Favorites load failed with status', res.status);
+                            return;
+                        }
+            
+                        const data = await res.json();
+                        favorites = normalizeIds(data);
+                        renderFavorites();
+                    } catch (e) {
+                        console.error('Failed to load favorites', e);
+                    }
+                }
+            
+                async function addFavorite(id) {
+                    const res = await fetch('/api/favorite', {
+                        method: 'POST',
+                        headers: {
+                            'Accept': 'application/json',
+                            'Content-Type': 'application/json',
+                            'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                            'X-Requested-With': 'XMLHttpRequest',
+                        },
+                        credentials: 'same-origin',
+                        body: JSON.stringify({
+                            listing_id: Number(id),
+                        }),
+                    });
+            
+                    return res;
+                }
+            
+                async function removeFavorite(id) {
+                    const res = await fetch(`/api/favorite/${encodeURIComponent(id)}`, {
+                        method: 'DELETE',
+                        headers: {
+                            'Accept': 'application/json',
+                            'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                            'X-Requested-With': 'XMLHttpRequest',
+                        },
+                        credentials: 'same-origin',
+                    });
+            
+                    return res;
+                }
+            
+                async function toggleFavorite(id) {
+                    try {
+                        const isFav = hasFavorite(id);
+                        const res = isFav ? await removeFavorite(id) : await addFavorite(id);
+            
+                        if (!res.ok) {
+                            const text = await res.text();
+                            console.error('Favorite toggle failed', res.status, text);
+                            return;
+                        }
+            
+                        if (isFav) {
+                            favorites = favorites.filter(favId => favId !== String(id));
+                        } else {
+                            if (!hasFavorite(id)) {
+                                favorites.push(String(id));
+                            }
+                        }
+            
+                        renderFavorites();
+                    } catch (e) {
+                        console.error('Failed to toggle favorite', e);
+                    }
+                }
+            
+                buttons.forEach((button) => {
+                    button.addEventListener('click', function (e) {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        toggleFavorite(this.dataset.listingId);
+                    });
+                });
+            
+                loadFavorites();
             });
-
-            if (!res.ok) return;
-
-            const data = await res.json();
-            favorites = Array.isArray(data) ? data : (data.favorites ?? []);
-            renderFavorites();
-        } catch (e) {
-            console.error('Failed to load favorites', e);
-        }
-    }
-
-    function hasFavorite(id) {
-        return favorites.includes(Number(id)) || favorites.includes(String(id));
-    }
-
-    function renderFavorites() {
-        buttons.forEach((button) => {
-            const id = button.dataset.listingId;
-            const on = button.querySelector('.favorite-on');
-            const off = button.querySelector('.favorite-off');
-
-            if (hasFavorite(id)) {
-                on.classList.remove('hidden');
-                off.classList.add('hidden');
-            } else {
-                on.classList.add('hidden');
-                off.classList.remove('hidden');
-            }
-        });
-    }
-
-    async function toggleFavorite(id) {
-        try {
-            const res = await fetch(`/favorites/toggle/${id}`, {
-                method: 'POST',
-                headers: {
-                    'Accept': 'application/json',
-                    'X-CSRF-TOKEN': '{{ csrf_token() }}',
-                    'X-Requested-With': 'XMLHttpRequest'
-                },
-                credentials: 'same-origin'
-            });
-
-            if (!res.ok) return;
-
-            const data = await res.json();
-
-            if (data.is_favorite === true) {
-                if (!hasFavorite(id)) favorites.push(Number(id));
-            } else {
-                favorites = favorites.filter(favId => String(favId) !== String(id));
-            }
-
-            renderFavorites();
-        } catch (e) {
-            console.error('Failed to toggle favorite', e);
-        }
-    }
-
-    buttons.forEach((button) => {
-        button.addEventListener('click', function (e) {
-            e.preventDefault();
-            e.stopPropagation();
-            toggleFavorite(this.dataset.listingId);
-        });
-    });
-
-    loadFavorites();
-});
-</script>
-@endauth
+            </script>
+            @endauth
 
         @include('components.footer')
     </div>

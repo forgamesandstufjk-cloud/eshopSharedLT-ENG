@@ -1,23 +1,7 @@
 <x-app-layout>
  <x-slot name="title">Konkretus skelbimas</x-slot>
-<style>
-/* Remove number input arrows (Chrome, Safari, Edge) */
-input[type=number]::-webkit-inner-spin-button,
-input[type=number]::-webkit-outer-spin-button {
-    -webkit-appearance: none;
-    margin: 0;
-}
-
-/* Remove number input arrows (Firefox) */
-input[type=number] {
-    -moz-appearance: textfield;
-}
-</style>
-
 <div class="min-h-screen flex flex-col" style="background-color: rgb(234, 220, 200)">
     <div
-        x-data
-        x-init="if ({{ auth()->check() ? 'true' : 'false' }}) Alpine.store('favorites').load()"
         class="max-w-6xl mx-auto w-full flex-1 py-6 sm:py-10 px-3 sm:px-4"
     >
 
@@ -60,24 +44,12 @@ input[type=number] {
                         @if(auth()->id() !== $listing->user_id && auth()->user()->role !== 'admin')
                             <button
                                 type="button"
-                                x-on:click.stop.prevent="Alpine.store('favorites').toggle({{ $listing->id }})"
-                                class="absolute top-2 right-2 z-30 w-10 h-10 sm:w-9 sm:h-9 flex items-center justify-center overflow-hidden"
+                                class="favorite-toggle absolute top-2 right-2 z-30 w-10 h-10 sm:w-9 sm:h-9 flex items-center justify-center overflow-hidden"
+                                data-listing-id="{{ $listing->id }}"
                                 aria-label="Pažymėti kaip mėgstamą"
                             >
-                                <span
-                                    x-show="Alpine.store('favorites').has({{ $listing->id }})"
-                                    class="text-2xl leading-none"
-                                    style="color: rgb(104, 79, 67)"
-                                >
-                                    🤎
-                                </span>
-
-                                <span
-                                    x-show="!Alpine.store('favorites').has({{ $listing->id }})"
-                                    class="text-2xl leading-none text-white"
-                                >
-                                    🤍
-                                </span>
+                                <span class="favorite-on text-2xl leading-none hidden" style="color: rgb(104, 79, 67)">🤎</span>
+                                <span class="favorite-off text-2xl leading-none text-white">🤍</span>
                             </button>
                         @endif
                     @endauth
@@ -213,16 +185,11 @@ input[type=number] {
 @endphp
 
 
-<div class="flex items-center gap-1" x-data="{ qty: 1, max: {{ max(1, $remainingToAdd) }} }">
+<div class="flex items-center gap-1 quantity-selector" data-max="{{ max(1, $remainingToAdd) }}">
     <button
         type="button"
-        x-on:click="qty = Math.max(1, qty - 1)"
-        :disabled="qty <= 1"
-        :class="qty <= 1 ? 'opacity-50 cursor-not-allowed' : 'hover:text-white cursor-pointer'"
-        class="w-10 h-10 border rounded flex items-center justify-center text-black transition-colors"
+        class="qty-decrease w-10 h-10 border rounded flex items-center justify-center text-black transition-colors"
         style="background-color: rgb(234, 220, 200); border-color: #836354"
-        @mouseenter="if(qty > 1) $el.style.backgroundColor = 'rgb(104, 79, 67)'"
-        @mouseleave="$el.style.backgroundColor = 'rgb(234, 220, 200)'"
     >
         −
     </button>
@@ -231,28 +198,22 @@ input[type=number] {
         id="listing-quantity"
         type="number"
         name="quantity"
-        x-model="qty"
         value="1"
         min="1"
         max="{{ max(1, $remainingToAdd) }}"
         aria-label="Kiekis"
-        class="w-12 h-10 text-center border rounded text-black focus:outline-none focus:ring-1 focus:ring-[#836354] focus:border-[#836354]"
+        class="qty-input w-12 h-10 text-center border rounded text-black focus:outline-none focus:ring-1 focus:ring-[#836354] focus:border-[#836354]"
         style="background-color: rgb(234, 220, 200); border-color: #836354"
     >
 
     <button
         type="button"
-        x-on:click="if (qty < max) qty++"
-        :disabled="qty >= max"
-        :class="qty >= max ? 'opacity-50 cursor-not-allowed' : 'hover:text-white cursor-pointer'"
-        class="w-10 h-10 border rounded flex items-center justify-center text-black transition-colors"
+        class="qty-increase w-10 h-10 border rounded flex items-center justify-center text-black transition-colors"
         style="background-color: rgb(234, 220, 200); border-color: #836354"
-        @mouseenter="if(qty < max) $el.style.backgroundColor = 'rgb(104, 79, 67)'"
-        @mouseleave="$el.style.backgroundColor = 'rgb(234, 220, 200)'"
     >
         +
     </button>
-</div>
+</div></div>
 
                         <button type="submit"
                             class="px-6 py-3 text-white rounded hover:text-black transition w-full sm:w-auto"
@@ -266,55 +227,8 @@ input[type=number] {
     <h3 class="font-semibold text-black mb-2">Pardavėjas</h3>
 
     <div
-        x-data="{
-            openReport: false,
-            reasonOpen: false,
-            selectedReason: '',
-            revealed: false,
-            loadingSeller: false,
-            sellerError: '',
-            seller: {
-                name: '',
-                email: '',
-                phone: '',
-                city: ''
-            },
-            async revealSeller() {
-                if (this.revealed || this.loadingSeller) return;
-
-                this.loadingSeller = true;
-                this.sellerError = '';
-
-                try {
-                    const res = await fetch(@js(route('listing.seller-contact', $listing->id)), {
-                        headers: {
-                            'Accept': 'application/json',
-                            'X-Requested-With': 'XMLHttpRequest'
-                        }
-                    });
-
-                    const data = await res.json();
-
-                    if (!res.ok) {
-                        throw new Error(data?.message || 'Nepavyko gauti pardavėjo informacijos.');
-                    }
-
-                    this.seller = {
-                        name: data.name ?? '',
-                        email: data.email ?? '',
-                        phone: data.phone ?? '',
-                        city: data.city ?? ''
-                    };
-
-                    this.revealed = true;
-                } catch (e) {
-                    this.sellerError = e.message || 'Nepavyko gauti pardavėjo informacijos.';
-                } finally {
-                    this.loadingSeller = false;
-                }
-            }
-        }"
-        class="relative p-4 rounded border text-sm"
+        class="relative p-4 rounded border text-sm seller-contact-box"
+        data-seller-url="{{ route('listing.seller-contact', $listing->id) }}"
         style="background-color: rgb(234, 220, 200); border-color: #836354"
     >
 
@@ -322,9 +236,8 @@ input[type=number] {
             @if(auth()->id() !== $listing->user_id)
                 <button
                     type="button"
-                    x-on:click="openReport = !openReport"
                     title="Pranešti apie pardavėją"
-                    class="absolute top-3 right-3 text-black hover:text-red-600 text-lg sm:text-xl leading-none"
+                    class="seller-report-toggle absolute top-3 right-3 text-black hover:text-red-600 text-lg sm:text-xl leading-none"
                 >
                     ⚐
                 </button>
@@ -332,7 +245,6 @@ input[type=number] {
         @endauth
 
         @if(auth()->check() && (auth()->id() === $listing->user_id || auth()->user()->role === 'admin'))
-            {{-- Owner/admin can still see everything directly --}}
             <div class="text-black font-semibold text-base sm:text-lg pr-8">
                 {{ $listing->user->vardas }} {{ $listing->user->pavarde }}
             </div>
@@ -354,154 +266,78 @@ input[type=number] {
                     Miestas: {{ $listing->user->address->city->pavadinimas }}
                 </div>
             @endif
-      @else
-            {{-- Public/other users nemato contaktu--}}
-            <div class="pr-8">
-                <div x-show="!revealed" x-cloak>
-                    <div class="text-black font-semibold text-base sm:text-lg">
-                        Pardavėjo informacija paslėpta
-                    </div>
-        
-                    <div class="text-black mt-1">
-                        Kontaktai bus parodyti tik prisijungus.
-                    </div>
-        
-                    @auth
-                        <button
-                            type="button"
-                            x-on:click="revealSeller()"
-                            :disabled="loadingSeller"
-                            :class="loadingSeller ? 'opacity-50 cursor-not-allowed' : ''"
-                            class="mt-3 px-4 py-2 rounded text-white hover:text-black transition-colors"
-                            style="background-color: rgb(104, 79, 67)"
-                        >
-                            <span x-show="!loadingSeller">Rodyti pardavėjo kontaktus</span>
-                            <span x-show="loadingSeller">Kraunama...</span>
-                        </button>
-                    @else
-                        <a
-                            href="{{ route('login') }}"
-                             aria-label=" Prisijunkite, kad matytumėte kontaktus"
-                            class="inline-block mt-3 px-4 py-2 rounded text-white hover:text-black transition-colors"
-                            style="background-color: rgb(104, 79, 67)"
-                        >
-                            Prisijunkite, kad matytumėte kontaktus
-                        </a>
-                    @endauth
+        @else
+            <div class="pr-8 seller-hidden-block">
+                <div class="text-black font-semibold text-base sm:text-lg">
+                    Pardavėjo informacija paslėpta
                 </div>
-        
-                <div x-show="sellerError" x-cloak class="mt-3 text-sm" style="color: rgb(184, 80, 54)">
-                    <span x-text="sellerError"></span>
+
+                <div class="text-black mt-1">
+                    Kontaktai bus parodyti tik prisijungus.
                 </div>
-        
-                <div x-show="revealed" x-cloak>
-                    <div class="text-black font-semibold text-base sm:text-lg pr-8" x-text="seller.name"></div>
-        
-                    <template x-if="seller.email">
-                        <div class="text-black mt-1">
-                            El. paštas: <span x-text="seller.email"></span>
-                        </div>
-                    </template>
-        
-                    <template x-if="seller.phone">
-                        <div class="text-black mt-1">
-                            Tel.: <span x-text="seller.phone"></span>
-                        </div>
-                    </template>
-        
-                    <template x-if="seller.city">
-                        <div class="text-black mt-1">
-                            Miestas: <span x-text="seller.city"></span>
-                        </div>
-                    </template>
+
+                @auth
+                    <button
+                        type="button"
+                        class="seller-reveal-btn mt-3 px-4 py-2 rounded text-white hover:text-black transition-colors"
+                        style="background-color: rgb(104, 79, 67)"
+                    >
+                        Rodyti pardavėjo kontaktus
+                    </button>
+                @else
+                    <a
+                        href="{{ route('login') }}"
+                        aria-label="Prisijunkite, kad matytumėte kontaktus"
+                        class="inline-block mt-3 px-4 py-2 rounded text-white hover:text-black transition-colors"
+                        style="background-color: rgb(104, 79, 67)"
+                    >
+                        Prisijunkite, kad matytumėte kontaktus
+                    </a>
+                @endauth
+            </div>
+
+            <div class="seller-loading hidden mt-3 text-sm text-black">
+                Kraunama...
+            </div>
+
+            <div class="seller-error hidden mt-3 text-sm" style="color: rgb(184, 80, 54)"></div>
+
+            <div class="seller-revealed hidden">
+                <div class="seller-name text-black font-semibold text-base sm:text-lg pr-8"></div>
+                <div class="seller-email-row hidden text-black mt-1">
+                    El. paštas: <span class="seller-email"></span>
+                </div>
+                <div class="seller-phone-row hidden text-black mt-1">
+                    Tel.: <span class="seller-phone"></span>
+                </div>
+                <div class="seller-city-row hidden text-black mt-1">
+                    Miestas: <span class="seller-city"></span>
                 </div>
             </div>
         @endif
 
         @auth
             @if(auth()->id() !== $listing->user_id)
-                <div x-show="openReport" x-cloak class="mt-4 pt-4 border-t" style="border-color: #836354">
+                <div class="seller-report-panel hidden mt-4 pt-4 border-t" style="border-color: #836354">
                     <form method="POST" action="{{ route('reports.store', $listing) }}" class="space-y-3">
                         @csrf
 
                         <div>
                             <label class="block text-black font-medium mb-1">Priežastis</label>
-
-                            <div class="relative">
-                                <input type="hidden" name="reason" x-bind:value="selectedReason" required>
-
-                                <button
-                                    type="button"
-                                    x-on:click="reasonOpen = !reasonOpen"
-                                    :class="reasonOpen ? 'ring-1 ring-[#836354] border-[#836354]' : 'border-gray-500'"
-                                    class="w-full rounded border py-2 px-3 text-left text-black focus:outline-none focus:ring-1 focus:ring-[#836354] focus:border-[#836354] flex justify-between items-center"
-                                    style="background-color: #d7b78e; border-color: #836354"
-                                >
-                                    <span x-text="
-                                        selectedReason === '' ? 'Pasirinkite priežastį' :
-                                        selectedReason === 'fraud' ? 'Sukčiavimas' :
-                                        selectedReason === 'fake_item' ? 'Netikra prekė' :
-                                        selectedReason === 'abuse' ? 'Įžeidžiantis tekstas' :
-                                        selectedReason === 'spam' ? 'Nepadorus turinys' :
-                                        selectedReason === 'prohibited_items' ? 'Draudžiamos prekės' :
-                                        'Kita'
-                                    "></span>
-
-                                    <svg class="h-5 w-5 text-black" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
-                                        <path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 11.06l3.71-3.83a.75.75 0 111.08 1.04l-4.25 4.4a.75.75 0 01-1.08 0L5.21 8.27a.75.75 0 01.02-1.06z" clip-rule="evenodd" />
-                                    </svg>
-                                </button>
-
-                                <div
-                                    x-show="reasonOpen"
-                                    x-on:click.outside="reasonOpen = false"
-                                    class="absolute left-0 right-0 mt-1 rounded border shadow overflow-hidden z-50"
-                                    style="background-color: rgb(227, 197, 157); border-color: #836354"
-                                >
-
-                                    <div
-                                        x-on:click="selectedReason = 'fraud'; reasonOpen = false"
-                                        class="block w-full px-3 py-2 text-black cursor-pointer hover:bg-[#836354] hover:text-white"
-                                    >
-                                        Sukčiavimas
-                                    </div>
-
-                                    <div
-                                        x-on:click="selectedReason = 'fake_item'; reasonOpen = false"
-                                        class="block w-full px-3 py-2 text-black cursor-pointer hover:bg-[#836354] hover:text-white"
-                                    >
-                                        Netikra prekė
-                                    </div>
-
-                                    <div
-                                        x-on:click="selectedReason = 'abuse'; reasonOpen = false"
-                                        class="block w-full px-3 py-2 text-black cursor-pointer hover:bg-[#836354] hover:text-white"
-                                    >
-                                        Įžeidžiantis elgesys
-                                    </div>
-
-                                    <div
-                                        x-on:click="selectedReason = 'spam'; reasonOpen = false"
-                                        class="block w-full px-3 py-2 text-black cursor-pointer hover:bg-[#836354] hover:text-white"
-                                    >
-                                        Šlamštas
-                                    </div>
-
-                                    <div
-                                        x-on:click="selectedReason = 'prohibited_items'; reasonOpen = false"
-                                        class="block w-full px-3 py-2 text-black cursor-pointer hover:bg-[#836354] hover:text-white"
-                                    >
-                                        Draudžiamos prekės
-                                    </div>
-
-                                    <div
-                                        x-on:click="selectedReason = 'other'; reasonOpen = false"
-                                        class="block w-full px-3 py-2 text-black cursor-pointer hover:bg-[#836354] hover:text-white"
-                                    >
-                                        Kita
-                                    </div>
-                                </div>
-                            </div>
+                            <select
+                                name="reason"
+                                required
+                                class="w-full rounded border py-2 px-3 text-left text-black focus:outline-none focus:ring-1 focus:ring-[#836354] focus:border-[#836354]"
+                                style="background-color: #d7b78e; border-color: #836354"
+                            >
+                                <option value="">Pasirinkite priežastį</option>
+                                <option value="fraud">Sukčiavimas</option>
+                                <option value="fake_item">Netikra prekė</option>
+                                <option value="abuse">Įžeidžiantis elgesys</option>
+                                <option value="spam">Šlamštas</option>
+                                <option value="prohibited_items">Draudžiamos prekės</option>
+                                <option value="other">Kita</option>
+                            </select>
                         </div>
 
                         <div>
@@ -526,8 +362,7 @@ input[type=number] {
 
                             <button
                                 type="button"
-                                x-on:click="openReport = false"
-                                class="px-4 py-2 rounded text-white hover:text-black transition-colors"
+                                class="seller-report-cancel px-4 py-2 rounded text-white hover:text-black transition-colors"
                                 style="background-color: rgb(184, 80, 54)"
                             >
                                 Atšaukti
@@ -539,10 +374,6 @@ input[type=number] {
         @endauth
     </div>
 </div>
-            </div>
-        </div>
-    </div>
-
 {{-- OTHER PRODUCTS --}}
 @if($similar->count() > 0)
 <section class="mt-14 sm:mt-20">
@@ -580,24 +411,12 @@ input[type=number] {
                                 @if(auth()->id() !== $s->user_id && auth()->user()->role !== 'admin')
                                     <button
                                         type="button"
-                                        x-on:click.stop.prevent="Alpine.store('favorites').toggle({{ $s->id }})"
-                                        class="absolute top-2 right-2 z-30 w-9 h-9 flex items-center justify-center overflow-hidden"
+                                        class="favorite-toggle absolute top-2 right-2 z-30 w-9 h-9 flex items-center justify-center overflow-hidden"
+                                        data-listing-id="{{ $s->id }}"
                                         aria-label="Pažymėti kaip mėgstamą"
                                     >
-                                        <span
-                                            x-show="Alpine.store('favorites').has({{ $s->id }})"
-                                            class="text-2xl leading-none"
-                                            style="color: rgb(104, 79, 67)"
-                                        >
-                                            🤎
-                                        </span>
-
-                                        <span
-                                            x-show="!Alpine.store('favorites').has({{ $s->id }})"
-                                            class="text-2xl leading-none text-white"
-                                        >
-                                            🤍
-                                        </span>
+                                        <span class="favorite-on text-2xl leading-none hidden" style="color: rgb(104, 79, 67)">🤎</span>
+                                        <span class="favorite-off text-2xl leading-none text-white">🤍</span>
                                     </button>
                                 @endif
                             @endauth
@@ -730,10 +549,7 @@ input[type=number] {
         && ($purchaseCount > $reviewCount);
 @endphp
 
-<div
-    x-data="{ editingReviewId: null }"
-    class="grid grid-cols-1 {{ $canLeaveReview ? 'md:grid-cols-2' : '' }} gap-6 sm:gap-8 items-start"
->
+<div class="grid grid-cols-1 {{ $canLeaveReview ? 'md:grid-cols-2' : '' }} gap-6 sm:gap-8 items-start">
 
     <div class="{{ $canLeaveReview ? '' : 'md:col-span-2' }}">
         <h3 class="text-xl sm:text-2xl font-bold mb-4 sm:mb-6 text-black">Atsiliepimai</h3>
@@ -756,116 +572,52 @@ input[type=number] {
                     method="GET"
                     action="{{ route('listing.single', $listing->id) }}#reviews-section"
                     class="w-full sm:w-48"
-                    x-data="{ sortOpen: false, selectedSort: '{{ $sort }}' }"
                 >
-                    <div class="relative">
-                        <input type="hidden" name="sort" x-bind:value="selectedSort">
-
-                        <button
-                            type="button"
-                            x-on:click="sortOpen = !sortOpen"
-                            aria-label="Rūšiuoti atsiliepimus"
-                            :class="sortOpen ? 'ring-1 ring-[#836354] border-[#836354]' : 'border-gray-500'"
-                            class="w-full rounded border py-2 px-3 text-left text-black focus:outline-none focus:ring-1 focus:ring-[#836354] focus:border-[#836354] flex justify-between items-center"
-                            style="background-color: rgb(227, 197, 157)"
-                        >
-                            <span x-text="
-                                selectedSort === 'newest' ? 'Naujausi' :
-                                selectedSort === 'oldest' ? 'Seniausi' :
-                                selectedSort === 'highest' ? 'Geriausi' :
-                                'Blogiausi'
-                            "></span>
-
-                            <svg class="h-5 w-5 text-black" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
-                                <path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 11.06l3.71-3.83a.75.75 0 111.08 1.04l-4.25 4.4a.75.75 0 01-1.08 0L5.21 8.27a.75.75 0 01.02-1.06z" clip-rule="evenodd" />
-                            </svg>
-                        </button>
-
-                        <div
-                            x-show="sortOpen"
-                            x-on:click.outside="sortOpen = false"
-                            class="absolute left-0 right-0 mt-1 rounded border shadow overflow-hidden z-50"
-                            style="background-color: rgb(227, 197, 157); border-color: #836354"
-                        >
-                            <div
-                                x-on:click="selectedSort = 'newest'; sortOpen = false; $nextTick(() => $el.closest('form').submit())"
-                                class="block w-full px-3 py-2 text-black cursor-pointer hover:bg-[#836354]"
-                            >
-                                Naujausi
-                            </div>
-
-                            <div
-                                x-on:click="selectedSort = 'oldest'; sortOpen = false; $nextTick(() => $el.closest('form').submit())"
-                                class="block w-full px-3 py-2 text-black cursor-pointer hover:bg-[#836354]"
-                            >
-                                Seniausi
-                            </div>
-
-                            <div
-                                x-on:click="selectedSort = 'highest'; sortOpen = false; $nextTick(() => $el.closest('form').submit())"
-                                class="block w-full px-3 py-2 text-black cursor-pointer hover:bg-[#836354]"
-                            >
-                                Geriausi
-                            </div>
-
-                            <div
-                                x-on:click="selectedSort = 'lowest'; sortOpen = false; $nextTick(() => $el.closest('form').submit())"
-                                class="block w-full px-3 py-2 text-black cursor-pointer hover:bg-[#836354]"
-                            >
-                                Blogiausi
-                            </div>
-                        </div>
-                    </div>
+                    <label for="review-sort" class="sr-only">Rūšiuoti atsiliepimus</label>
+                    <select
+                        id="review-sort"
+                        name="sort"
+                        onchange="this.form.submit()"
+                        class="w-full rounded border py-2 px-3 text-left text-black focus:outline-none focus:ring-1 focus:ring-[#836354] focus:border-[#836354]"
+                        style="background-color: rgb(227, 197, 157); border-color: #836354"
+                    >
+                        <option value="newest" @selected($sort === 'newest')>Naujausi</option>
+                        <option value="oldest" @selected($sort === 'oldest')>Seniausi</option>
+                        <option value="highest" @selected($sort === 'highest')>Geriausi</option>
+                        <option value="lowest" @selected($sort === 'lowest')>Blogiausi</option>
+                    </select>
                 </form>
             </div>
         @endif
 
-        <div class="space-y-4">
+        <div class="space-y-4 review-list">
             @forelse($reviews as $review)
                 <div
-                    x-data="{
-                        openReportReview: false,
-                        reasonOpen: false,
-                        selectedReason: '',
-                        editText: @js($review->komentaras ?? ''),
-                        originalText: @js($review->komentaras ?? ''),
-                        editStars: {{ (int) $review->ivertinimas }},
-                        originalStars: {{ (int) $review->ivertinimas }},
-                        hoverStars: 0
-                    }"
-                    class="p-4 rounded border relative"
+                    class="p-4 rounded border relative review-card"
+                    data-review-id="{{ $review->id }}"
                     style="background-color: rgb(227, 197, 157); border-color: #836354"
                 >
                     @auth
                         @if(auth()->id() === $review->user_id)
                             <button
-                                x-show="editingReviewId === null"
-                                x-cloak
                                 type="button"
-                                x-on:click="
-                                    editingReviewId = {{ $review->id }};
-                                    editText = originalText;
-                                    editStars = originalStars;
-                                    hoverStars = 0;
-                                "
                                 title="Redaguoti atsiliepimą"
-                                class="absolute top-3 right-3 text-black hover:text-red-600 text-lg leading-none"
+                                class="review-edit-toggle absolute top-3 right-3 text-black hover:text-red-600 text-lg leading-none"
                             >
                                 🖉
                             </button>
                         @elseif(auth()->id() !== $review->user_id)
                             <button
                                 type="button"
-                                x-on:click="openReportReview = !openReportReview"
                                 title="Pranešti apie atsiliepimą"
-                                class="absolute top-3 right-3 text-black hover:text-red-600 text-lg leading-none"
+                                class="review-report-toggle absolute top-3 right-3 text-black hover:text-red-600 text-lg leading-none"
                             >
                                 ⚐
                             </button>
                         @endif
                     @endauth
 
-                    <div x-show="editingReviewId !== {{ $review->id }}">
+                    <div class="review-display">
                         <div class="flex items-center gap-2 mb-1 pr-8">
                             <strong class="text-black">{{ $review->user->vardas }}</strong>
                             <span class="text-sm" style="color: rgb(104, 79, 67)">
@@ -880,77 +632,49 @@ input[type=number] {
 
                     @auth
                         @if(auth()->id() === $review->user_id)
-                            <div x-show="editingReviewId === {{ $review->id }}" x-cloak>
+                            <div class="review-edit-panel hidden">
                                 <form method="POST" action="{{ route('review.update', $review->id) }}" class="space-y-3">
                                     @csrf
                                     @method('PUT')
-
-                                    <input type="hidden" name="ivertinimas" x-bind:value="editStars">
 
                                     <div class="flex items-center gap-2 mb-1">
                                         <strong class="text-black">{{ $review->user->vardas }}</strong>
                                     </div>
 
                                     <div>
-                                        <div class="flex items-center gap-1 mb-2">
+                                        <label class="block text-black font-medium mb-1" for="edit-rating-{{ $review->id }}">Įvertinimas</label>
+                                        <select
+                                            id="edit-rating-{{ $review->id }}"
+                                            name="ivertinimas"
+                                            class="w-full border border-gray-500 rounded p-3 text-black focus:outline-none focus:ring-1 focus:ring-[#836354] focus:border-[#836354]"
+                                            style="background-color: rgb(234, 220, 200)"
+                                        >
                                             @for($n = 1; $n <= 5; $n++)
-                                                <button
-                                                    type="button"
-                                                    @mouseenter="hoverStars = {{ $n }}"
-                                                    @mouseleave="hoverStars = 0"
-                                                    x-on:click="editStars = {{ $n }}"
-                                                    class="text-3xl leading-none focus:outline-none"
-                                                    :aria-label="'{{ $n }} žvaigždutės'"
-                                                >
-                                                    <span
-                                                        x-show="(hoverStars || editStars) >= {{ $n }}"
-                                                        style="color: rgb(104, 79, 67)">
-                                                        ★
-                                                    </span>
-                                                    <span
-                                                        x-show="(hoverStars || editStars) < {{ $n }}"
-                                                        class="text-gray-400"
-                                                    >
-                                                        ☆
-                                                    </span>
-                                                </button>
+                                                <option value="{{ $n }}" @selected($review->ivertinimas == $n)>{{ $n }} / 5</option>
                                             @endfor
-                                        </div>
-
-                                        <div class="text-sm text-black">
-                                            <span x-text="editStars + ' / 5'"></span>
-                                        </div>
+                                        </select>
                                     </div>
 
                                     <textarea
                                         name="komentaras"
                                         rows="4"
-                                        x-model="editText"
                                         class="w-full border border-gray-500 rounded p-3 text-black focus:outline-none focus:ring-1 focus:ring-[#836354] focus:border-[#836354]"
                                         style="background-color: rgb(234, 220, 200)"
                                         placeholder="Parašykite atsiliepimą..."
-                                    ></textarea>
+                                    >{{ $review->komentaras }}</textarea>
 
                                     <div class="flex gap-2">
                                         <button
                                             type="submit"
                                             class="text-white px-4 py-2 rounded hover:text-black"
                                             style="background-color: rgb(104, 79, 67)"
-                                            :disabled="editStars === 0"
-                                            :class="editStars === 0 ? 'opacity-50 cursor-not-allowed' : ''"
                                         >
                                             Išsaugoti
                                         </button>
 
                                         <button
                                             type="button"
-                                            x-on:click="
-                                                editingReviewId = null;
-                                                editText = originalText;
-                                                editStars = originalStars;
-                                                hoverStars = 0;
-                                            "
-                                            class="text-white px-4 py-2 rounded hover:text-black"
+                                            class="review-edit-cancel text-white px-4 py-2 rounded hover:text-black"
                                             style="background-color: rgb(184, 80, 54)"
                                         >
                                             Atšaukti
@@ -964,82 +688,28 @@ input[type=number] {
                     @auth
                         @if(auth()->id() !== $review->user_id)
                             <div
-                                x-show="openReportReview"
-                                x-cloak
-                                class="mt-4 pt-4 border-t"
+                                class="review-report-panel hidden mt-4 pt-4 border-t"
                                 style="border-color: #836354"
                             >
                                 <form method="POST" action="{{ route('review.report', $review->id) }}" class="space-y-3">
                                     @csrf
 
                                     <div>
-                                        <label class="block text-black font-medium mb-1">Priežastis</label>
-
-                                        <div class="relative">
-                                            <input type="hidden" name="reason" x-bind:value="selectedReason" required>
-
-                                            <button
-                                                type="button"
-                                                x-on:click="reasonOpen = !reasonOpen"
-                                                class="w-full rounded border py-2 px-3 text-left text-black flex justify-between items-center focus:outline-none focus:ring-1 focus:ring-[#836354] focus:border-[#836354]"
-                                                style="background-color: rgb(234, 220, 200); border-color: #836354"
-                                            >
-                                                <span x-text="
-                                                    selectedReason === '' ? 'Pasirinkite priežastį' :
-                                                    selectedReason === 'abuse' ? 'Įžeidžiantis tekstas' :
-                                                    selectedReason === 'spam' ? 'Šlamštas' :
-                                                    selectedReason === 'fake_review' ? 'Netikras atsiliepimas' :
-                                                    selectedReason === 'harassment' ? 'Priekabiavimas' :
-                                                    'Kita'
-                                                "></span>
-
-                                                <svg class="h-5 w-5 text-black" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
-                                                    <path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 11.06l3.71-3.83a.75.75 0 111.08 1.04l-4.25 4.4a.75.75 0 01-1.08 0L5.21 8.27a.75.75 0 01.02-1.06z" clip-rule="evenodd" />
-                                                </svg>
-                                            </button>
-
-                                            <div
-                                                x-show="reasonOpen"
-                                                x-on:click.outside="reasonOpen = false"
-                                                class="absolute left-0 right-0 mt-1 rounded border shadow overflow-hidden z-50"
-                                                style="background-color: rgb(227, 197, 157); border-color: #836354"
-                                            >
-                                                <div
-                                                    x-on:click="selectedReason = 'abuse'; reasonOpen = false"
-                                                    class="block w-full px-3 py-2 text-black cursor-pointer hover:bg-[#836354] hover:text-white"
-                                                >
-                                                    Įžeidžiantis tekstas
-                                                </div>
-
-                                                <div
-                                                    x-on:click="selectedReason = 'spam'; reasonOpen = false"
-                                                    class="block w-full px-3 py-2 text-black cursor-pointer hover:bg-[#836354] hover:text-white"
-                                                >
-                                                    Šlamštas
-                                                </div>
-
-                                                <div
-                                                    x-on:click="selectedReason = 'fake_review'; reasonOpen = false"
-                                                    class="block w-full px-3 py-2 text-black cursor-pointer hover:bg-[#836354] hover:text-white"
-                                                >
-                                                    Netikras atsiliepimas
-                                                </div>
-
-                                                <div
-                                                    x-on:click="selectedReason = 'harassment'; reasonOpen = false"
-                                                    class="block w-full px-3 py-2 text-black cursor-pointer hover:bg-[#836354] hover:text-white"
-                                                >
-                                                    Priekabiavimas
-                                                </div>
-
-                                                <div
-                                                    x-on:click="selectedReason = 'other'; reasonOpen = false"
-                                                    class="block w-full px-3 py-2 text-black cursor-pointer hover:bg-[#836354] hover:text-white"
-                                                >
-                                                    Kita
-                                                </div>
-                                            </div>
-                                        </div>
+                                        <label class="block text-black font-medium mb-1" for="report-reason-{{ $review->id }}">Priežastis</label>
+                                        <select
+                                            id="report-reason-{{ $review->id }}"
+                                            name="reason"
+                                            required
+                                            class="w-full rounded border py-2 px-3 text-left text-black flex justify-between items-center focus:outline-none focus:ring-1 focus:ring-[#836354] focus:border-[#836354]"
+                                            style="background-color: rgb(234, 220, 200); border-color: #836354"
+                                        >
+                                            <option value="">Pasirinkite priežastį</option>
+                                            <option value="abuse">Įžeidžiantis tekstas</option>
+                                            <option value="spam">Šlamštas</option>
+                                            <option value="fake_review">Netikras atsiliepimas</option>
+                                            <option value="harassment">Priekabiavimas</option>
+                                            <option value="other">Kita</option>
+                                        </select>
                                     </div>
 
                                     <div>
@@ -1064,8 +734,7 @@ input[type=number] {
 
                                         <button
                                             type="button"
-                                            x-on:click="openReportReview = false; reasonOpen = false; selectedReason = ''"
-                                            class="px-3 py-2 rounded text-white hover:text-black transition-colors"
+                                            class="review-report-cancel px-3 py-2 rounded text-white hover:text-black transition-colors"
                                             style="background-color: rgb(184, 80, 54)"
                                         >
                                             Atšaukti
@@ -1094,48 +763,30 @@ input[type=number] {
             Jūs jau palikote atsiliepimą kiekvienam šio skelbimo pirkimui.
         </div>
     @endif
-        
+
     @if($canLeaveReview)
-        <div x-show="editingReviewId === null">
-            <div x-data="{ selectedStars: 0, hoverStars: 0 }">
+        <div>
+            <div>
                 <h4 class="font-semibold mb-2 text-black">Palikti atsiliepimą</h4>
 
                 <form method="POST" action="{{ route('review.store', $listing->id) }}"
                       class="space-y-3">
                     @csrf
 
-                    <input type="hidden" name="ivertinimas" x-bind:value="selectedStars">
-
                     <div>
-                        <div class="flex items-center gap-1 mb-2">
+                        <label class="block text-black font-medium mb-1" for="new-review-rating">Įvertinimas</label>
+                        <select
+                            id="new-review-rating"
+                            name="ivertinimas"
+                            required
+                            class="w-full border border-gray-500 rounded p-3 text-black focus:outline-none focus:ring-1 focus:ring-[#836354] focus:border-[#836354]"
+                            style="background-color: rgb(227, 197, 157)"
+                        >
+                            <option value="">Pasirinkite įvertinimą</option>
                             @for($n = 1; $n <= 5; $n++)
-                                <button
-                                    type="button"
-                                    @mouseenter="hoverStars = {{ $n }}"
-                                    @mouseleave="hoverStars = 0"
-                                    x-on:click="selectedStars = {{ $n }}"
-                                    class="text-3xl leading-none focus:outline-none"
-                                    :aria-label="'{{ $n }} žvaigždutės'"
-                                >
-                                    <span
-                                        x-show="(hoverStars || selectedStars) >= {{ $n }}"
-                                        style="color: rgb(104, 79, 67)">
-                                        ★
-                                    </span>
-                                    <span
-                                        x-show="(hoverStars || selectedStars) < {{ $n }}"
-                                        class="text-gray-400"
-                                    >
-                                        ☆
-                                    </span>
-                                </button>
+                                <option value="{{ $n }}">{{ $n }} / 5</option>
                             @endfor
-                        </div>
-
-                        <div class="text-sm text-black">
-                            <span x-show="selectedStars === 0">Pasirinkite įvertinimą</span>
-                            <span x-show="selectedStars > 0" x-text="selectedStars + ' / 5'"></span>
-                        </div>
+                        </select>
                     </div>
 
                     <textarea
@@ -1150,8 +801,6 @@ input[type=number] {
                         type="submit"
                         class="text-white px-4 py-2 rounded w-full hover:text-black"
                         style="background-color: rgb(104, 79, 67)"
-                        :disabled="selectedStars === 0"
-                        :class="selectedStars === 0 ? 'opacity-50 cursor-not-allowed' : ''"
                     >
                         Pateikti atsiliepimą
                     </button>
@@ -1162,7 +811,208 @@ input[type=number] {
 
 </div>
 </section>
-                    </div>
-  @include('components.footer')
+
+@auth
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const buttons = Array.from(document.querySelectorAll('.favorite-toggle'));
+    let favorites = [];
+
+    function normalizeIds(values) {
+        return (values || []).map(v => String(v));
+    }
+
+    function hasFavorite(id) {
+        return favorites.includes(String(id));
+    }
+
+    function renderFavorites() {
+        buttons.forEach((button) => {
+            const id = String(button.dataset.listingId);
+            const on = button.querySelector('.favorite-on');
+            const off = button.querySelector('.favorite-off');
+            if (hasFavorite(id)) {
+                on.classList.remove('hidden');
+                off.classList.add('hidden');
+            } else {
+                on.classList.add('hidden');
+                off.classList.remove('hidden');
+            }
+        });
+    }
+
+    async function loadFavorites() {
+        if (!buttons.length) return;
+        try {
+            const res = await fetch('/api/favorites/ids', {
+                method: 'GET',
+                headers: {
+                    'Accept': 'application/json',
+                    'X-Requested-With': 'XMLHttpRequest',
+                },
+                credentials: 'same-origin',
+            });
+            if (!res.ok) return;
+            const data = await res.json();
+            favorites = normalizeIds(data);
+            renderFavorites();
+        } catch (e) {
+            console.error('Failed to load favorites', e);
+        }
+    }
+
+    async function addFavorite(id) {
+        return fetch('/api/favorite', {
+            method: 'POST',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                'X-Requested-With': 'XMLHttpRequest',
+            },
+            credentials: 'same-origin',
+            body: JSON.stringify({ listing_id: Number(id) }),
+        });
+    }
+
+    async function removeFavorite(id) {
+        return fetch(`/api/favorite/${encodeURIComponent(id)}`, {
+            method: 'DELETE',
+            headers: {
+                'Accept': 'application/json',
+                'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                'X-Requested-With': 'XMLHttpRequest',
+            },
+            credentials: 'same-origin',
+        });
+    }
+
+    buttons.forEach((button) => {
+        button.addEventListener('click', async function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+            const id = this.dataset.listingId;
+            const isFav = hasFavorite(id);
+            try {
+                const res = isFav ? await removeFavorite(id) : await addFavorite(id);
+                if (!res.ok) return;
+                if (isFav) {
+                    favorites = favorites.filter(favId => favId !== String(id));
+                } else if (!hasFavorite(id)) {
+                    favorites.push(String(id));
+                }
+                renderFavorites();
+            } catch (e) {
+                console.error('Failed to toggle favorite', e);
+            }
+        });
+    });
+
+    loadFavorites();
+
+    document.querySelectorAll('.quantity-selector').forEach((wrap) => {
+        const input = wrap.querySelector('.qty-input');
+        const dec = wrap.querySelector('.qty-decrease');
+        const inc = wrap.querySelector('.qty-increase');
+        const max = Number(wrap.dataset.max || input.max || 1);
+
+        function sync() {
+            let val = parseInt(input.value || '1', 10);
+            if (isNaN(val) || val < 1) val = 1;
+            if (val > max) val = max;
+            input.value = val;
+            dec.disabled = val <= 1;
+            inc.disabled = val >= max;
+            dec.classList.toggle('opacity-50', val <= 1);
+            dec.classList.toggle('cursor-not-allowed', val <= 1);
+            inc.classList.toggle('opacity-50', val >= max);
+            inc.classList.toggle('cursor-not-allowed', val >= max);
+        }
+
+        dec.addEventListener('click', () => { input.value = Math.max(1, (parseInt(input.value||'1',10) || 1) - 1); sync(); });
+        inc.addEventListener('click', () => { input.value = Math.min(max, (parseInt(input.value||'1',10) || 1) + 1); sync(); });
+        input.addEventListener('input', sync);
+        sync();
+    });
+
+    document.querySelectorAll('.seller-contact-box').forEach((box) => {
+        const revealBtn = box.querySelector('.seller-reveal-btn');
+        const loading = box.querySelector('.seller-loading');
+        const error = box.querySelector('.seller-error');
+        const hiddenBlock = box.querySelector('.seller-hidden-block');
+        const revealed = box.querySelector('.seller-revealed');
+        const reportToggle = box.querySelector('.seller-report-toggle');
+        const reportPanel = box.querySelector('.seller-report-panel');
+        const reportCancel = box.querySelector('.seller-report-cancel');
+
+        reportToggle?.addEventListener('click', () => reportPanel?.classList.toggle('hidden'));
+        reportCancel?.addEventListener('click', () => reportPanel?.classList.add('hidden'));
+
+        revealBtn?.addEventListener('click', async () => {
+            if (revealBtn.disabled) return;
+            revealBtn.disabled = true;
+            loading?.classList.remove('hidden');
+            error?.classList.add('hidden');
+            error.textContent = '';
+
+            try {
+                const res = await fetch(box.dataset.sellerUrl, {
+                    headers: {
+                        'Accept': 'application/json',
+                        'X-Requested-With': 'XMLHttpRequest'
+                    }
+                });
+                const data = await res.json();
+                if (!res.ok) throw new Error(data?.message || 'Nepavyko gauti pardavėjo informacijos.');
+
+                box.querySelector('.seller-name').textContent = data.name ?? '';
+                if (data.email) {
+                    box.querySelector('.seller-email').textContent = data.email;
+                    box.querySelector('.seller-email-row').classList.remove('hidden');
+                }
+                if (data.phone) {
+                    box.querySelector('.seller-phone').textContent = data.phone;
+                    box.querySelector('.seller-phone-row').classList.remove('hidden');
+                }
+                if (data.city) {
+                    box.querySelector('.seller-city').textContent = data.city;
+                    box.querySelector('.seller-city-row').classList.remove('hidden');
+                }
+
+                hiddenBlock?.classList.add('hidden');
+                revealed?.classList.remove('hidden');
+            } catch (err) {
+                error.textContent = err.message || 'Nepavyko gauti pardavėjo informacijos.';
+                error.classList.remove('hidden');
+                revealBtn.disabled = false;
+            } finally {
+                loading?.classList.add('hidden');
+            }
+        });
+    });
+
+    document.querySelectorAll('.review-card').forEach((card) => {
+        const display = card.querySelector('.review-display');
+        const editPanel = card.querySelector('.review-edit-panel');
+        const reportPanel = card.querySelector('.review-report-panel');
+        card.querySelector('.review-edit-toggle')?.addEventListener('click', () => {
+            display?.classList.add('hidden');
+            editPanel?.classList.remove('hidden');
+        });
+        card.querySelector('.review-edit-cancel')?.addEventListener('click', () => {
+            editPanel?.classList.add('hidden');
+            display?.classList.remove('hidden');
+        });
+        card.querySelector('.review-report-toggle')?.addEventListener('click', () => {
+            reportPanel?.classList.toggle('hidden');
+        });
+        card.querySelector('.review-report-cancel')?.addEventListener('click', () => {
+            reportPanel?.classList.add('hidden');
+        });
+    });
+});
+</script>
+@endauth
+@include('components.footer')
 </div>
 </x-app-layout>

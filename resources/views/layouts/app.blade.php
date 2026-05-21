@@ -17,6 +17,7 @@
         <style>
             [x-cloak] { display: none !important; }
         </style>
+          @stack('styles')
     </head>
     <body class="font-sans antialiased" data-auth="{{ auth()->check() ? '1' : '0' }}">
         <div style="background-color: rgb(234, 220, 200);">

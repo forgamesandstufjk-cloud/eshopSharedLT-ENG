@@ -17,9 +17,9 @@
             @endif
 
             {{-- PAPRASTI UŽSAKYMAI / SIUNTOS --}}
-            <div class="shadow rounded overflow-hidden" style="background-color: rgb(215, 183, 142)">
+            <div class="shadow rounded overflow-hidden" style="background-color: rgb(227, 197, 157)">
                 <table class="w-full text-sm text-black">
-                    <thead class="border-b hidden sm:table-header-group" style="background-color: rgb(131, 99, 84); border-color: #836354">
+                    <thead class="border-b hidden sm:table-header-group" style="background-color: rgb(104, 79, 67); border-color: #684F43">
                         <tr>
                             <th class="p-3 text-left text-white">Užsakymas</th>
                             <th class="p-3 text-left text-white">Prekės</th>
@@ -32,7 +32,7 @@
 
                     <tbody>
                     @forelse($shipments as $s)
-                        <tr class="block sm:table-row align-top @unless($loop->last) border-b @endunless" style="border-color: #836354">
+                        <tr class="block sm:table-row align-top @unless($loop->last) border-b @endunless" style="border-color: #684F43">
                             <td class="p-3 block sm:table-cell text-black">
                                 <span class="font-semibold sm:hidden">Užsakymas: </span>
                                 #{{ $s->order_id }}
@@ -43,7 +43,7 @@
                                 @foreach($s->order->orderItem as $item)
                                     @if($item->listing->user_id === auth()->id())
                                         <div class="flex items-center gap-3 mb-3 mt-2">
-                                            <div class="w-14 h-14 bg-white rounded border flex items-center justify-center overflow-hidden shrink-0" style="border-color: #836354">
+                                            <div class="w-14 h-14 bg-white rounded border flex items-center justify-center overflow-hidden shrink-0" style="border-color: #684F43">
                                                 <img
                                                     src="{{ $item->listing->photos->isNotEmpty()
                                                         ? \Illuminate\Support\Facades\Storage::disk('photos')->url($item->listing->photos->first()->failo_url)
@@ -137,13 +137,13 @@
                                     @endif
 
                                 @elseif($s->status === 'needs_review')
-                                    <span class="font-medium" style="color: rgb(131, 99, 84)">Laukiama patvirtinimo</span>
+                                    <span class="font-medium" style="color: rgb(104, 79, 67)">Laukiama patvirtinimo</span>
 
                                 @elseif($s->status === 'approved')
                                     <span style="color: rgb(184, 80, 54)">Apdorojamas kompensavimas</span>
 
                                 @elseif($s->status === 'reimbursed')
-                                    <span style="color: rgb(131, 99, 84)">Užbaigta</span>
+                                    <span style="color: rgb(104, 79, 67)">Užbaigta</span>
 
                                 @else
                                     <span class="text-black">Nežinoma</span>
@@ -165,7 +165,7 @@
                                         <input type="hidden" name="shipment_form_id" value="{{ $s->id }}">
 
                                         @if($showShipmentErrors)
-                                            <div class="p-3 rounded text-sm text-black border" style="background-color: rgb(207, 174, 134); border-color: #836354">
+                                            <div class="p-3 rounded text-sm text-black border" style="background-color: rgb(207, 174, 134); border-color: #684F43">
                                                 <ul class="list-disc pl-5">
                                                     @foreach($errors->all() as $error)
                                                         <li>{{ $error }}</li>
@@ -177,7 +177,7 @@
                                         <input
                                             name="tracking_number"
                                             value="{{ old('shipment_form_id') == $s->id ? old('tracking_number') : '' }}"
-                                            class="border p-2 rounded w-full text-black focus:outline-none focus:ring-1 focus:ring-[#836354] focus:border-[#836354]"
+                                            class="border p-2 rounded w-full text-black focus:outline-none focus:ring-1 focus:ring-[#684F43] focus:border-[#684F43]"
                                             style="background-color: rgb(234, 220, 200); border-color: #6B7280"
                                             placeholder="Siuntos sekimo numeris"
                                         >
@@ -186,7 +186,7 @@
                                             type="file"
                                             name="proof"
                                             accept=".jpg,.jpeg,.png,.pdf,.doc,.docx"
-                                            class="border p-2 rounded w-full text-black focus:outline-none focus:ring-1 focus:ring-[#836354] focus:border-[#836354]"
+                                            class="border p-2 rounded w-full text-black focus:outline-none focus:ring-1 focus:ring-[#684F43] focus:border-[#684F43]"
                                             style="background-color: rgb(234, 220, 200); border-color: #6B7280"
                                         >
 
@@ -196,7 +196,7 @@
 
                                         <button
                                             class="text-white px-3 py-2 rounded w-full hover:text-black"
-                                            style="background-color: rgb(131, 99, 84)">
+                                            style="background-color: rgb(104, 79, 67)">
                                             Pateikti siuntą
                                         </button>
                                     </form>
@@ -225,9 +225,9 @@
                 <h2 class="text-xl sm:text-2xl font-bold mb-4 sm:mb-6 text-black">Paslaugų užsakymai</h2>
             </div>
 
-            <div class="shadow rounded overflow-hidden" style="background-color: rgb(215, 183, 142)">
+            <div class="shadow rounded overflow-hidden" style="background-color: rgb(227, 197, 157)">
                 <table class="w-full text-sm text-black">
-                    <thead class="border-b hidden sm:table-header-group" style="background-color: rgb(131, 99, 84); border-color: #836354">
+                    <thead class="border-b hidden sm:table-header-group" style="background-color: rgb(104, 79, 67); border-color: #684F43">
                         <tr>
                             <th class="p-3 text-left text-white">Užsakymas</th>
                             <th class="p-3 text-left text-white">Skelbimas</th>
@@ -241,7 +241,7 @@
 
                     <tbody>
                     @forelse($serviceOrders as $so)
-                        <tr id="service-order-{{ $so->id }}" class="block sm:table-row border-b" style="border-color: #836354">
+                        <tr id="service-order-{{ $so->id }}" class="block sm:table-row border-b" style="border-color: #684F43">
                             <td class="p-3 block sm:table-cell text-black">
                                 <span class="font-semibold sm:hidden">Užsakymas: </span>
                                 #{{ $so->id }}
@@ -322,7 +322,7 @@
                                 <span class="font-semibold sm:hidden">Būsena: </span>
 
                                 @if($so->status === \App\Models\ServiceOrder::STATUS_COMPLETED)
-                                    <span style="color: rgb(131, 99, 84)">Užbaigta</span>
+                                    <span style="color: rgb(104, 79, 67)">Užbaigta</span>
                                     @if($so->completion_method === \App\Models\ServiceOrder::COMPLETION_PRIVATE)
                                         <div class="text-xs mt-1 text-black">Užbaigta privačiai</div>
                                     @elseif($so->completion_method === \App\Models\ServiceOrder::COMPLETION_PLATFORM)
@@ -330,19 +330,19 @@
                                     @endif
 
                                 @elseif($so->shipment_status === \App\Models\ServiceOrder::SHIPMENT_NEEDS_REVIEW)
-                                    <span class="font-medium" style="color: rgb(131, 99, 84)">Laukiama patvirtinimo</span>
+                                    <span class="font-medium" style="color: rgb(104, 79, 67)">Laukiama patvirtinimo</span>
 
                                 @elseif($so->shipment_status === \App\Models\ServiceOrder::SHIPMENT_APPROVED)
                                     <span style="color: rgb(184, 80, 54)">Apdorojamas kompensavimas</span>
 
                                 @elseif($so->shipment_status === \App\Models\ServiceOrder::SHIPMENT_REIMBURSED)
-                                    <span style="color: rgb(131, 99, 84)">Užbaigta</span>
+                                    <span style="color: rgb(104, 79, 67)">Užbaigta</span>
 
                                 @elseif($so->status === \App\Models\ServiceOrder::STATUS_READY_TO_SHIP)
                                     @if($so->payment_status === \App\Models\ServiceOrder::PAYMENT_PAID)
                                         <div class="text-black">Laukiama išsiuntimo</div>
                                     @else
-                                        <span class="font-medium" style="color: rgb(131, 99, 84)">Laukiama pirkėjo apmokėjimo</span>
+                                        <span class="font-medium" style="color: rgb(104, 79, 67)">Laukiama pirkėjo apmokėjimo</span>
                                     @endif
 
                                 @else
@@ -360,7 +360,7 @@
                                                 @csrf
                                                 <button
                                                     class="text-white px-3 py-2 rounded w-full hover:text-black"
-                                                    style="background-color: rgb(131, 99, 84)">
+                                                    style="background-color: rgb(104, 79, 67)">
                                                     Atsiskaitymas per svetainę
                                                 </button>
                                             </form>
@@ -409,7 +409,7 @@
                                             <input type="hidden" name="service_order_form_id" value="{{ $so->id }}">
 
                                             @if($showServiceShipmentErrors)
-                                                <div class="p-3 rounded text-sm text-black border" style="background-color: rgb(207, 174, 134); border-color: #836354">
+                                                <div class="p-3 rounded text-sm text-black border" style="background-color: rgb(207, 174, 134); border-color: #684F43">
                                                     <ul class="list-disc pl-5">
                                                         @foreach($errors->all() as $error)
                                                             <li>{{ $error }}</li>
@@ -421,7 +421,7 @@
                                             <input
                                                 name="tracking_number"
                                                 value="{{ old('service_order_form_id') == $so->id ? old('tracking_number') : '' }}"
-                                                class="border p-2 rounded w-full text-black focus:outline-none focus:ring-1 focus:ring-[#836354] focus:border-[#836354]"
+                                                class="border p-2 rounded w-full text-black focus:outline-none focus:ring-1 focus:ring-[#684F43] focus:border-[#684F43]"
                                                 style="background-color: rgb(234, 220, 200); border-color: #6B7280"
                                                 placeholder="Siuntos sekimo numeris"
                                             >
@@ -430,7 +430,7 @@
                                                 type="file"
                                                 name="proof"
                                                 accept=".jpg,.jpeg,.png,.pdf,.doc,.docx"
-                                                class="border p-2 rounded w-full text-black focus:outline-none focus:ring-1 focus:ring-[#836354] focus:border-[#836354]"
+                                                class="border p-2 rounded w-full text-black focus:outline-none focus:ring-1 focus:ring-[#684F43] focus:border-[#684F43]"
                                                 style="background-color: rgb(234, 220, 200); border-color: #6B7280"
                                             >
 
@@ -440,7 +440,7 @@
 
                                             <button
                                                 class="text-white px-3 py-2 rounded w-full hover:text-black"
-                                                style="background-color: rgb(131, 99, 84)">
+                                                style="background-color: rgb(104, 79, 67)">
                                                 Pateikti siuntos įrodymą
                                             </button>
                                         </form>
@@ -449,7 +449,7 @@
                                         <a href="{{ \Illuminate\Support\Facades\Storage::disk('photos')->url($so->proof_path) }}"
                                            target="_blank"
                                            class="underline"
-                                           style="color: rgb(131, 99, 84)">
+                                           style="color: rgb(104, 79, 67)">
                                             Peržiūrėti įrodymą
                                         </a>
 

@@ -2,7 +2,7 @@
       <x-slot name="title">Skelbimo kūrimas</x-slot>
 <div class="min-h-screen w-full py-10" style="background-color: rgb(234, 220, 200)">
 <div class="max-w-3xl mx-auto shadow p-6 rounded mt-10 mb-10"
-     style="background-color: rgb(215, 183, 142)"
+     style="background-color: rgb(227, 197, 157)"
      x-data="{ type: '{{ old('tipas', 'preke') }}' }">
 
     <h1 class="text-3xl font-bold mb-6">Sukurti naują skelbimą</h1>
@@ -33,8 +33,8 @@
             <button
                 type="button"
                 @click="open = !open"
-                :class="open ? 'ring-1 ring-[#836354] border-[#836354]' : 'border-gray-500'"
-                class="w-full rounded border py-2 px-3 text-left focus:outline-none focus:ring-1 focus:ring-[#836354] focus:border-[#836354] flex justify-between items-center"
+                :class="open ? 'ring-1 ring-[#684F43] border-[#684F43]' : 'border-gray-500'"
+                class="w-full rounded border py-2 px-3 text-left focus:outline-none focus:ring-1 focus:ring-[#684F43] focus:border-[#684F43] flex justify-between items-center"
                 style="background-color: rgb(234, 220, 200)"
             >
                 <span class="text-black" x-text="type === '' ? 'Pasirinkite tipą' : (type === 'preke' ? 'Prekė' : 'Paslauga')"></span>
@@ -48,7 +48,7 @@
                 x-show="open"
                 @click.outside="open = false"
                 class="absolute left-0 right-0 mt-1 rounded border shadow overflow-hidden z-50"
-                style="background-color: rgb(234, 220, 200); border-color: #836354"
+                style="background-color: rgb(234, 220, 200); border-color: #684F43"
             >
                 <div
                     @click="type = 'preke'; open = false"
@@ -73,7 +73,7 @@
                     type="text"
                     name="pavadinimas"
                     value="{{ old('pavadinimas') }}"
-                    class="w-full border rounded p-2 focus:outline-none focus:ring-1 focus:ring-[#836354] focus:border-[#836354]"
+                    class="w-full border rounded p-2 focus:outline-none focus:ring-1 focus:ring-[#684F43] focus:border-[#684F43]"
                     style="background-color: rgb(234, 220, 200)"
                     maxlength="255"
                     required
@@ -87,7 +87,7 @@
             <textarea
     name="aprasymas"
     rows="5"
-    class="w-full border rounded p-2 focus:outline-none focus:ring-1 focus:ring-[#836354] focus:border-[#836354]"
+    class="w-full border rounded p-2 focus:outline-none focus:ring-1 focus:ring-[#684F43] focus:border-[#684F43]"
     style="background-color: rgb(234, 220, 200)"
       maxlength="2000"
     required
@@ -103,8 +103,8 @@
             <button
                 type="button"
                 @click="open = !open"
-                :class="open ? 'ring-1 ring-[#836354] border-[#836354]' : 'border-gray-500'"
-                class="w-full rounded border py-2 px-3 text-left focus:outline-none focus:ring-1 focus:ring-[#836354] focus:border-[#836354] flex justify-between items-center"
+                :class="open ? 'ring-1 ring-[#684F43] border-[#684F43]' : 'border-gray-500'"
+                class="w-full rounded border py-2 px-3 text-left focus:outline-none focus:ring-1 focus:ring-[#684F43] focus:border-[#684F43] flex justify-between items-center"
                 style="background-color: rgb(234, 220, 200)"
             >
                 <span
@@ -128,7 +128,7 @@
                 x-show="open"
                 @click.outside="open = false"
                 class="absolute left-0 right-0 mt-1 rounded border shadow overflow-hidden z-50 max-h-60 overflow-y-auto"
-                style="background-color: rgb(234, 220, 200); border-color: #836354"
+                style="background-color: rgb(234, 220, 200); border-color: #684F43"
             >
                 @foreach(\App\Models\Category::all() as $cat)
                     <div
@@ -157,8 +157,8 @@
                 <button
                     type="button"
                     @click="if (type === 'preke') open = !open"
-                    :class="open ? 'ring-1 ring-[#836354] border-[#836354]' : 'border-gray-500'"
-                    class="w-full rounded border py-2 px-3 text-left focus:outline-none focus:ring-1 focus:ring-[#836354] focus:border-[#836354] flex justify-between items-center"
+                    :class="open ? 'ring-1 ring-[#684F43] border-[#684F43]' : 'border-gray-500'"
+                    class="w-full rounded border py-2 px-3 text-left focus:outline-none focus:ring-1 focus:ring-[#684F43] focus:border-[#684F43] flex justify-between items-center"
                     style="background-color: rgb(234, 220, 200)"
                 >
                     <span
@@ -175,7 +175,7 @@
                     x-show="open"
                     @click.outside="open = false"
                     class="absolute left-0 right-0 mt-1 rounded border shadow overflow-hidden z-50"
-                    style="background-color: rgb(234, 220, 200); border-color: #836354"
+                    style="background-color: rgb(234, 220, 200); border-color: #684F43"
                 >
                     <div
                         @click="selected = 'XS'; open = false"
@@ -216,7 +216,7 @@
     value="{{ old('kiekis', 1) }}"
     min="1"
     max="999"
-    class="w-full border p-2 rounded focus:outline-none focus:ring-1 focus:ring-[#836354] focus:border-[#836354]"
+    class="w-full border p-2 rounded focus:outline-none focus:ring-1 focus:ring-[#684F43] focus:border-[#684F43]"
     style="background-color: rgb(234, 220, 200)"
     required
 >
@@ -229,7 +229,7 @@
                    name="is_renewable"
                    value="1"
                    {{ old('is_renewable') ? 'checked' : '' }}
-                   class="appearance-none w-4 h-4 rounded border border-gray-500 checked:bg-[#836354] checked:border-[#836354] focus:outline-none focus:ring-1 focus:ring-[#836354] focus:ring-offset-0"
+                   class="appearance-none w-4 h-4 rounded border border-gray-500 checked:bg-[#684F43] checked:border-[#684F43] focus:outline-none focus:ring-1 focus:ring-[#684F43] focus:ring-offset-0"
                    style="background-color: rgb(234, 220, 200)">
                  
                 <label>Ar tai atnaujinamas produktas (galima papildyti atsargas)?</label>
@@ -246,7 +246,7 @@
                   step="0.01"
                   name="kaina"
                    value="{{ old('kaina', '0.20') }}"
-                  class="w-full border rounded p-2 focus:outline-none focus:ring-1 focus:ring-[#836354] focus:border-[#836354]"
+                  class="w-full border rounded p-2 focus:outline-none focus:ring-1 focus:ring-[#684F43] focus:border-[#684F43]"
                   style="background-color: rgb(234, 220, 200)"
                   onwheel="event.preventDefault()"
                   required
@@ -271,14 +271,14 @@
                    <label
                        for="photoInput"
                        class="inline-flex items-center px-4 py-2 rounded cursor-pointer text-white hover:text-black transition-colors"
-                       style="background-color: rgb(131, 99, 84)"
+                       style="background-color: rgb(104, 79, 67)"
                    >
                        Pasirinkti nuotraukas
                    </label>
                
                    <div
                        class="mt-3 p-3 rounded border text-sm text-black"
-                       style="background-color: rgb(234, 220, 200); border-color: #836354"
+                       style="background-color: rgb(234, 220, 200); border-color: #684F43"
                    >
                        <span x-show="!fileNames">Nepasirinkta jokių failų</span>
                        <span x-show="fileNames" x-text="fileNames"></span>
@@ -298,7 +298,7 @@
             <button
                 type="submit"
                 class="bg-[#B86B6B] hover:text-black text-white px-6 py-3 rounded"
-                style="background-color: rgb(131, 99, 84)"
+                style="background-color: rgb(104, 79, 67)"
             >
                 Paskelbti skelbimą
             </button>

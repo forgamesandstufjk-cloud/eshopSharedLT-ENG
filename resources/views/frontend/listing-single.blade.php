@@ -491,7 +491,7 @@ input[type=number] {
                         </a>
 
                         <div class="mt-2 flex items-center justify-between gap-2">
-                            <div class="font-semibold" style="color: rgb(104, 79, 67)">
+                            <div class="font-semibold text-black">
                                 {{ number_format($s->kaina, 2, ',', '.') }} €
                             </div>
 

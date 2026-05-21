@@ -5,7 +5,7 @@
         </h1>
 
         @if ($errors->any())
-            <div class="mb-4 p-4 rounded border" style="background-color: rgb(207, 174, 134); border-color: #836354">
+            <div class="mb-4 p-4 rounded border" style="background-color: rgb(207, 174, 134); border-color: #684F43">
                 <ul class="list-disc pl-5 text-black text-sm">
                     @foreach ($errors->all() as $error)
                         <li>{{ $error }}</li>
@@ -14,7 +14,7 @@
             </div>
         @endif
 
-        <div class="shadow rounded p-5" style="background-color: rgb(215, 183, 142)">
+        <div class="shadow rounded p-5" style="background-color: rgb(227, 197, 157)">
             <form method="POST"
                   action="{{ $serviceOrder ? route('seller.service-orders.update', $serviceOrder) : route('seller.service-orders.store') }}"
                   class="space-y-4">
@@ -38,8 +38,8 @@
                         <button
                             type="button"
                             @click="open = !open"
-                            :class="open ? 'ring-1 ring-[#836354] border-[#836354]' : 'border-gray-500'"
-                            class="w-full rounded border py-2 px-3 text-left text-black focus:outline-none focus:ring-1 focus:ring-[#836354] focus:border-[#836354] flex justify-between items-center"
+                            :class="open ? 'ring-1 ring-[#684F43] border-[#684F43]' : 'border-gray-500'"
+                            class="w-full rounded border py-2 px-3 text-left text-black focus:outline-none focus:ring-1 focus:ring-[#684F43] focus:border-[#684F43] flex justify-between items-center"
                             style="background-color: rgb(234, 220, 200);"
                         >
                             <span x-text="selected === '' ? 'Pasirinkite skelbimą' : (() => {
@@ -60,7 +60,7 @@
                             x-show="open"
                             @click.outside="open = false"
                             class="absolute left-0 right-0 mt-1 rounded border shadow overflow-hidden z-50 max-h-60 overflow-y-auto"
-                            style="background-color: rgb(234, 220, 200); border-color: #836354"
+                            style="background-color: rgb(234, 220, 200); border-color: #684F43"
                         >
                             @foreach($listings as $item)
                                 <div
@@ -74,7 +74,7 @@
                     @else
                         <div
                             class="w-full rounded border py-2 px-3 text-black"
-                            style="background-color: rgb(234, 220, 200); border-color: #836354;"
+                            style="background-color: rgb(234, 220, 200); border-color: #684F43;"
                         >
                             @php
                                 $selectedListing = $listings->firstWhere('id', $serviceOrder->listing_id);
@@ -97,8 +97,8 @@
                             value="1"
                             x-model="anonymous"
                             @checked(old('is_anonymous', $serviceOrder?->is_anonymous))
-                            class="h-4 w-4 rounded border appearance-none checked:bg-[#836354] checked:border-[#836354] focus:outline-none focus:ring-1 focus:ring-[#836354]"
-                            style="border-color: #836354; background-color: rgb(234, 220, 200);">
+                            class="h-4 w-4 rounded border appearance-none checked:bg-[#684F43] checked:border-[#684F43] focus:outline-none focus:ring-1 focus:ring-[#684F43]"
+                            style="border-color: #684F43; background-color: rgb(234, 220, 200);">
                         <label for="is_anonymous" class="text-black">Pirkėjas nenurodytas</label>
                     </div>
 
@@ -111,8 +111,8 @@
                         <input type="text"
                                name="buyer_code"
                                value="{{ old('buyer_code', $serviceOrder?->buyer_code_snapshot) }}"
-                               class="w-full border rounded p-2 text-black focus:outline-none focus:ring-1 focus:ring-[#836354] focus:border-[#836354]"
-                               style="background-color: rgb(234, 220, 200); border-color: #836354;"
+                               class="w-full border rounded p-2 text-black focus:outline-none focus:ring-1 focus:ring-[#684F43] focus:border-[#684F43]"
+                               style="background-color: rgb(234, 220, 200); border-color: #684F43;"
                                placeholder="Pvz. F5FRG3">
                         <p class="text-xs text-black mt-1">
                             Palikite tuščią, jei pirkėjas nepriskiriamas.
@@ -128,8 +128,8 @@
                            max="99999"
                            name="final_price"
                            value="{{ old('final_price', $serviceOrder?->final_price ?? $listing?->kaina ?? '') }}"
-                           class="w-full border rounded p-2 text-black focus:outline-none focus:ring-1 focus:ring-[#836354] focus:border-[#836354]"
-                           style="background-color: rgb(234, 220, 200); border-color: #836354"
+                           class="w-full border rounded p-2 text-black focus:outline-none focus:ring-1 focus:ring-[#684F43] focus:border-[#684F43]"
+                           style="background-color: rgb(234, 220, 200); border-color: #684F43"
                            placeholder="Pvz. 49.99"
                            onwheel="event.preventDefault()"
                            required>
@@ -147,8 +147,8 @@
                     <button
                         type="button"
                         @click="open = !open"
-                        :class="open ? 'ring-1 ring-[#836354] border-[#836354]' : 'border-gray-500'"
-                        class="w-full rounded border py-2 px-3 text-left text-black focus:outline-none focus:ring-1 focus:ring-[#836354] focus:border-[#836354] flex justify-between items-center"
+                        :class="open ? 'ring-1 ring-[#684F43] border-[#684F43]' : 'border-gray-500'"
+                        class="w-full rounded border py-2 px-3 text-left text-black focus:outline-none focus:ring-1 focus:ring-[#684F43] focus:border-[#684F43] flex justify-between items-center"
                         style="background-color: rgb(234, 220, 200);"
                     >
                         <span x-text="
@@ -166,7 +166,7 @@
                         x-show="open"
                         @click.outside="open = false"
                         class="absolute left-0 right-0 mt-1 rounded border shadow overflow-hidden z-50"
-                        style="background-color: rgb(234, 220, 200); border-color: #836354"
+                        style="background-color: rgb(234, 220, 200); border-color: #684F43"
                     >
                         <div
                             @click="selected = 'S'; open = false"
@@ -198,45 +198,45 @@
                 <div>
                     <label class="block text-sm font-medium text-black mb-1">Sutartos specifikacijos</label>
                     <textarea name="agreed_specifications" rows="4"
-                              class="w-full border rounded p-2 text-black focus:outline-none focus:ring-1 focus:ring-[#836354] focus:border-[#836354]"
-                              style="background-color: rgb(234, 220, 200); border-color: #836354"
+                              class="w-full border rounded p-2 text-black focus:outline-none focus:ring-1 focus:ring-[#684F43] focus:border-[#684F43]"
+                              style="background-color: rgb(234, 220, 200); border-color: #684F43"
                               placeholder="Aprašykite, kas tiksliai sutarta: apimtis, medžiagos, variantai, formatas ir pan.">{{ old('agreed_specifications', data_get($serviceOrder?->agreed_details, 'agreed_specifications')) }}</textarea>
                 </div>
 
                 <div>
                     <label class="block text-sm font-medium text-black mb-1">Pastabos</label>
                     <textarea name="notes" rows="3"
-                              class="w-full border rounded p-2 text-black focus:outline-none focus:ring-1 focus:ring-[#836354] focus:border-[#836354]"
-                              style="background-color: rgb(234, 220, 200); border-color: #836354"
+                              class="w-full border rounded p-2 text-black focus:outline-none focus:ring-1 focus:ring-[#684F43] focus:border-[#684F43]"
+                              style="background-color: rgb(234, 220, 200); border-color: #684F43"
                               placeholder="Bendros pastabos apie užsakymą, susitarimus ar papildomą informaciją.">{{ old('notes', $serviceOrder?->notes) }}</textarea>
                 </div>
 
                 <div>
                     <label class="block text-sm font-medium text-black mb-1">Siuntimo pastabos</label>
                     <textarea name="shipping_notes" rows="3"
-                              class="w-full border rounded p-2 text-black focus:outline-none focus:ring-1 focus:ring-[#836354] focus:border-[#836354]"
-                              style="background-color: rgb(234, 220, 200); border-color: #836354"
+                              class="w-full border rounded p-2 text-black focus:outline-none focus:ring-1 focus:ring-[#684F43] focus:border-[#684F43]"
+                              style="background-color: rgb(234, 220, 200); border-color: #684F43"
                               placeholder="Jei aktualu, nurodykite pristatymo būdą, terminą, adresą ar kitą siuntimo informaciją.">{{ old('shipping_notes', $serviceOrder?->shipping_notes) }}</textarea>
                 </div>
 
                 <div>
                     <label class="block text-sm font-medium text-black mb-1">Papildomi reikalavimai</label>
                     <textarea name="custom_requirements" rows="3"
-                              class="w-full border rounded p-2 text-black focus:outline-none focus:ring-1 focus:ring-[#836354] focus:border-[#836354]"
-                              style="background-color: rgb(234, 220, 200); border-color: #836354"
+                              class="w-full border rounded p-2 text-black focus:outline-none focus:ring-1 focus:ring-[#684F43] focus:border-[#684F43]"
+                              style="background-color: rgb(234, 220, 200); border-color: #684F43"
                               placeholder="Įrašykite papildomus pirkėjo pageidavimus ar techninius reikalavimus.">{{ old('custom_requirements', $serviceOrder?->custom_requirements) }}</textarea>
                 </div>
 
                 <div>
                     <label class="block text-sm font-medium text-black mb-1">Termino / eigos pastabos</label>
                     <textarea name="timeline_notes" rows="3"
-                              class="w-full border rounded p-2 text-black focus:outline-none focus:ring-1 focus:ring-[#836354] focus:border-[#836354]"
-                              style="background-color: rgb(234, 220, 200); border-color: #836354"
+                              class="w-full border rounded p-2 text-black focus:outline-none focus:ring-1 focus:ring-[#684F43] focus:border-[#684F43]"
+                              style="background-color: rgb(234, 220, 200); border-color: #684F43"
                               placeholder="Nurodykite darbų eigą, etapus, terminus ar svarbias datas.">{{ old('timeline_notes', $serviceOrder?->timeline_notes) }}</textarea>
                 </div>
 
                 <div class="pt-2 flex gap-2">
-                    <button class="text-white px-4 py-2 rounded hover:text-black" style="background-color: rgb(131, 99, 84)">
+                    <button class="text-white px-4 py-2 rounded hover:text-black" style="background-color: rgb(104, 79, 67)">
                         {{ $serviceOrder ? 'Išsaugoti pakeitimus' : 'Sukurti užsakymą' }}
                     </button>
 

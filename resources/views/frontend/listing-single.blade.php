@@ -1,43 +1,35 @@
 <x-app-layout>
  <x-slot name="title">Konkretus skelbimas</x-slot>
+@push('styles')
 <style>
 input[type=number]::-webkit-inner-spin-button,
 input[type=number]::-webkit-outer-spin-button {
     -webkit-appearance: none;
     margin: 0;
 }
+
 input[type=number] {
     -moz-appearance: textfield;
 }
+
 .custom-select-option:hover,
 .custom-select-option:focus {
     background-color: rgb(104, 79, 67);
     color: #fff;
     outline: none;
 }
+
 .custom-select-menu {
     scrollbar-width: thin;
 }
+
 .review-stars {
     display: flex;
     align-items: center;
     gap: 0.25rem;
 }
-.review-star-btn {
-    background: transparent;
-    border: 0;
-    padding: 0;
-    font-size: 1.875rem;
-    line-height: 1;
-    cursor: pointer;
-}
-.review-star-btn.is-empty {
-    color: #9ca3af;
-}
-.review-star-btn.is-full {
-    color: rgb(104, 79, 67);
-}
 </style>
+@endpush
 <div class="min-h-screen flex flex-col" style="background-color: rgb(234, 220, 200)">
     <div
         class="max-w-6xl mx-auto w-full flex-1 py-6 sm:py-10 px-3 sm:px-4"

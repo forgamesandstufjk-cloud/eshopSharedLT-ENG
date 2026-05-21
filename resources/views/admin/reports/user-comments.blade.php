@@ -36,14 +36,14 @@
                     ? route('admin.reported-listings.index')
                     : route('admin.reported-listings.index') }}"
                 class="inline-block px-4 py-2 rounded text-white hover:text-black"
-                style="background-color: rgb(131, 99, 84)">
+                style="background-color: rgb(104, 79, 67)">
                 ← Atgal
             </a>
         </div>
 
-        <div class="shadow rounded overflow-hidden" style="background-color: rgb(215, 183, 142)">
+        <div class="shadow rounded overflow-hidden" style="background-color: rgb(227, 197, 157)">
             <table class="w-full text-sm text-black">
-                <thead class="border-b hidden sm:table-header-group" style="background-color: rgb(131, 99, 84); border-color: #836354">
+                <thead class="border-b hidden sm:table-header-group" style="background-color: rgb(104, 79, 67); border-color: #684F43">
                     <tr>
                         @if(($mode ?? null) === 'reported_only')
                             <th class="p-3 text-left text-white">Autorius</th>
@@ -59,7 +59,7 @@
 
                 <tbody>
                     @forelse($reviews as $review)
-                        <tr class="border-b block sm:table-row align-top" style="border-color: #836354">
+                        <tr class="border-b block sm:table-row align-top" style="border-color: #684F43">
                             @if(($mode ?? null) === 'reported_only')
                                 <td class="p-3 block sm:table-cell">
                                     <span class="font-semibold sm:hidden">Autorius: </span>
@@ -106,7 +106,7 @@
                                             'review' => $review->id
                                         ]) }}"
                                         class="inline-block text-white px-3 py-2 rounded text-center hover:text-black"
-                                        style="background-color: rgb(131, 99, 84)">
+                                        style="background-color: rgb(104, 79, 67)">
                                         Peržiūrėti visus atsiliepimus
                                     </a>
 
@@ -117,7 +117,7 @@
                                                 'back' => request()->fullUrl()
                                             ]) }}"
                                             class="inline-block px-3 py-2 rounded text-white text-center hover:text-black"
-                                            style="background-color: rgb(131, 99, 84)">
+                                            style="background-color: rgb(104, 79, 67)">
                                             Peržiūrėti skelbimą
                                         </a>
                                     @endif
@@ -137,7 +137,7 @@
                                             class="border p-2 rounded w-full mb-2 text-black"
                                             rows="2"
                                             placeholder="Administratoriaus pastaba"
-                                            style="background-color: rgb(234, 220, 200); border-color: #836354"
+                                            style="background-color: rgb(234, 220, 200); border-color: #684F43"
                                             required>{{ old('admin_note') }}</textarea>
 
                                         <button

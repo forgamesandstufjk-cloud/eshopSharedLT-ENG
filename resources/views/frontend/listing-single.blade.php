@@ -213,7 +213,7 @@
     >
         +
     </button>
-</div></div>
+</div>
 
                         <button type="submit"
                             class="px-6 py-3 text-white rounded hover:text-black transition w-full sm:w-auto"

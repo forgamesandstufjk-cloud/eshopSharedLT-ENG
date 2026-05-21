@@ -25,7 +25,7 @@
             type="text"
             readonly
             value="{{ $user->buyer_code ?? '—' }}"
-            class="block w-full rounded-md shadow-sm border border-gray-500 text-black focus:outline-none focus:ring-1 focus:ring-[#836354] focus:border-[#836354]"
+            class="block w-full rounded-md shadow-sm border border-gray-500 text-black focus:outline-none focus:ring-1 focus:ring-[#684F43] focus:border-[#684F43]"
             style="background-color: rgb(234, 220, 200)"
         />
 
@@ -38,7 +38,7 @@
                     setTimeout(() => copied = false, 2000);
                 "
                 class="px-4 py-2 rounded-md font-semibold text-white hover:text-black transition whitespace-nowrap"
-                style="background-color: rgb(131, 99, 84)"
+                style="background-color: rgb(104, 79, 67)"
                 x-text="copied ? 'Nukopijuota' : 'Kopijuoti'"
             >
                 Kopijuoti
@@ -53,21 +53,21 @@
 
     @if(session('error'))
     <div class="mt-4 mb-4 px-4 py-3 rounded text-black"
-         style="background-color: rgb(207, 174, 134); border: 1px solid #836354">
+         style="background-color: rgb(207, 174, 134); border: 1px solid #684F43">
         {{ session('error') }}
     </div>
 @endif
 
 @if(session('success'))
     <div class="mt-4 mb-4 px-4 py-3 rounded text-black"
-         style="background-color: rgb(207, 174, 134); border: 1px solid #836354">
+         style="background-color: rgb(207, 174, 134); border: 1px solid #684F43">
         {{ session('success') }}
     </div>
 @endif
 
     @if(session('missing_seller_requirements'))
     <div class="mb-6 px-4 py-3 rounded text-black"
-         style="background-color: rgb(234, 220, 200); border: 1px solid #836354">
+         style="background-color: rgb(234, 220, 200); border: 1px solid #684F43">
         <div class="font-semibold mb-2">Norėdami įkelti skelbimą, dar turite:</div>
 
         <ul class="list-disc pl-5 space-y-1">
@@ -97,7 +97,7 @@
                 id="vardas"
                 name="vardas"
                 type="text"
-                class="mt-1 block w-full rounded-md shadow-sm border border-gray-500 text-black focus:outline-none focus:ring-1 focus:ring-[#836354] focus:border-[#836354]"
+                class="mt-1 block w-full rounded-md shadow-sm border border-gray-500 text-black focus:outline-none focus:ring-1 focus:ring-[#684F43] focus:border-[#684F43]"
                 style="background-color: rgb(234, 220, 200)"
                 value="{{ old('vardas', $user->vardas) }}"
                 autocomplete="given-name"
@@ -112,7 +112,7 @@
                 id="pavarde"
                 name="pavarde"
                 type="text"
-                class="mt-1 block w-full rounded-md shadow-sm border border-gray-500 text-black focus:outline-none focus:ring-1 focus:ring-[#836354] focus:border-[#836354]"
+                class="mt-1 block w-full rounded-md shadow-sm border border-gray-500 text-black focus:outline-none focus:ring-1 focus:ring-[#684F43] focus:border-[#684F43]"
                 style="background-color: rgb(234, 220, 200)"
                 value="{{ old('pavarde', $user->pavarde) }}"
                 autocomplete="family-name"
@@ -127,7 +127,7 @@
                 id="el_pastas"
                 name="el_pastas"
                 type="email"
-                class="mt-1 block w-full rounded-md shadow-sm border border-gray-500 text-black focus:outline-none focus:ring-1 focus:ring-[#836354] focus:border-[#836354]"
+                class="mt-1 block w-full rounded-md shadow-sm border border-gray-500 text-black focus:outline-none focus:ring-1 focus:ring-[#684F43] focus:border-[#684F43]"
                 style="background-color: rgb(234, 220, 200)"
                 value="{{ old('el_pastas', $user->el_pastas) }}"
                 autocomplete="email"
@@ -151,7 +151,7 @@
                 type="checkbox"
                 name="role"
                 value="seller"
-                class="h-5 w-5 rounded border-[#836354] text-[#836354] focus:ring-0 focus:outline-none"
+                class="h-5 w-5 rounded border-[#684F43] text-[#684F43] focus:ring-0 focus:outline-none"
                 style="background-color: rgb(234, 220, 200)"
                 :checked="isSeller"
                 @change="isSeller = $event.target.checked"
@@ -168,7 +168,7 @@
         <div class="mt-4 space-y-4">
             @if(session('missing_seller_requirements'))
                 <div class="p-3 rounded text-sm text-black"
-                     style="background-color: rgb(207, 174, 134) border: 1px solid #836354">
+                     style="background-color: rgb(207, 174, 134) border: 1px solid #684F43">
                     Norint tapti pardavėju reikia bent vieno viešo kontakto ir šalies bei miesto.
                 </div>
             @endif
@@ -184,7 +184,7 @@
                             id="business_email"
                             name="business_email"
                             type="email"
-                            class="mt-1 block w-full rounded-md shadow-sm border border-gray-500 text-black focus:outline-none focus:ring-1 focus:ring-[#836354] focus:border-[#836354]"
+                            class="mt-1 block w-full rounded-md shadow-sm border border-gray-500 text-black focus:outline-none focus:ring-1 focus:ring-[#684F43] focus:border-[#684F43]"
                             style="background-color: rgb(234, 220, 200)"
                             value="{{ old('business_email', $user->business_email) }}"
                         />
@@ -200,7 +200,7 @@
                             type="text"
                             inputmode="numeric"
                             pattern="^\+?[0-9]*$"
-                            class="mt-1 block w-full rounded-md shadow-sm border border-gray-500 text-black focus:outline-none focus:ring-1 focus:ring-[#836354] focus:border-[#836354]"
+                            class="mt-1 block w-full rounded-md shadow-sm border border-gray-500 text-black focus:outline-none focus:ring-1 focus:ring-[#684F43] focus:border-[#684F43]"
                             style="background-color: rgb(234, 220, 200)"
                             placeholder="+370xxxxxxx"
                             value="{{ old('telefonas', $user->telefonas) }}"
@@ -269,8 +269,8 @@
             <button
                 type="button"
                 @click="countryOpen = !countryOpen; cityOpen = false"
-                :class="countryOpen ? 'ring-1 ring-[#836354] border-[#836354]' : 'border-gray-500'"
-                class="mt-1 block w-full rounded-md border py-2 px-3 text-left text-black focus:outline-none focus:ring-1 focus:ring-[#836354] focus:border-[#836354] flex justify-between items-center"
+                :class="countryOpen ? 'ring-1 ring-[#684F43] border-[#684F43]' : 'border-gray-500'"
+                class="mt-1 block w-full rounded-md border py-2 px-3 text-left text-black focus:outline-none focus:ring-1 focus:ring-[#684F43] focus:border-[#684F43] flex justify-between items-center"
                 style="background-color: rgb(234, 220, 200)"
             >
                 <span x-text="selectedCountryName"></span>
@@ -283,7 +283,7 @@
                 x-show="countryOpen"
                 @click.outside="countryOpen = false"
                 class="absolute left-0 right-0 mt-1 rounded border shadow overflow-hidden z-50 max-h-60 overflow-y-auto"
-                style="background-color: rgb(234, 220, 200); border-color: #836354"
+                style="background-color: rgb(234, 220, 200); border-color: #684F43"
             >
                 <div
                     @click="setCountry('')"
@@ -310,8 +310,8 @@
             <button
                 type="button"
                 @click="if (countryId) { cityOpen = !cityOpen; countryOpen = false }"
-                :class="cityOpen ? 'ring-1 ring-[#836354] border-[#836354]' : 'border-gray-500'"
-                class="mt-1 block w-full rounded-md border py-2 px-3 text-left text-black focus:outline-none focus:ring-1 focus:ring-[#836354] focus:border-[#836354] flex justify-between items-center"
+                :class="cityOpen ? 'ring-1 ring-[#684F43] border-[#684F43]' : 'border-gray-500'"
+                class="mt-1 block w-full rounded-md border py-2 px-3 text-left text-black focus:outline-none focus:ring-1 focus:ring-[#684F43] focus:border-[#684F43] flex justify-between items-center"
                 style="background-color: rgb(234, 220, 200)"
             >
                 <span x-text="selectedCityName"></span>
@@ -324,7 +324,7 @@
                 x-show="cityOpen"
                 @click.outside="cityOpen = false"
                 class="absolute left-0 right-0 mt-1 rounded border shadow overflow-hidden z-50 max-h-60 overflow-y-auto"
-                style="background-color: rgb(234, 220, 200); border-color: #836354"
+                style="background-color: rgb(234, 220, 200); border-color: #684F43"
             >
                 <div
                     @click="setCity('')"
@@ -355,7 +355,7 @@
                     id="gatve"
                     name="gatve"
                     placeholder="Gatvės pavadinimas"
-                    class="mt-1 block w-full rounded-md shadow-sm border border-gray-500 text-black focus:outline-none focus:ring-1 focus:ring-[#836354] focus:border-[#836354]"
+                    class="mt-1 block w-full rounded-md shadow-sm border border-gray-500 text-black focus:outline-none focus:ring-1 focus:ring-[#684F43] focus:border-[#684F43]"
                     style="background-color: rgb(234, 220, 200)"
                     value="{{ old('gatve', $user->address->gatve ?? '') }}"
                 />
@@ -369,7 +369,7 @@
                     id="namo_nr"
                     name="namo_nr"
                     placeholder="pvz. 12A"
-                    class="mt-1 block w-full rounded-md shadow-sm border border-gray-500 text-black focus:outline-none focus:ring-1 focus:ring-[#836354] focus:border-[#836354]"
+                    class="mt-1 block w-full rounded-md shadow-sm border border-gray-500 text-black focus:outline-none focus:ring-1 focus:ring-[#684F43] focus:border-[#684F43]"
                     style="background-color: rgb(234, 220, 200)"
                     value="{{ old('namo_nr', $user->address->namo_nr ?? '') }}"
                 />
@@ -383,7 +383,7 @@
                     id="buto_nr"
                     name="buto_nr"
                     placeholder="e.g. 5"
-                    class="mt-1 block w-full rounded-md shadow-sm border border-gray-500 text-black focus:outline-none focus:ring-1 focus:ring-[#836354] focus:border-[#836354]"
+                    class="mt-1 block w-full rounded-md shadow-sm border border-gray-500 text-black focus:outline-none focus:ring-1 focus:ring-[#684F43] focus:border-[#684F43]"
                     style="background-color: rgb(234, 220, 200)"
                     value="{{ old('buto_nr', $user->address->buto_nr ?? '') }}"
                 />
@@ -395,7 +395,7 @@
             <button
                 type="submit"
                 class="inline-flex items-center px-4 py-2 rounded-md font-semibold text-white hover:text-black transition"
-                style="background-color: rgb(131, 99, 84)"
+                style="background-color: rgb(104, 79, 67)"
             >
                 {{ __('Išsaugoti') }}
             </button>
@@ -431,7 +431,7 @@
                 <a
                     href="{{ route('stripe.connect') }}"
                     class="inline-block mt-4 px-4 py-2 text-white rounded-md hover:text-black transition"
-                    style="background-color: rgb(131, 99, 84)"
+                    style="background-color: rgb(104, 79, 67)"
                 >
                     Prijungti Stripe
                 </a>
@@ -449,7 +449,7 @@
                         href="{{ route('stripe.dashboard') }}"
                         target="_blank"
                         class="inline-block mt-3 px-4 py-2 text-white rounded-md hover:text-black transition"
-                        style="background-color: rgb(131, 99, 84)"
+                        style="background-color: rgb(104, 79, 67)"
                     >
                        Peržiūrėti Stripe pajamas
                     </a>

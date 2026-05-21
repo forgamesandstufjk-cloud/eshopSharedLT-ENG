@@ -16,9 +16,9 @@
             </div>
         @endif
 
-        <div class="shadow rounded overflow-hidden" style="background-color: rgb(215, 183, 142)">
+        <div class="shadow rounded overflow-hidden" style="background-color: rgb(227, 197, 157)">
             <table class="w-full text-sm text-black">
-                <thead class="border-b hidden sm:table-header-group" style="background-color: rgb(131, 99, 84); border-color: #836354">
+                <thead class="border-b hidden sm:table-header-group" style="background-color: rgb(131, 99, 84); border-color: #684F43">
                     <tr>
                         <th class="p-3 text-left text-white">Skelbimas</th>
                         <th class="p-3 text-left text-white">Pardavėjas</th>
@@ -29,7 +29,7 @@
 
                 <tbody>
                     @forelse($listings as $listing)
-                        <tr class="border-b block sm:table-row align-top" style="border-color: #836354">
+                        <tr class="border-b block sm:table-row align-top" style="border-color: #684F43">
                             <td class="p-3 block sm:table-cell">
                                 <span class="font-semibold sm:hidden">Skelbimas: </span>
 
@@ -39,7 +39,7 @@
                                     <img
                                         src="{{ \Illuminate\Support\Facades\Storage::disk('photos')->url($listing->photos->first()->failo_url) }}"
                                         class="w-16 h-16 object-cover rounded mt-2 border"
-                                        style="border-color: #836354">
+                                        style="border-color: #684F43">
                                 @endif
                             </td>
 

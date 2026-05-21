@@ -1,5 +1,18 @@
 <x-app-layout>
  <x-slot name="title">Konkretus skelbimas</x-slot>
+ <style>
+/* Remove number input arrows (Chrome, Safari, Edge) */
+input[type=number]::-webkit-inner-spin-button,
+input[type=number]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+/* Remove number input arrows (Firefox) */
+input[type=number] {
+    -moz-appearance: textfield;
+}
+</style>
 <div class="min-h-screen flex flex-col" style="background-color: rgb(234, 220, 200)">
     <div
         class="max-w-6xl mx-auto w-full flex-1 py-6 sm:py-10 px-3 sm:px-4"

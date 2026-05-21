@@ -1,6 +1,6 @@
 <footer
             class="border-t relative z-50 isolate"
-            style="background-color: rgb(215, 183, 142); opacity: 1; border-color: #d6b07a"
+            style="background-color: rgb(227, 197, 157); opacity: 1; border-color: #d6b07a"
         >
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8 text-black">

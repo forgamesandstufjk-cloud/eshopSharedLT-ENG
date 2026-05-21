@@ -14,7 +14,7 @@
 
             <input
                 id="password"
-                class="block mt-1 w-full rounded-md border border-gray-500 text-black focus:outline-none focus:ring-1 focus:ring-[#836354] focus:border-[#836354]"
+                class="block mt-1 w-full rounded-md border border-gray-500 text-black focus:outline-none focus:ring-1 focus:ring-[#684F43] focus:border-[#684F43]"
                 style="background-color: rgb(234, 220, 200)"
                 type="password"
                 name="password"
@@ -29,7 +29,7 @@
             <button
                 type="submit"
                 class="text-white px-6 py-3 rounded hover:text-black"
-                style="background-color: rgb(131, 99, 84)"
+                style="background-color: rgb(104, 79, 67)"
             >
                 {{ __('Patvirtinti') }}
             </button>

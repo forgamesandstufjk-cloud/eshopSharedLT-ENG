@@ -213,7 +213,7 @@ input[type=number] {
                     {{-- ADD TO CART --}}
                     <form method="POST" action="{{ route('cart.add', $listing->id) }}"
                           class="flex flex-col sm:flex-row items-start sm:items-center gap-4">
-                        @csrf
+                        <input type="hidden" name="_token" value="{{ csrf_token() }}">
 
                         {{-- quantity --}}
 @php

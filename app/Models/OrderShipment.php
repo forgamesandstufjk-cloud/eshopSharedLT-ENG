@@ -17,6 +17,16 @@ class OrderShipment extends Model
         'shipping_cents',
         'status',
         'tracking_number',
+        'proof_path',
+        'reimbursement_transfer_id',
+        'refunded_at',
+        'refund_id',
+        'refund_amount_cents',
+        'refund_reason',
+    ];
+
+    protected $casts = [
+        'refunded_at' => 'datetime',
     ];
 
     public function order()

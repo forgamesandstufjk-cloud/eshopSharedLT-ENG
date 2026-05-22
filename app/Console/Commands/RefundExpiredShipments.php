@@ -5,14 +5,15 @@ namespace App\Console\Commands;
 use App\Mail\BuyerShipmentTimeoutRefundedMail;
 use App\Mail\SellerShipmentTimedOutMail;
 use App\Models\Listing;
+use App\Models\Order;
 use App\Models\OrderShipment;
-use Carbon\Carbon;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 use Stripe\Refund;
 use Stripe\Stripe;
+use Stripe\Transfer;
 
 class RefundExpiredShipments extends Command
 {
@@ -59,7 +60,7 @@ class RefundExpiredShipments extends Command
 
                 $order = $shipment->order;
 
-                if (!$order || $order->statusas !== \App\Models\Order::STATUS_PAID || !$order->payment_intent_id) {
+                if (!$order || $order->statusas !== Order::STATUS_PAID || !$order->payment_intent_id) {
                     return;
                 }
 
@@ -92,6 +93,47 @@ class RefundExpiredShipments extends Command
                     return;
                 }
 
+                $paymentSplits = collect($order->payment_intents ?? []);
+
+                $matchingSplit = $paymentSplits->first(function ($split) use ($shipment) {
+                    return (string) data_get($split, 'seller_id') === (string) $shipment->seller_id;
+                });
+
+                if (!$matchingSplit) {
+                    Log::error('Timed-out shipment missing payment split', [
+                        'shipment_id' => $shipment->id,
+                        'order_id' => $order->id,
+                        'seller_id' => $shipment->seller_id,
+                    ]);
+                    return;
+                }
+
+                $transferId = data_get($matchingSplit, 'transfer_id');
+                $sellerTransferAmountCents = (int) data_get($matchingSplit, 'seller_amount_cents', 0);
+
+                if (!$transferId || $sellerTransferAmountCents <= 0) {
+                    Log::error('Timed-out shipment missing original seller transfer', [
+                        'shipment_id' => $shipment->id,
+                        'order_id' => $order->id,
+                        'seller_id' => $shipment->seller_id,
+                        'transfer_id' => $transferId,
+                        'seller_amount_cents' => $sellerTransferAmountCents,
+                    ]);
+                    return;
+                }
+
+                $reversal = Transfer::createReversal($transferId, [
+                    'amount' => $sellerTransferAmountCents,
+                    'metadata' => [
+                        'order_id' => (string) $order->id,
+                        'shipment_id' => (string) $shipment->id,
+                        'seller_id' => (string) $shipment->seller_id,
+                        'type' => 'shipment_timeout_transfer_reversal',
+                    ],
+                ], [
+                    'idempotency_key' => 'shipment_timeout_reversal_' . $shipment->id,
+                ]);
+
                 $refund = Refund::create([
                     'payment_intent' => $order->payment_intent_id,
                     'amount' => $refundAmountCents,
@@ -99,6 +141,7 @@ class RefundExpiredShipments extends Command
                     'metadata' => [
                         'order_id' => (string) $order->id,
                         'shipment_id' => (string) $shipment->id,
+                        'seller_id' => (string) $shipment->seller_id,
                         'type' => 'shipment_timeout_refund',
                     ],
                 ], [
@@ -119,16 +162,23 @@ class RefundExpiredShipments extends Command
                 }
 
                 $shipment->update([
+                    'seller_transfer_id' => $transferId,
+                    'seller_transfer_reversal_id' => $reversal->id,
+                    'seller_transfer_reversed_cents' => $sellerTransferAmountCents,
                     'refunded_at' => now(),
                     'refund_id' => $refund->id,
                     'refund_amount_cents' => $refundAmountCents,
                     'refund_reason' => 'shipment_proof_not_submitted_in_time',
                 ]);
 
-                Log::info('Expired shipment refunded', [
+                Log::info('Expired shipment refunded and seller transfer reversed', [
                     'shipment_id' => $shipment->id,
                     'order_id' => $order->id,
+                    'seller_id' => $shipment->seller_id,
+                    'transfer_id' => $transferId,
+                    'reversal_id' => $reversal->id,
                     'refund_id' => $refund->id,
+                    'seller_transfer_reversed_cents' => $sellerTransferAmountCents,
                     'refund_amount_cents' => $refundAmountCents,
                     'items_subtotal_cents' => $itemsSubtotalCents,
                     'shipping_cents' => $shippingCents,

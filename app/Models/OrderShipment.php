@@ -23,6 +23,13 @@ class OrderShipment extends Model
         'refund_id',
         'refund_amount_cents',
         'refund_reason',
+        'seller_transfer_id',
+        'seller_transfer_reversal_id',
+        'seller_transfer_reversed_cents',
+        'refunded_at',
+        'refund_id',
+        'refund_amount_cents',
+        'refund_reason',
     ];
 
     protected $casts = [

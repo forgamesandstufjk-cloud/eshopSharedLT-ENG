@@ -140,7 +140,11 @@
                                     </div>
 
                                     <div>
-                                        @if($shipment->status === 'pending')
+                                        @if($shipment->refunded_at)
+                                            <span class="px-2 py-1 text-xs rounded text-black" style="background-color: rgb(230, 190, 190)">
+                                                Grąžinta (neišsiųsta laiku)
+                                            </span>
+                                        @elseif($shipment->status === 'pending')
                                             <span class="px-2 py-1 text-xs rounded text-black" style="background-color: rgb(234, 220, 200)">
                                                 Laukiama išsiuntimo
                                             </span>

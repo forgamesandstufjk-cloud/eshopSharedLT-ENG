@@ -160,7 +160,7 @@
                                     </div>
                                 </div>
 
-                                @if(in_array($shipment->status, ['approved', 'reimbursed']) && $shipment->tracking_number)
+                                @if(!$shipment->refunded_at && in_array($shipment->status, ['approved', 'reimbursed']) && $shipment->tracking_number)
                                     <div class="text-xs text-black ml-2">
                                         Siuntos sekimas: {{ $shipment->tracking_number }}
                                     </div>

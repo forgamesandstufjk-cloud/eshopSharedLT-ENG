@@ -45,7 +45,9 @@
                         <ul class="space-y-2 text-sm">
                             <li><a href="{{ route('home') }}" class="hover:underline">Facebook</a></li>
                             <li><a href="{{ route('home') }}" class="hover:underline">Instagram</a></li>
-                            <li><a href="{{ route('home') }}" class="hover:underline">infoadministracija@keblu.lt</a></li>
+                            <li>
+                                <a href="mailto:infoadministracijakeblu.lt@gmail.com?subject=Užklausa" class="hover:underline">infoadministracijakeblu.lt@gmail.com</a>
+                            </li>
                         </ul>
                     </div>
                 </div>

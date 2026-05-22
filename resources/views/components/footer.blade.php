@@ -53,7 +53,7 @@
 
                 <div class="mt-10 pt-6 border-t flex flex-col sm:flex-row justify-end gap-6 text-sm text-black"
                      style="border-color: #d6b07a;">
-                    <a href="{{ route('home') }}" class="hover:underline">Privatumo politika</a>
+                    <a href="{{ route('privacy.policy') }}" class="hover:underline">Privatumo politika</a>
                     <a href="{{ route('home') }}" class="hover:underline">Pirkimo-pardavimo taisyklės</a>
                 </div>
             </div>

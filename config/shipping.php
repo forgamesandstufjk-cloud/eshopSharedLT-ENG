@@ -30,5 +30,5 @@ return [
         'M'  => 3,
         'L'  => 4,
     ],
-     'proof_submission_timeout_minutes' => env('SHIPMENT_PROOF_TIMEOUT_MINUTES', 14 * 24 * 60),
+     'proof_submission_timeout_minutes' => env('SHIPMENT_PROOF_TIMEOUT_MINUTES', 20160),
 ];

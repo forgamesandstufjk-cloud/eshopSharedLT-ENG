@@ -46,7 +46,7 @@
                             <li><a href="{{ route('home') }}" class="hover:underline">Facebook</a></li>
                             <li><a href="{{ route('home') }}" class="hover:underline">Instagram</a></li>
                             <li>
-                                <a href="mailto:infoadministracijakeblu.lt@gmail.com?subject=Užklausa" class="hover:underline">infoadministracijakeblu.lt@gmail.com</a>
+                                <a href="mailto:infoadministracijakeblu.lt@gmail.com" class="hover:underline">infoadministracijakeblu.lt@gmail.com</a>
                             </li>
                         </ul>
                     </div>

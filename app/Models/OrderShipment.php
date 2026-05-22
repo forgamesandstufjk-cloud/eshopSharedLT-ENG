@@ -19,20 +19,15 @@ class OrderShipment extends Model
         'tracking_number',
         'proof_path',
         'reimbursement_transfer_id',
+
+        'seller_transfer_id',
+        'seller_transfer_reversal_id',
+        'seller_transfer_reversed_cents',
+
         'refunded_at',
         'refund_id',
         'refund_amount_cents',
         'refund_reason',
-        'seller_transfer_id',
-        'seller_transfer_reversal_id',
-        'seller_transfer_reversed_cents',
-        'refunded_at',
-        'refund_id',
-        'refund_amount_cents',
-        'refund_reason',
-        'seller_transfer_id',
-        'seller_transfer_reversal_id',
-        'seller_transfer_reversed_cents',
     ];
 
     protected $casts = [

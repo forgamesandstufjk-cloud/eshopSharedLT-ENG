@@ -90,7 +90,7 @@ public function verify($token)
         $pending->delete();
     }
         return redirect()->route('register')->withErrors([
-            'el_pastas' => 'Verification link expired or invalid'
+            'el_pastas' => 'Patvirtinimo nuoroda nebegalioja arba neteisinga.'
         ]);
     }
 
@@ -105,7 +105,7 @@ public function verify($token)
 
     $pending->delete();
      return redirect()->route('login')
-        ->with('status', 'Your email has been verified. Please log in.');
+        ->with('status', 'El. paštas patvirtintas. Prisijunkite.');
 }
 
 }

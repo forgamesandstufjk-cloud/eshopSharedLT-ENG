@@ -15,13 +15,14 @@ class SellerOrderController extends Controller
     public function index()
     {
         $shipments = OrderShipment::with([
-            'order.user',
-            'order.orderItem.listing',
-            'order.address.city.country',
-        ])
-        ->where('seller_id', auth()->id())
-        ->latest()
-        ->paginate(10, ['*'], 'shipments_page');
+        'order.user',
+        'order.orderItem.listing',
+        'order.address.city.country',
+    ])
+    ->where('seller_id', auth()->id())
+    ->whereNull('refunded_at')
+    ->latest()
+    ->paginate(10, ['*'], 'shipments_page');
     
         $serviceOrders = ServiceOrder::with([
             'buyer',

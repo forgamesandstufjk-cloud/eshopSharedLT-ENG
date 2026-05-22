@@ -320,33 +320,50 @@
 
                             <td class="p-3 block sm:table-cell text-black">
                                 <span class="font-semibold sm:hidden">Būsena: </span>
-
-                                @if($so->status === \App\Models\ServiceOrder::STATUS_COMPLETED)
-                                    <span style="color: rgb(104, 79, 67)">Užbaigta</span>
-                                    @if($so->completion_method === \App\Models\ServiceOrder::COMPLETION_PRIVATE)
-                                        <div class="text-xs mt-1 text-black">Užbaigta privačiai</div>
-                                    @elseif($so->completion_method === \App\Models\ServiceOrder::COMPLETION_PLATFORM)
-                                        <div class="text-xs mt-1 text-black">Užbaigta per svetainę</div>
-                                    @endif
-
-                                @elseif($so->shipment_status === \App\Models\ServiceOrder::SHIPMENT_NEEDS_REVIEW)
+                            
+                                @php
+                                    $deadline = \Carbon\Carbon::parse($s->created_at)->addDays(14);
+                                    $now = now();
+                            
+                                    $totalMinutesLeft = $now->diffInMinutes($deadline, false);
+                                    $daysLeft = $now->diffInDays($deadline, false);
+                                    $hoursLeft = $now->copy()->addDays($daysLeft)->diffInHours($deadline, false);
+                            
+                                    if ($totalMinutesLeft > 0) {
+                                        if ($daysLeft >= 1) {
+                                            $timeLeftText = $daysLeft . ' d. ' . max($hoursLeft, 0) . ' val. liko išsiuntimui';
+                                        } elseif ($totalMinutesLeft >= 60) {
+                                            $timeLeftText = $now->diffInHours($deadline, false) . ' val. liko išsiuntimui';
+                                        } else {
+                                            $timeLeftText = $totalMinutesLeft . ' min. liko išsiuntimui';
+                                        }
+                                    } else {
+                                        $timeLeftText = 'Pristatymo terminas pasibaigė';
+                                    }
+                                @endphp
+                            
+                                @if($s->status === 'pending')
+                                    <div class="text-black">Laukiama išsiuntimo</div>
+                            
+                                    <div class="text-xs mt-1" style="color: rgb(184, 80, 54)">
+                                        {{ $timeLeftText }}
+                                    </div>
+                            
+                                    <div class="text-xs mt-1 text-black">
+                                        Terminas iki: {{ $deadline->format('Y-m-d H:i') }}
+                                    </div>
+                            
+                                @elseif($s->status === 'needs_review')
                                     <span class="font-medium" style="color: rgb(104, 79, 67)">Laukiama patvirtinimo</span>
-
-                                @elseif($so->shipment_status === \App\Models\ServiceOrder::SHIPMENT_APPROVED)
+                            
+                                @elseif($s->status === 'approved')
                                     <span style="color: rgb(184, 80, 54)">Apdorojamas kompensavimas</span>
-
-                                @elseif($so->shipment_status === \App\Models\ServiceOrder::SHIPMENT_REIMBURSED)
+                            
+                                @elseif($s->status === 'reimbursed')
                                     <span style="color: rgb(104, 79, 67)">Užbaigta</span>
-
-                                @elseif($so->status === \App\Models\ServiceOrder::STATUS_READY_TO_SHIP)
-                                    @if($so->payment_status === \App\Models\ServiceOrder::PAYMENT_PAID)
-                                        <div class="text-black">Laukiama išsiuntimo</div>
-                                    @else
-                                        <span class="font-medium" style="color: rgb(104, 79, 67)">Laukiama pirkėjo apmokėjimo</span>
-                                    @endif
-
+                            
                                 @else
-                                    <span class="text-black">{{ $so->lithuanian_status }}</span>
+                                    <span class="text-black">Nežinoma</span>
                                 @endif
                             </td>
 

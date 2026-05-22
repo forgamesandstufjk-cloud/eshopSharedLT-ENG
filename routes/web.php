@@ -37,7 +37,7 @@ Route::get('/', [HomeController::class, 'index'])
 Route::get('/search', [HomeSearchController::class, 'search'])
     ->name('search.listings');
 
-Route::view('/privatumo-politika', 'frontend.privacy-policy')->name('privacy.policy')
+Route::view('/privatumo-politika', 'frontend.privacy-policy')->name('privacy.policy');
 
 Route::get('/media/{filename}', function ($filename) {
     $filename = basename($filename);

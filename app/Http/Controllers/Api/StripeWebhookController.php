@@ -54,9 +54,9 @@ class StripeWebhookController extends Controller
         ]);
 
         // SERVICE ORDERS:
-        // mark service order paid here
-        // do NOT transfer seller money here
-        // seller payout happens only after admin approves shipment proof
+        // mark paid
+        // NOT transfer
+        // payout after admin approves shipment proof
         if (!empty($serviceOrderId)) {
             return DB::transaction(function () use ($intent, $serviceOrderId, $serviceOrderService) {
                 Log::info('Stripe webhook service-order branch entered', [
@@ -120,7 +120,7 @@ class StripeWebhookController extends Controller
         }
 
         // NORMAL PRODUCT ORDERS:
-        // transfer seller item money here as before
+        // transfer seller item money
         return DB::transaction(function () use ($intent, $orderService) {
             $order = Order::with('orderItem.Listing.user')
                 ->where('payment_intent_id', $intent->id)

@@ -38,6 +38,7 @@ Route::get('/search', [HomeSearchController::class, 'search'])
     ->name('search.listings');
 
 Route::view('/privatumo-politika', 'frontend.privacy-policy')->name('privacy.policy');
+Route::view('/pirkimo-pardavimo-taisykles', 'frontend.sales-terms')->name('terms.sales');
 
 Route::get('/media/{filename}', function ($filename) {
     $filename = basename($filename);

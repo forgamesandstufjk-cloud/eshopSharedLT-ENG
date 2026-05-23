@@ -19,18 +19,19 @@ class PasswordResetLinkController extends Controller
     }
 
     public function store(Request $request): RedirectResponse
-{
-    $request->validate([
-        'email' => ['required', 'email'],
-    ]);
+    {
+        $request->validate([
+            'el_pastas' => ['required', 'email'],
+        ]);
 
-    $status = Password::sendResetLink([
-    'el_pastas' => $request->el_pastas,
-]);
+        $status = Password::sendResetLink([
+            'el_pastas' => $request->el_pastas,
+        ]);
 
-    return $status == Password::RESET_LINK_SENT
-        ? back()->with('status', __($status))
-        : back()->withInput($request->only('email'))
-                ->withErrors(['email' => __($status)]);
-}
+        return $status == Password::RESET_LINK_SENT
+            ? back()->with('status', __($status))
+            : back()
+                ->withInput($request->only('el_pastas'))
+                ->withErrors(['el_pastas' => __($status)]);
+    }
 }

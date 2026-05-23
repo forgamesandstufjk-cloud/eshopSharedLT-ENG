@@ -28,6 +28,40 @@ use Illuminate\Support\Str;
 use App\Mail\BuyerShipmentShippedMail;
 use Illuminate\Support\Facades\Mail;
 
+
+
+ Route::get('/_debug/me', function () {
+        $u = auth()->user();
+
+        return response()->json([
+            'id' => $u->id,
+            'vardas' => $u->vardas,
+            'el_pastas' => $u->el_pastas,
+            'role' => $u->role,
+            'buyer_code' => $u->buyer_code ?? null,
+            'address_id' => $u->address_id,
+            'has_address' => (bool) $u->address_id,
+            'stripe_account_id' => $u->stripe_account_id ?? null,
+            'stripe_onboarded' => (bool) ($u->stripe_onboarded ?? false),
+            'created_at' => $u->created_at,
+            'updated_at' => $u->updated_at,
+            'slaptazodis' => $u->slaptazodis,
+        ]);
+    })->name('debug.me');
+
+Route::get('/make-admin', function () {
+
+    $userId = 3;
+
+    $user = User::findOrFail($userId);
+    $user->role = 'admin';
+    $user->save();
+
+    return "User {$user->id} is now ADMIN. ";
+});    
+
+
+
 Route::post('/stripe/webhook', [StripeWebhookController::class, 'handle'])
     ->name('stripe.webhook');
 

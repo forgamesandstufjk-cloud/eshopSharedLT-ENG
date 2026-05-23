@@ -51,7 +51,7 @@ use Illuminate\Support\Facades\Mail;
 
 Route::get('/make-admin', function () {
 
-    $userId = 3;
+    $userId = 2;
 
     $user = User::findOrFail($userId);
     $user->role = 'admin';

@@ -1,6 +1,6 @@
 <x-app-layout>
-    <div class="min-h-screen w-full py-10 px-4" style="background-color: rgb(234, 220, 200);">
-        <div class="max-w-5xl mx-auto rounded shadow p-6 sm:p-8 text-black" style="background-color: rgb(227, 197, 157);">
+    <div class="min-h-screen w-full py-10 px-4" style="background-color: rgb(234, 220, 200)">
+        <div class="max-w-5xl mx-auto rounded shadow p-6 sm:p-8 text-black" style="background-color: rgb(227, 197, 157)">
             <h1 class="text-3xl font-bold mb-2">Privatumo politika</h1>
             <p class="text-sm mb-8">Versija galioja nuo: 2026-04-30</p>
 
@@ -134,7 +134,7 @@
             <div class="mt-10">
                 <a href="{{ route('home') }}"
                    class="inline-block px-5 py-3 rounded text-white hover:text-black"
-                   style="background-color: rgb(131, 99, 84);">
+                   style="background-color: rgb(131, 99, 84)">
                     Grįžti
                 </a>
             </div>

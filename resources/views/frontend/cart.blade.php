@@ -25,22 +25,22 @@
             </form>
 
             @php
-    $cartData = $cartItems->map(function ($item) {
-        return [
-            'id' => $item->id,
-            'listing_id' => $item->listing_id,
-            'pavadinimas' => $item->listing->pavadinimas,
-            'aprasymas' => $item->listing->aprasymas,
-            'kaina' => (float) $item->listing->kaina,
-            'kiekis' => (int) $item->kiekis,
-            'max' => (int) $item->listing->kiekis,
-            'photo' => $item->listing->photos->isNotEmpty()
-            ? \Illuminate\Support\Facades\Storage::disk('photos')->url($item->listing->photos->first()->failo_url)
-            : 'https://via.placeholder.com/150',
-            'url' => route('listing.single', $item->listing_id),
-        ];
-    })->values();
-@endphp
+            $cartData = $cartItems->map(function ($item) {
+                return [
+                    'id' => $item->id,
+                    'listing_id' => $item->listing_id,
+                    'pavadinimas' => $item->listing->pavadinimas,
+                    'aprasymas' => $item->listing->aprasymas,
+                    'kaina' => (float) $item->listing->kaina,
+                    'kiekis' => (int) $item->kiekis,
+                    'max' => (int) $item->listing->kiekis,
+                    'photo' => $item->listing->photos->isNotEmpty()
+                    ? \Illuminate\Support\Facades\Storage::disk('photos')->url($item->listing->photos->first()->failo_url)
+                    : 'https://via.placeholder.com/150',
+                    'url' => route('listing.single', $item->listing_id),
+                ];
+            })->values();
+        @endphp
 
             <div x-data="cartPage(@js($cartData), '{{ csrf_token() }}')">
                 {{-- CART ITEMS --}}
@@ -147,23 +147,23 @@
 
                     {{-- CHECKOUT --}}
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-        <a
-        href="{{ session('continue_shopping_url', route('home')) }}"
-        class="text-white px-6 py-3 rounded hover:text-black w-full text-center"
-        style="background-color: rgb(184, 80, 54)">
-        Tęsti apsipirkimą
-    </a>
-
-    <form method="GET" action="{{ route('checkout.index') }}">
-        <button
-            type="submit"
-            class="text-white px-6 py-3 rounded hover:text-black w-full"
-            style="background-color: rgb(104, 79, 67)"
-        >
-            Eiti į atsiskaitymą
-        </button>
-    </form>
-</div>
+                            <a
+                            href="{{ session('continue_shopping_url', route('home')) }}"
+                            class="text-white px-6 py-3 rounded hover:text-black w-full text-center"
+                            style="background-color: rgb(184, 80, 54)">
+                            Tęsti apsipirkimą
+                        </a>
+                    
+                        <form method="GET" action="{{ route('checkout.index') }}">
+                            <button
+                                type="submit"
+                                class="text-white px-6 py-3 rounded hover:text-black w-full"
+                                style="background-color: rgb(104, 79, 67)"
+                            >
+                                Eiti į atsiskaitymą
+                            </button>
+                        </form>
+                    </div>
                 </div>
             </div>
         @endif
@@ -221,20 +221,20 @@
             },
 
             async increase(item) {
-    if (item.loading || item.kiekis >= item.max) return;
-
-    const oldQty = item.kiekis;
-    item.loading = true;
-    item.kiekis++;
-
-    try {
-        await this.post(`/cart/increase/${item.id}`);
-    } catch (e) {
-        item.kiekis = oldQty;
-        alert("Nepavyko atnaujinti krepšelio.");
-    } finally {
-        item.loading = false;
-    }
+                if (item.loading || item.kiekis >= item.max) return;
+            
+                const oldQty = item.kiekis;
+                item.loading = true;
+                item.kiekis++;
+            
+                try {
+                    await this.post(`/cart/increase/${item.id}`);
+                } catch (e) {
+                    item.kiekis = oldQty;
+                    alert("Nepavyko atnaujinti krepšelio.");
+                } finally {
+                    item.loading = false;
+                }
           }   
      };
 }

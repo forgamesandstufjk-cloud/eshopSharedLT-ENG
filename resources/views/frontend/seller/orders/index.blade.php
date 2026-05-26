@@ -353,13 +353,13 @@
                                         Terminas iki: {{ $deadline->format('Y-m-d H:i') }}
                                     </div>
                             
-                                @elseif($s->status === 'needs_review')
+                                @elseif($so->status === 'needs_review')
                                     <span class="font-medium" style="color: rgb(104, 79, 67)">Laukiama patvirtinimo</span>
                             
-                                @elseif($s->status === 'approved')
+                                @elseif($so->status === 'approved')
                                     <span style="color: rgb(184, 80, 54)">Apdorojamas kompensavimas</span>
                             
-                                @elseif($s->status === 'reimbursed')
+                                @elseif($so->status === 'reimbursed')
                                     <span style="color: rgb(104, 79, 67)">Užbaigta</span>
                             
                                 @else

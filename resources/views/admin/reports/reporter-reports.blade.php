@@ -15,24 +15,24 @@
         </div>
 
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-            <div class="p-4 rounded shadow" style="background-color: rgb(215, 183, 142)">
+            <div class="p-4 rounded shadow" style="background-color: rgb(227, 197, 157)">
                 <div class="text-sm text-black">Viso pranešimų</div>
                 <div class="text-2xl font-bold text-black">{{ $stats['total'] }}</div>
             </div>
 
-            <div class="p-4 rounded shadow" style="background-color: rgb(215, 183, 142)">
+            <div class="p-4 rounded shadow" style="background-color: rgb(227, 197, 157)">
                 <div class="text-sm text-black">Laukiama</div>
                 <div class="text-2xl font-bold text-black">{{ $stats['pending'] }}</div>
             </div>
 
-            <div class="p-4 rounded shadow" style="background-color: rgb(215, 183, 142)">
+            <div class="p-4 rounded shadow" style="background-color: rgb(227, 197, 157)">
                 <div class="text-sm text-black">Atmesta</div>
                 <div class="text-2xl font-bold" style="color: rgb(184, 80, 54)">
                     {{ $stats['dismissed'] }}
                 </div>
             </div>
 
-            <div class="p-4 rounded shadow" style="background-color: rgb(215, 183, 142)">
+            <div class="p-4 rounded shadow" style="background-color: rgb(227, 197, 157)">
                 <div class="text-sm text-black">Išspręsta</div>
                 <div class="text-2xl font-bold text-black">{{ $stats['resolved'] }}</div>
             </div>
@@ -44,7 +44,7 @@
             @endphp
 
             <div class="mb-6 p-4 rounded border text-sm"
-                 style="background-color: rgb(215, 183, 142); border-color: #684F43">
+                 style="background-color: rgb(227, 197, 157); border-color: #684F43">
                 <div class="text-black">
                     Atmestų pranešimų dalis:
                     <strong>{{ $dismissedRate }}%</strong>
@@ -59,7 +59,7 @@
         @endif
 
         <div class="mb-6 p-4 rounded border"
-             style="background-color: rgb(215, 183, 142); border-color: #684F43">
+             style="background-color: rgb(227, 197, 157); border-color: #684F43">
             <div class="text-black font-semibold text-base mb-3">
                 Naudotojo valdymas
             </div>
@@ -90,7 +90,7 @@
 
                     <textarea
                         name="admin_note"
-                        class="border p-2 rounded w-full mb-3 text-black focus:outline-none focus:ring-1 focus:ring-[#836354] focus:border-[#836354]"
+                        class="border p-2 rounded w-full mb-3 text-black focus:outline-none focus:ring-1 focus:ring-[#684F43] focus:border-[#684F43]"
                         rows="3"
                         placeholder="Administratoriaus pastaba"
                         style="background-color: rgb(234, 220, 200); border-color: #6B7280"
@@ -108,9 +108,9 @@
             @endif
         </div>
 
-        <div class="shadow rounded overflow-hidden" style="background-color: rgb(215, 183, 142)">
+        <div class="shadow rounded overflow-hidden" style="background-color: rgb(227, 197, 157)">
             <table class="w-full text-sm text-black">
-                <thead class="border-b hidden sm:table-header-group" style="background-color: rgb(131, 99, 84); border-color: #836354">
+                <thead class="border-b hidden sm:table-header-group" style="background-color: rgb(104, 79, 67); border-color: #684F43">
                     <tr>
                         <th class="p-3 text-left text-white">Skelbimas</th>
                         <th class="p-3 text-left text-white">Apie ką pranešė</th>
@@ -123,7 +123,7 @@
 
                 <tbody>
                     @forelse($reports as $report)
-                        <tr class="border-b block sm:table-row align-top" style="border-color: #836354">
+                        <tr class="border-b block sm:table-row align-top" style="border-color: #684F43">
                             <td class="p-3 block sm:table-cell text-black">
                                 @if($report->listing)
                                     <div>{{ $report->listing->pavadinimas }}</div>
@@ -132,7 +132,7 @@
                                         <img
                                             src="{{ \Illuminate\Support\Facades\Storage::disk('photos')->url($report->listing->photos->first()->failo_url) }}"
                                             class="w-16 h-16 object-cover rounded mt-2 border"
-                                            style="border-color: #836354"
+                                            style="border-color: #684F43"
                                         >
                                     @endif
                                 @else

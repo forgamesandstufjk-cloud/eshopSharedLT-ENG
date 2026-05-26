@@ -342,7 +342,7 @@
                                     }
                                 @endphp
                             
-                                @if($s->status === 'pending')
+                                @if($so->status === 'pending')
                                     <div class="text-black">Laukiama išsiuntimo</div>
                             
                                     <div class="text-xs mt-1" style="color: rgb(184, 80, 54)">

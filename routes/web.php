@@ -29,6 +29,9 @@ use Illuminate\Support\Str;
 use App\Mail\BuyerShipmentShippedMail;
 use Illuminate\Support\Facades\Mail;
 
+Route::view('/privatumo-politika', 'frontend.privacy-policy')->name('privacy.policy');
+Route::view('/pirkimo-pardavimo-taisykles', 'frontend.sales-terms')->name('terms.sales');
+
 Route::get('/listing/{listing}/seller-contact', [HomeController::class, 'sellerContact'])
     ->middleware(['auth', 'throttle:10,1'])
     ->name('listing.seller-contact');

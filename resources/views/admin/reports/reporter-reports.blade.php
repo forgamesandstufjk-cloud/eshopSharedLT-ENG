@@ -1,13 +1,13 @@
 <x-app-layout>
-    <div class="max-w-6xl mx-auto mt-6 sm:mt-10 px-3 sm:px-0">
-        <h1 class="text-xl sm:text-2xl font-bold mb-2">
+    <div class="min-h-screen w-full max-w-6xl mx-auto mt-6 sm:mt-10 px-3 sm:px-0 pb-10" style="background-color: rgb(234, 220, 200)">
+        <h1 class="text-xl sm:text-2xl font-bold mb-2 text-black">
             {{ $user->vardas }} {{ $user->pavarde }} pateikti pranešimai
         </h1>
 
         <div class="mb-6">
             <a
                 href="{{ url()->previous() }}"
-                class="inline-block px-4 py-2 rounded text-white"
+                class="inline-block px-4 py-2 rounded text-white hover:text-black"
                 style="background-color: rgb(104, 79, 67)"
             >
                 ← Atgal
@@ -15,24 +15,24 @@
         </div>
 
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-            <div class="p-4 rounded shadow" style="background-color: rgb(227, 197, 157)">
+            <div class="p-4 rounded shadow" style="background-color: rgb(215, 183, 142)">
                 <div class="text-sm text-black">Viso pranešimų</div>
                 <div class="text-2xl font-bold text-black">{{ $stats['total'] }}</div>
             </div>
 
-            <div class="p-4 rounded shadow" style="background-color: rgb(227, 197, 157)">
+            <div class="p-4 rounded shadow" style="background-color: rgb(215, 183, 142)">
                 <div class="text-sm text-black">Laukiama</div>
                 <div class="text-2xl font-bold text-black">{{ $stats['pending'] }}</div>
             </div>
 
-            <div class="p-4 rounded shadow" style="background-color: rgb(227, 197, 157)">
+            <div class="p-4 rounded shadow" style="background-color: rgb(215, 183, 142)">
                 <div class="text-sm text-black">Atmesta</div>
                 <div class="text-2xl font-bold" style="color: rgb(184, 80, 54)">
                     {{ $stats['dismissed'] }}
                 </div>
             </div>
 
-            <div class="p-4 rounded shadow" style="background-color: rgb(227, 197, 157)">
+            <div class="p-4 rounded shadow" style="background-color: rgb(215, 183, 142)">
                 <div class="text-sm text-black">Išspręsta</div>
                 <div class="text-2xl font-bold text-black">{{ $stats['resolved'] }}</div>
             </div>
@@ -44,7 +44,7 @@
             @endphp
 
             <div class="mb-6 p-4 rounded border text-sm"
-                 style="background-color: rgb(234, 220, 200); border-color: #684F43">
+                 style="background-color: rgb(215, 183, 142); border-color: #684F43">
                 <div class="text-black">
                     Atmestų pranešimų dalis:
                     <strong>{{ $dismissedRate }}%</strong>
@@ -59,90 +59,92 @@
         @endif
 
         <div class="mb-6 p-4 rounded border"
-     style="background-color: rgb(234, 220, 200); border-color: #684F43">
-    <div class="text-black font-semibold text-base mb-3">
-        Naudotojo valdymas
-    </div>
+             style="background-color: rgb(215, 183, 142); border-color: #684F43">
+            <div class="text-black font-semibold text-base mb-3">
+                Naudotojo valdymas
+            </div>
 
-    @if($user->is_banned)
-        <div class="text-sm font-semibold mb-3" style="color: rgb(184, 80, 54)">
-            Naudotojas užblokuotas
+            @if($user->is_banned)
+                <div class="text-sm font-semibold mb-3" style="color: rgb(184, 80, 54)">
+                    Naudotojas užblokuotas
+                </div>
+
+                <form method="POST"
+                      action="{{ route('admin.reported-listings.unban-seller', $user) }}"
+                      onsubmit="return confirm('Ar tikrai norite atblokuoti šį naudotoją?');">
+                    @csrf
+
+                    <button
+                        type="submit"
+                        class="px-4 py-2 rounded text-white hover:text-black"
+                        style="background-color: rgb(104, 79, 67)"
+                    >
+                        Atblokuoti naudotoją
+                    </button>
+                </form>
+            @else
+                <form method="POST"
+                      action="{{ route('admin.reported-listings.ban-reporter', $user) }}"
+                      onsubmit="return confirm('Ar tikrai norite užblokuoti šį naudotoją dėl galimo piktnaudžiavimo pranešimų sistema?');">
+                    @csrf
+
+                    <textarea
+                        name="admin_note"
+                        class="border p-2 rounded w-full mb-3 text-black focus:outline-none focus:ring-1 focus:ring-[#836354] focus:border-[#836354]"
+                        rows="3"
+                        placeholder="Administratoriaus pastaba"
+                        style="background-color: rgb(234, 220, 200); border-color: #6B7280"
+                        required
+                    ></textarea>
+
+                    <button
+                        type="submit"
+                        class="px-4 py-2 rounded text-white hover:text-black"
+                        style="background-color: rgb(184, 80, 54)"
+                    >
+                        Užblokuoti naudotoją
+                    </button>
+                </form>
+            @endif
         </div>
 
-        <form method="POST"
-              action="{{ route('admin.reported-listings.unban-seller', $user) }}"
-              onsubmit="return confirm('Ar tikrai norite atblokuoti šį naudotoją?');">
-            @csrf
-
-            <button
-                type="submit"
-                class="px-4 py-2 rounded text-white"
-                style="background-color: rgb(104, 79, 67)"
-            >
-                Atblokuoti naudotoją
-            </button>
-        </form>
-    @else
-        <form method="POST"
-              action="{{ route('admin.reported-listings.ban-reporter', $user) }}"
-              onsubmit="return confirm('Ar tikrai norite užblokuoti šį naudotoją dėl galimo piktnaudžiavimo pranešimų sistema?');">
-            @csrf
-
-            <textarea
-                name="admin_note"
-                class="border p-2 rounded w-full mb-3"
-                rows="3"
-                placeholder="Administratoriaus pastaba"
-                required
-            ></textarea>
-
-            <button
-                type="submit"
-                class="px-4 py-2 rounded text-white bg-red-600"
-            >
-                Užblokuoti naudotoją
-            </button>
-        </form>
-    @endif
-</div>
-
-        
-        <div class="bg-white shadow rounded overflow-hidden">
-            <table class="w-full text-sm">
-                <thead class="bg-gray-50 border-b hidden sm:table-header-group">
+        <div class="shadow rounded overflow-hidden" style="background-color: rgb(215, 183, 142)">
+            <table class="w-full text-sm text-black">
+                <thead class="border-b hidden sm:table-header-group" style="background-color: rgb(131, 99, 84); border-color: #836354">
                     <tr>
-                        <th class="p-3 text-left">Skelbimas</th>
-                        <th class="p-3 text-left">Apie ką pranešė</th>
-                        <th class="p-3 text-left">Priežastis</th>
-                        <th class="p-3 text-left">Detalės</th>
-                        <th class="p-3 text-left">Būsena</th>
-                        <th class="p-3 text-left">Data</th>
+                        <th class="p-3 text-left text-white">Skelbimas</th>
+                        <th class="p-3 text-left text-white">Apie ką pranešė</th>
+                        <th class="p-3 text-left text-white">Priežastis</th>
+                        <th class="p-3 text-left text-white">Detalės</th>
+                        <th class="p-3 text-left text-white">Būsena</th>
+                        <th class="p-3 text-left text-white">Data</th>
                     </tr>
                 </thead>
 
                 <tbody>
                     @forelse($reports as $report)
-                        <tr class="border-b block sm:table-row align-top">
-                            <td class="p-3 block sm:table-cell">
+                        <tr class="border-b block sm:table-row align-top" style="border-color: #836354">
+                            <td class="p-3 block sm:table-cell text-black">
                                 @if($report->listing)
                                     <div>{{ $report->listing->pavadinimas }}</div>
 
                                     @if($report->listing->photos && $report->listing->photos->isNotEmpty())
                                         <img
-    src="{{ \Illuminate\Support\Facades\Storage::disk('photos')->url($report->listing->photos->first()->failo_url) }}"
-    class="w-16 h-16 object-cover rounded mt-2 border"
->
+                                            src="{{ \Illuminate\Support\Facades\Storage::disk('photos')->url($report->listing->photos->first()->failo_url) }}"
+                                            class="w-16 h-16 object-cover rounded mt-2 border"
+                                            style="border-color: #836354"
+                                        >
                                     @endif
                                 @else
                                     —
                                 @endif
                             </td>
 
-                            <td class="p-3 block sm:table-cell">
+                            <td class="p-3 block sm:table-cell text-black">
                                 {{ $report->reportedUser->vardas ?? '—' }} {{ $report->reportedUser->pavarde ?? '' }}
                             </td>
 
-                            <td class="p-3 block sm:table-cell">
+                            <td class="p-3 block sm:table-cell text-black">
                                 @switch($report->reason)
                                     @case('fraud') Sukčiavimas @break
                                     @case('fake_item') Netikra prekė @break
@@ -154,15 +156,15 @@
                                 @endswitch
                             </td>
 
-                            <td class="p-3 block sm:table-cell">
+                            <td class="p-3 block sm:table-cell text-black">
                                 {{ $report->details ?: '—' }}
                             </td>
 
-                            <td class="p-3 block sm:table-cell">
+                            <td class="p-3 block sm:table-cell text-black">
                                 @if($report->status === 'pending')
                                     Laukiama
                                 @elseif($report->status === 'dismissed')
-                                    Atmesta
+                                    <span style="color: rgb(184, 80, 54)">Atmesta</span>
                                 @elseif($report->status === 'resolved')
                                     Išspręsta
                                 @else
@@ -170,13 +172,13 @@
                                 @endif
                             </td>
 
-                            <td class="p-3 block sm:table-cell">
+                            <td class="p-3 block sm:table-cell text-black">
                                 {{ $report->created_at }}
                             </td>
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="6" class="p-4 text-center text-gray-500">
+                            <td colspan="6" class="p-4 text-center text-black">
                                 Šis naudotojas nėra pateikęs pranešimų.
                             </td>
                         </tr>
@@ -185,7 +187,7 @@
             </table>
         </div>
 
-        <div class="mt-4">
+        <div class="mt-4 text-black">
             {{ $reports->links() }}
         </div>
     </div>

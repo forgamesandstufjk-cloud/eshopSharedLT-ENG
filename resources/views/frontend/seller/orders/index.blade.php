@@ -322,7 +322,7 @@
                                 <span class="font-semibold sm:hidden">Būsena: </span>
                             
                                 @php
-                                    $deadline = \Carbon\Carbon::parse($s->created_at)->addDays(14);
+                                    $deadline = \Carbon\Carbon::parse($so->created_at)->addDays(14);
                                     $now = now();
                             
                                     $totalMinutesLeft = $now->diffInMinutes($deadline, false);

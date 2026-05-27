@@ -56,8 +56,7 @@
 
                                 <!-- PRICE -->
                                 <div class="flex justify-between items-center pt-3">
-                                    <span class="font-bold text-base sm:text-lg"
-                                          style="color: rgb(104, 79, 67)"
+                                    <span class="font-bold text-base text-black sm:text-lg"
                                           x-text="item.kaina + ' €'"></span>
                                 </div>
 

@@ -774,23 +774,35 @@ input[type=number] {
                                 <form method="POST" action="{{ route('review.report', $review->id) }}" class="space-y-3">
                                     @csrf
 
-                                    <div>
-                                        <label class="block text-black font-medium mb-1" for="report-reason-{{ $review->id }}">Priežastis</label>
-                                        <select
-                                            id="report-reason-{{ $review->id }}"
-                                            name="reason"
-                                            required
-                                            class="w-full rounded border py-2 px-3 text-left text-black flex justify-between items-center focus:outline-none focus:ring-1 focus:ring-[#684F43] focus:border-[#684F43]"
-                                            style="background-color: rgb(234, 220, 200); border-color: #684F43"
-                                        >
-                                            <option value="" style="background-color: rgb(227, 197, 157); color: #000;">Pasirinkite priežastį</option>
-                                            <option value="abuse" style="background-color: rgb(227, 197, 157); color: #000;">Įžeidžiantis tekstas</option>
-                                            <option value="spam" style="background-color: rgb(227, 197, 157); color: #000;">Šlamštas</option>
-                                            <option value="fake_review">Netikras atsiliepimas</option>
-                                            <option value="harassment">Priekabiavimas</option>
-                                            <option value="other" style="background-color: rgb(227, 197, 157); color: #000;">Kita</option>
-                                        </select>
-                                    </div>
+                                <div>
+                                     <label class="block text-black font-medium mb-1">Priežastis</label>
+                                     <div class="relative custom-select" data-placeholder="Pasirinkite priežastį">
+                                         <input type="hidden" name="reason" value="" required>
+                                         <button
+                                             type="button"
+                                             class="custom-select-toggle w-full rounded border py-2 px-3 text-left text-black focus:outline-none focus:ring-1 focus:ring-[#684F43] focus:border-[#684F43] flex items-center justify-between"
+                                             style="background-color: rgb(227, 197, 157); border-color: #684F43"
+                                             aria-haspopup="listbox"
+                                             aria-expanded="false"
+                                         >
+                                             <span class="custom-select-label">Pasirinkite priežastį</span>
+                                             <svg class="h-5 w-5 text-black shrink-0" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                                                 <path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 11.06l3.71-3.83a.75.75 0 111.08 1.04l-4.25 4.4a.75.75 0 01-1.08 0L5.21 8.27a.75.75 0 01.02-1.06z" clip-rule="evenodd" />
+                                             </svg>
+                                         </button>
+                                         <div
+                                             class="custom-select-menu hidden absolute left-0 right-0 mt-1 rounded border shadow overflow-hidden z-50 max-h-60 overflow-y-auto"
+                                             style="background-color: rgb(227, 197, 157); border-color: #684F43"
+                                         >
+                                             <button type="button" class="custom-select-option block w-full px-3 py-2 text-left text-black" data-value="">Pasirinkite priežastį</button>
+                                             <button type="button" class="custom-select-option block w-full px-3 py-2 text-left text-black" data-value="abuse">Įžeidžiantis tekstas</button>
+                                             <button type="button" class="custom-select-option block w-full px-3 py-2 text-left text-black" data-value="spam">Šlamštas</button>
+                                             <button type="button" class="custom-select-option block w-full px-3 py-2 text-left text-black" data-value="fake_review">Netikras atsiliepimas</button>
+                                             <button type="button" class="custom-select-option block w-full px-3 py-2 text-left text-black" data-value="harassment">Priekabiavimas</button>
+                                             <button type="button" class="custom-select-option block w-full px-3 py-2 text-left text-black" data-value="other">Kita</button>
+                                         </div>
+                                     </div>
+                                 </div>
 
                                     <div>
                                         <label class="block text-black font-medium mb-1">Papildoma informacija</label>

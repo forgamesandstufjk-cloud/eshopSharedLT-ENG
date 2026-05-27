@@ -21,7 +21,7 @@
     </div>
 @endif
 
-    <form action="{{ route('listing.store') }}" method="POST" enctype="multipart/form-data">
+    <form method="POST" action="{{ route('listing.store') }}" enctype="multipart/form-data" id="listingForm">
         @csrf
 
         {{-- TYPE --}}

@@ -26,7 +26,7 @@
                     <template x-for="item in listings" :key="item.id">
                         <div
                             class="shadow rounded overflow-hidden hover:shadow-lg transition flex flex-col"
-                            style="background-color: rgb(215, 183, 142)"
+                            style="background-color: rgb(227, 197, 157)"
                         >
                             <!-- IMAGE -->
                             <a :href="'/listing/' + item.id" class="block">
@@ -57,7 +57,7 @@
                                 <!-- PRICE -->
                                 <div class="flex justify-between items-center pt-3">
                                     <span class="font-bold text-base sm:text-lg"
-                                          style="color: rgb(131, 99, 84)"
+                                          style="color: rgb(104, 79, 67)"
                                           x-text="item.kaina + ' €'"></span>
                                 </div>
 
@@ -79,7 +79,7 @@
                                     <a
                                         :href="'/listing/' + item.id + '/edit'"
                                         class="text-white font-semibold px-4 py-2 rounded hover:text-black"
-                                        style="background-color: rgb(131, 99, 84)"
+                                        style="background-color: rgb(104, 79, 67)"
                                     >
                                         Redaguoti
                                     </a>

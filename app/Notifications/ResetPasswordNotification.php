@@ -42,7 +42,6 @@ class ResetPasswordNotification extends Notification
         $resetUrl = url('/reset-password/' . $this->token . '?email=' . urlencode($notifiable->el_pastas));
 
         return (new MailMessage)
-            return (new MailMessage)
     ->subject('Atkurkite savo slaptažodį')
     ->line('Paspauskite žemiau esantį mygtuką, kad atkurtumėte savo slaptažodį.')
     ->action('Atkurti slaptažodį', $resetUrl)

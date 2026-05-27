@@ -151,29 +151,6 @@ class ProfileController extends Controller
         return Redirect::to('/');
     }
 
-    public function updatePassword(Request $request)
-    {
-        $request->validate([
-            'current_password' => ['required', 'current_password'],
-            'password' => ['required', 'confirmed', \Illuminate\Validation\Rules\Password::defaults()],
-        ]);
-
-        $user = $request->user();
-
-       $user->update([
-    'slaptazodis' => Hash::make($request->password),
-]);
-
-           Auth::logout();
-        $request->session()->invalidate();
-    $request->session()->regenerateToken();
-
-         return redirect()->route('login')->with(
-        'status',
-        'Jūsų slaptažodis sėkmingai pakeistas. Prašome prisijungti iš naujo'
-    );
-    }
-
     public function verifyNewEmail($token)
     {
         $user = User::where('pending_email_token', $token)->first();

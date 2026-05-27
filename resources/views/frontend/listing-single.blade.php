@@ -706,136 +706,180 @@ input[type=number] {
 
                     @auth
                         @if(auth()->id() === $review->user_id)
-                            <div class="review-edit-panel hidden">
-                                <form method="POST" action="{{ route('review.update', $review->id) }}" class="space-y-3">
-                                    @csrf
-                                    @method('PUT')
+    <div class="review-edit-panel hidden">
+        <form method="POST" action="{{ route('review.update', $review->id) }}" class="space-y-3">
+            @csrf
+            @method('PUT')
 
-                                    <div class="flex items-center gap-2 mb-1">
-                                        <strong class="text-black">{{ $review->user->vardas }}</strong>
-                                    </div>
+            <div class="flex items-center gap-2 mb-1">
+                <strong class="text-black">{{ $review->user->vardas }}</strong>
+            </div>
 
-                                    <div>
-                                        <label class="block text-black font-medium mb-1" for="edit-rating-{{ $review->id }}">Įvertinimas</label>
-                                        <input type="hidden" id="edit-rating-{{ $review->id }}" name="ivertinimas" value="{{ $review->ivertinimas }}">
+            <div>
+                <label class="block text-black font-medium mb-1" for="edit-rating-{{ $review->id }}">Įvertinimas</label>
+                <input type="hidden" id="edit-rating-{{ $review->id }}" name="ivertinimas" value="{{ $review->ivertinimas }}">
 
-                                        <div class="review-stars mb-2" data-edit-stars data-input-id="edit-rating-{{ $review->id }}" data-initial="{{ $review->ivertinimas }}">
-                                            @for($n = 1; $n <= 5; $n++)
-                                                <button
-                                                    type="button"
-                                                    class="review-star-btn {{ $review->ivertinimas >= $n ? 'is-full' : 'is-empty' }}"
-                                                    data-star-value="{{ $n }}"
-                                                    aria-label="{{ $n }} žvaigždutės"
-                                                >{{ $review->ivertinimas >= $n ? '★' : '☆' }}</button>
-                                            @endfor
-                                        </div>
+                <div
+                    class="review-stars mb-2"
+                    data-edit-stars
+                    data-input-id="edit-rating-{{ $review->id }}"
+                    data-initial="{{ $review->ivertinimas }}"
+                    role="radiogroup"
+                    aria-labelledby="edit-rating-{{ $review->id }}"
+                    aria-describedby="edit-rating-help-{{ $review->id }}"
+                >
+                    @for($n = 1; $n <= 5; $n++)
+                        <button
+                            type="button"
+                            class="review-star-btn {{ $review->ivertinimas >= $n ? 'is-full' : 'is-empty' }}"
+                            data-star-value="{{ $n }}"
+                            aria-label="{{ $n }} žvaigždutės"
+                            aria-pressed="{{ $review->ivertinimas == $n ? 'true' : 'false' }}"
+                        >{{ $review->ivertinimas >= $n ? '★' : '☆' }}</button>
+                    @endfor
+                </div>
 
-                                        <div class="text-sm text-black">
-                                            <span class="review-stars-value">{{ $review->ivertinimas }} / 5</span>
-                                        </div>
-                                    </div>
+                <p id="edit-rating-help-{{ $review->id }}" class="sr-only">
+                    Pasirinkite įvertinimą nuo 1 iki 5 žvaigždučių.
+                </p>
 
-                                    <textarea
-                                        name="komentaras"
-                                        rows="4"
-                                        class="w-full border border-gray-500 rounded p-3 text-black focus:outline-none focus:ring-1 focus:ring-[#684F43] focus:border-[#684F43]"
-                                        style="background-color: rgb(234, 220, 200)"
-                                        placeholder="Parašykite atsiliepimą..."
-                                    >{{ $review->komentaras }}</textarea>
+                <div class="text-sm text-black">
+                    <span class="review-stars-value" aria-live="polite">{{ $review->ivertinimas }} / 5</span>
+                </div>
+            </div>
 
-                                    <div class="flex gap-2">
-                                        <button
-                                            type="submit"
-                                            class="text-white px-4 py-2 rounded hover:text-black"
-                                            style="background-color: rgb(104, 79, 67)"
-                                        >
-                                            Išsaugoti
-                                        </button>
+            <div>
+                <label class="block text-black font-medium mb-1" for="edit-comment-{{ $review->id }}">Komentaras</label>
+                <textarea
+                    id="edit-comment-{{ $review->id }}"
+                    name="komentaras"
+                    rows="4"
+                    class="w-full border border-gray-500 rounded p-3 text-black focus:outline-none focus:ring-1 focus:ring-[#684F43] focus:border-[#684F43]"
+                    style="background-color: rgb(234, 220, 200)"
+                    placeholder="Parašykite atsiliepimą..."
+                    aria-label="Redaguoti atsiliepimo komentarą"
+                >{{ $review->komentaras }}</textarea>
+            </div>
 
-                                        <button
-                                            type="button"
-                                            class="review-edit-cancel text-white px-4 py-2 rounded hover:text-black"
-                                            style="background-color: rgb(184, 80, 54)"
-                                        >
-                                            Atšaukti
-                                        </button>
-                                    </div>
-                                </form>
-                            </div>
-                        @endif
-                    @endauth
+            <div class="flex gap-2">
+                <button
+                    type="submit"
+                    class="text-white px-4 py-2 rounded hover:text-black"
+                    style="background-color: rgb(104, 79, 67)"
+                    aria-label="Išsaugoti atsiliepimo pakeitimus"
+                >
+                    Išsaugoti
+                </button>
 
-                    @auth
-                        @if(auth()->id() !== $review->user_id)
-                            <div
-                                class="review-report-panel hidden mt-4 pt-4 border-t"
-                                style="border-color: #684F43"
-                            >
-                                <form method="POST" action="{{ route('review.report', $review->id) }}" class="space-y-3">
-                                    @csrf
+                <button
+                    type="button"
+                    class="review-edit-cancel text-white px-4 py-2 rounded hover:text-black"
+                    style="background-color: rgb(184, 80, 54)"
+                    aria-label="Atšaukti atsiliepimo redagavimą"
+                >
+                    Atšaukti
+                </button>
+            </div>
+        </form>
+    </div>
+@endif
+@endauth
 
-                                <div>
-                                     <label class="block text-black font-medium mb-1">Priežastis</label>
-                                     <div class="relative custom-select" data-placeholder="Pasirinkite priežastį">
-                                         <input type="hidden" name="reason" value="" required>
-                                         <button
-                                             type="button"
-                                             class="custom-select-toggle w-full rounded border py-2 px-3 text-left text-black focus:outline-none focus:ring-1 focus:ring-[#684F43] focus:border-[#684F43] flex items-center justify-between"
-                                             style="background-color: rgb(234, 220, 200); border-color: #684F43"
-                                             aria-haspopup="listbox"
-                                             aria-expanded="false"
-                                         >
-                                             <span class="custom-select-label">Pasirinkite priežastį</span>
-                                             <svg class="h-5 w-5 text-black shrink-0" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-                                                 <path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 11.06l3.71-3.83a.75.75 0 111.08 1.04l-4.25 4.4a.75.75 0 01-1.08 0L5.21 8.27a.75.75 0 01.02-1.06z" clip-rule="evenodd" />
-                                             </svg>
-                                         </button>
-                                         <div
-                                             class="custom-select-menu hidden absolute left-0 right-0 mt-1 rounded border shadow overflow-hidden z-50 max-h-60 overflow-y-auto"
-                                             style="background-color: rgb(227, 197, 157); border-color: #684F43"
-                                         >
-                                             <button type="button" class="custom-select-option block w-full px-3 py-2 text-left text-black" data-value="">Pasirinkite priežastį</button>
-                                             <button type="button" class="custom-select-option block w-full px-3 py-2 text-left text-black" data-value="abuse">Įžeidžiantis tekstas</button>
-                                             <button type="button" class="custom-select-option block w-full px-3 py-2 text-left text-black" data-value="spam">Šlamštas</button>
-                                             <button type="button" class="custom-select-option block w-full px-3 py-2 text-left text-black" data-value="fake_review">Netikras atsiliepimas</button>
-                                             <button type="button" class="custom-select-option block w-full px-3 py-2 text-left text-black" data-value="harassment">Priekabiavimas</button>
-                                             <button type="button" class="custom-select-option block w-full px-3 py-2 text-left text-black" data-value="other">Kita</button>
-                                         </div>
-                                     </div>
-                                 </div>
+@auth
+@if(auth()->id() !== $review->user_id)
+    <div
+        class="review-report-panel hidden mt-4 pt-4 border-t"
+        style="border-color: #684F43"
+    >
+        <form method="POST" action="{{ route('review.report', $review->id) }}" class="space-y-3">
+            @csrf
 
-                                    <div>
-                                        <label class="block text-black font-medium mb-1">Papildoma informacija</label>
-                                        <textarea
-                                            name="details"
-                                            rows="3"
-                                            class="border p-2 rounded w-full text-black focus:outline-none focus:ring-1 focus:ring-[#684F43] focus:border-[#684F43]"
-                                            style="background-color: rgb(234, 220, 200); border-color: #684F43"
-                                            placeholder="Aprašykite situaciją, jei reikia"
-                                        ></textarea>
-                                    </div>
+            <div>
+                <label class="block text-black font-medium mb-1" id="report-reason-label-{{ $review->id }}">
+                    Priežastis
+                </label>
 
-                                    <div class="flex gap-2">
-                                        <button
-                                            type="submit"
-                                            class="px-3 py-2 rounded text-white hover:text-black transition-colors"
-                                            style="background-color: rgb(104, 79, 67)"
-                                        >
-                                            Siųsti
-                                        </button>
+                <div class="relative custom-select" data-placeholder="Pasirinkite priežastį">
+                    <input
+                        type="hidden"
+                        name="reason"
+                        value=""
+                        required
+                        aria-labelledby="report-reason-label-{{ $review->id }}"
+                        aria-describedby="report-reason-help-{{ $review->id }}"
+                    >
 
-                                        <button
-                                            type="button"
-                                            class="review-report-cancel px-3 py-2 rounded text-white hover:text-black transition-colors"
-                                            style="background-color: rgb(184, 80, 54)"
-                                        >
-                                            Atšaukti
-                                        </button>
-                                    </div>
-                                </form>
-                            </div>
-                        @endif
-                    @endauth
+                    <button
+                        type="button"
+                        class="custom-select-toggle w-full rounded border py-2 px-3 text-left text-black focus:outline-none focus:ring-1 focus:ring-[#684F43] focus:border-[#684F43] flex items-center justify-between"
+                        style="background-color: rgb(234, 220, 200); border-color: #684F43"
+                        aria-haspopup="listbox"
+                        aria-expanded="false"
+                        aria-labelledby="report-reason-label-{{ $review->id }}"
+                        aria-describedby="report-reason-help-{{ $review->id }}"
+                    >
+                        <span class="custom-select-label">Pasirinkite priežastį</span>
+                        <svg class="h-5 w-5 text-black shrink-0" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                            <path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 11.06l3.71-3.83a.75.75 0 111.08 1.04l-4.25 4.4a.75.75 0 01-1.08 0L5.21 8.27a.75.75 0 01.02-1.06z" clip-rule="evenodd" />
+                        </svg>
+                    </button>
+
+                    <div
+                        class="custom-select-menu hidden absolute left-0 right-0 mt-1 rounded border shadow overflow-hidden z-50 max-h-60 overflow-y-auto"
+                        style="background-color: rgb(227, 197, 157); border-color: #684F43"
+                        role="listbox"
+                        aria-labelledby="report-reason-label-{{ $review->id }}"
+                    >
+                        <button type="button" class="custom-select-option block w-full px-3 py-2 text-left text-black" data-value="" role="option" aria-label="Pasirinkite priežastį">Pasirinkite priežastį</button>
+                        <button type="button" class="custom-select-option block w-full px-3 py-2 text-left text-black" data-value="abuse" role="option" aria-label="Įžeidžiantis tekstas">Įžeidžiantis tekstas</button>
+                        <button type="button" class="custom-select-option block w-full px-3 py-2 text-left text-black" data-value="spam" role="option" aria-label="Šlamštas">Šlamštas</button>
+                        <button type="button" class="custom-select-option block w-full px-3 py-2 text-left text-black" data-value="fake_review" role="option" aria-label="Netikras atsiliepimas">Netikras atsiliepimas</button>
+                        <button type="button" class="custom-select-option block w-full px-3 py-2 text-left text-black" data-value="harassment" role="option" aria-label="Priekabiavimas">Priekabiavimas</button>
+                        <button type="button" class="custom-select-option block w-full px-3 py-2 text-left text-black" data-value="other" role="option" aria-label="Kita">Kita</button>
+                    </div>
+                </div>
+
+                <p id="report-reason-help-{{ $review->id }}" class="sr-only">
+                    Pasirinkite pranešimo apie atsiliepimą priežastį.
+                </p>
+            </div>
+
+            <div>
+                <label class="block text-black font-medium mb-1" for="report-details-{{ $review->id }}">Papildoma informacija</label>
+                <textarea
+                    id="report-details-{{ $review->id }}"
+                    name="details"
+                    rows="3"
+                    class="border p-2 rounded w-full text-black focus:outline-none focus:ring-1 focus:ring-[#684F43] focus:border-[#684F43]"
+                    style="background-color: rgb(234, 220, 200); border-color: #684F43"
+                    placeholder="Aprašykite situaciją, jei reikia"
+                    aria-label="Papildoma informacija apie pranešimą"
+                ></textarea>
+            </div>
+
+            <div class="flex gap-2">
+                <button
+                    type="submit"
+                    class="px-3 py-2 rounded text-white hover:text-black transition-colors"
+                    style="background-color: rgb(104, 79, 67)"
+                    aria-label="Siųsti pranešimą apie atsiliepimą"
+                >
+                    Siųsti
+                </button>
+
+                <button
+                    type="button"
+                    class="review-report-cancel px-3 py-2 rounded text-white hover:text-black transition-colors"
+                    style="background-color: rgb(184, 80, 54)"
+                    aria-label="Atšaukti pranešimo formą"
+                >
+                    Atšaukti
+                </button>
+            </div>
+        </form>
+    </div>
+@endif
+@endauth
                 </div>
             @empty
                 <p class="text-black italic">Atsiliepimų dar nėra.</p>

@@ -394,4 +394,97 @@ function removeSelectedFile(index) {
     input.dispatchEvent(new Event('change'));
 }
 </script>
+{{-- VALIDATION --}}      
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const form = document.querySelector('form');
+    if (!form) return;
+
+    const categoryInput = document.getElementById('categoryInput');
+    const categoryButton = document.getElementById('categoryButton');
+    const categoryError = document.getElementById('categoryError');
+
+    const packageSizeInput = document.getElementById('packageSizeInput');
+    const packageSizeButton = document.getElementById('packageSizeButton');
+    const packageSizeError = document.getElementById('packageSizeError');
+
+    const photoInput = document.getElementById('photoInput');
+    const photoButton = document.getElementById('photoButton');
+    const photosError = document.getElementById('photosError');
+
+    function showError(button, errorEl) {
+        if (button) {
+            button.classList.add('ring-1', 'border-[rgb(184,80,54)]', 'ring-[rgb(184,80,54)]');
+        }
+        if (errorEl) {
+            errorEl.classList.remove('hidden');
+        }
+    }
+
+    function clearError(button, errorEl) {
+        if (button) {
+            button.classList.remove('border-[rgb(184,80,54)]', 'ring-[rgb(184,80,54)]');
+        }
+        if (errorEl) {
+            errorEl.classList.add('hidden');
+        }
+    }
+
+    if (categoryInput) {
+        categoryInput.addEventListener('change', function () {
+            if (categoryInput.value !== '') {
+                clearError(categoryButton, categoryError);
+            }
+        });
+    }
+
+    if (packageSizeInput) {
+        packageSizeInput.addEventListener('change', function () {
+            if (packageSizeInput.value !== '') {
+                clearError(packageSizeButton, packageSizeError);
+            }
+        });
+    }
+
+    if (photoInput) {
+        photoInput.addEventListener('change', function () {
+            if (photoInput.files.length > 0) {
+                clearError(photoButton, photosError);
+            }
+        });
+    }
+
+    form.addEventListener('submit', function (e) {
+        let hasError = false;
+
+        if (categoryInput && categoryInput.value === '') {
+            showError(categoryButton, categoryError);
+            hasError = true;
+        } else {
+            clearError(categoryButton, categoryError);
+        }
+
+        const typeSelect = document.querySelector('select[name="tipas"]');
+        const isPreke = typeSelect && typeSelect.value === 'preke';
+
+        if (isPreke && packageSizeInput && packageSizeInput.value === '') {
+            showError(packageSizeButton, packageSizeError);
+            hasError = true;
+        } else {
+            clearError(packageSizeButton, packageSizeError);
+        }
+
+        if (photoInput && photoInput.files.length === 0) {
+            showError(photoButton, photosError);
+            hasError = true;
+        } else {
+            clearError(photoButton, photosError);
+        }
+
+        if (hasError) {
+            e.preventDefault();
+        }
+    });
+});
+</script>
 </x-app-layout>

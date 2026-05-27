@@ -134,7 +134,7 @@
 
                                         <textarea
                                             name="admin_note"
-                                            class="border p-2 rounded w-full mb-2 text-black"
+                                            class="border p-2 rounded w-full mb-2 text-black  focus:outline-none focus:ring-1 focus:ring-[#684F43] focus:border-[#684F43]"
                                             rows="2"
                                             placeholder="Administratoriaus pastaba"
                                             style="background-color: rgb(234, 220, 200); border-color: #684F43"

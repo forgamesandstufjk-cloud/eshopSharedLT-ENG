@@ -845,59 +845,59 @@ input[type=number] {
     @endif
 
     @if($canLeaveReview)
+    <div>
         <div>
-            <div>
-                <h4 class="font-semibold mb-2 text-black">Palikti atsiliepimą</h4>
+            <h4 class="font-semibold mb-2 text-black">Palikti atsiliepimą</h4>
 
-                <form method="POST" action="{{ route('review.store', $listing->id) }}"
-                      class="space-y-3">
-                    @csrf
+            <form method="POST" action="{{ route('review.store', $listing->id) }}"
+                  class="space-y-3">
+                @csrf
 
-                    <div>
-                        <label class="block text-black font-medium mb-1" for="new-review-rating">Įvertinimas</label>
-                        <div class="relative custom-select" data-placeholder="Pasirinkite įvertinimą">
-                            <input type="hidden" id="new-review-rating" name="ivertinimas" value="" required>
-                            <button
-                                type="button"
-                                class="custom-select-toggle w-full border border-gray-500 rounded p-3 text-black focus:outline-none focus:ring-1 focus:ring-[#684F43] focus:border-[#684F43] flex items-center justify-between"
-                                style="background-color: rgb(227, 197, 157)"
-                                aria-haspopup="listbox"
-                                aria-expanded="false"
-                            >
-                                <span class="custom-select-label">Pasirinkite įvertinimą</span>
-                                <svg class="h-5 w-5 text-black shrink-0" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-                                    <path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 11.06l3.71-3.83a.75.75 0 111.08 1.04l-4.25 4.4a.75.75 0 01-1.08 0L5.21 8.27a.75.75 0 01.02-1.06z" clip-rule="evenodd" />
-                                </svg>
-                            </button>
-                            <div class="custom-select-menu hidden absolute left-0 right-0 mt-1 rounded border shadow overflow-hidden z-50"
-                                 style="background-color: rgb(227, 197, 157); border-color: #684F43">
-                                <button type="button" class="custom-select-option block w-full px-3 py-2 text-left text-black" data-value="">Pasirinkite įvertinimą</button>
-                                @for($n = 1; $n <= 5; $n++)
-                                    <button type="button" class="custom-select-option block w-full px-3 py-2 text-left text-black" data-value="{{ $n }}">{{ $n }} / 5</button>
-                                @endfor
-                            </div>
+                <div>
+                    <label class="block text-black font-medium mb-1" for="new-review-rating">Įvertinimas</label>
+                    <div class="relative custom-select" data-placeholder="Pasirinkite įvertinimą">
+                        <input type="hidden" id="new-review-rating" name="ivertinimas" value="" required>
+                        <button
+                            type="button"
+                            class="custom-select-toggle w-full border border-gray-500 rounded p-3 text-black focus:outline-none focus:ring-1 focus:ring-[#684F43] focus:border-[#684F43] flex items-center justify-between"
+                            style="background-color: rgb(227, 197, 157)"
+                            aria-haspopup="listbox"
+                            aria-expanded="false"
+                        >
+                            <span class="custom-select-label">Pasirinkite įvertinimą</span>
+                            <svg class="h-5 w-5 text-black shrink-0" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                                <path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 11.06l3.71-3.83a.75.75 0 111.08 1.04l-4.25 4.4a.75.75 0 01-1.08 0L5.21 8.27a.75.75 0 01.02-1.06z" clip-rule="evenodd" />
+                            </svg>
+                        </button>
+                        <div class="custom-select-menu hidden absolute left-0 right-0 mt-1 rounded border shadow overflow-hidden z-50"
+                             style="background-color: rgb(227, 197, 157); border-color: #684F43">
+                            <button type="button" class="custom-select-option block w-full px-3 py-2 text-left text-black" data-value="">Pasirinkite įvertinimą</button>
+                            @for($n = 1; $n <= 5; $n++)
+                                <button type="button" class="custom-select-option block w-full px-3 py-2 text-left text-black" data-value="{{ $n }}">{{ $n }} / 5</button>
+                            @endfor
                         </div>
                     </div>
+                </div>
 
-                    <textarea
-                        name="komentaras"
-                        rows="4"
-                        class="w-full border border-gray-500 rounded p-3 text-black focus:outline-none focus:ring-1 focus:ring-[#684F43] focus:border-[#684F43]"
-                        style="background-color: rgb(227, 197, 157)"
-                        placeholder="Parašykite atsiliepimą..."
-                    ></textarea>
+                <textarea
+                    name="komentaras"
+                    rows="4"
+                    class="w-full border border-gray-500 rounded p-3 text-black focus:outline-none focus:ring-1 focus:ring-[#684F43] focus:border-[#684F43]"
+                    style="background-color: rgb(227, 197, 157)"
+                    placeholder="Parašykite atsiliepimą..."
+                ></textarea>
 
-                    <button
-                        type="submit"
-                        class="text-white px-4 py-2 rounded w-full hover:text-black"
-                        style="background-color: rgb(104, 79, 67)"
-                    >
-                        Pateikti atsiliepimą
-                    </button>
-                </form>
-            </div>
+                <button
+                    type="submit"
+                    class="text-white px-4 py-2 rounded w-full hover:text-black"
+                    style="background-color: rgb(104, 79, 67)"
+                >
+                    Pateikti atsiliepimą
+                </button>
+            </form>
         </div>
-    @endif
+    </div>
+@endif
 
 </div>
 </section>

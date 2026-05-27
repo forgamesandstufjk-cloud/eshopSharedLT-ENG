@@ -148,19 +148,20 @@
 
         {{-- PRODUCT ONLY FIELDS --}}
         <div x-show="type === 'preke'" x-transition>
-            <div class="mb-4 relative" x-data="{ open: false, selected: '{{ old('package_size', '') }}' }">
+           <div class="mb-4 relative" id="packageSizeWrapper" x-data="{ open: false, selected: '{{ old('package_size', '') }}' }">
                 <label class="font-semibold">Pakuotės dydis</label>
-
+            
                 <input
                     type="hidden"
                     name="package_size"
+                    id="packageSizeInput"
                     x-bind:value="selected"
-                    x-bind:required="type === 'preke'"
                     x-bind:disabled="type !== 'preke'"
                 >
-
+            
                 <button
                     type="button"
+                    id="packageSizeButton"
                     @click="if (type === 'preke') open = !open"
                     :class="open ? 'ring-1 ring-[#684F43] border-[#684F43]' : 'border-gray-500'"
                     class="w-full rounded border py-2 px-3 text-left focus:outline-none focus:ring-1 focus:ring-[#684F43] focus:border-[#684F43] flex justify-between items-center"
@@ -170,12 +171,16 @@
                         class="text-black"
                         x-text="selected === '' ? 'Pasirinkite dydį' : selected + (selected === 'XS' ? ' – Vokas' : selected === 'S' ? ' – Maža dėžė' : selected === 'M' ? ' – Vidutinė dėžė' : ' – Didelė dėžė')"
                     ></span>
-
+            
                     <svg class="h-5 w-5 text-black" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
                         <path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 11.06l3.71-3.83a.75.75 0 111.08 1.04l-4.25 4.4a.75.75 0 01-1.08 0L5.21 8.27a.75.75 0 01.02-1.06z" clip-rule="evenodd" />
                     </svg>
                 </button>
-
+            
+                <p id="packageSizeError" class="text-sm mt-1 hidden" style="color: rgb(184, 80, 54)">
+                    Pasirinkite pakuotės dydį.
+                </p>
+            
                 <div
                     x-show="open"
                     @click.outside="open = false"
@@ -188,21 +193,21 @@
                     >
                         XS – 61x18x8 cm, iki 1 kg
                     </div>
-
+            
                     <div
                         @click="selected = 'S'; open = false"
                         class="block w-full px-3 py-2 text-black cursor-pointer hover:bg-[#cfae86]"
                     >
                         S – 64×38×9 cm, iki 25 kg
                     </div>
-
+            
                     <div
                         @click="selected = 'M'; open = false"
                         class="block w-full px-3 py-2 text-black cursor-pointer hover:bg-[#cfae86]"
                     >
                         M – 64×38×19 cm, iki 25 kg
                     </div>
-
+            
                     <div
                         @click="selected = 'L'; open = false"
                         class="block w-full px-3 py-2 text-black cursor-pointer hover:bg-[#cfae86]"
@@ -216,15 +221,15 @@
             <div class="mb-4">
                 <label class="font-semibold">Galimas kiekis</label>
                 <input
-    type="number"
-    name="kiekis"
-    value="{{ old('kiekis', 1) }}"
-    min="1"
-    max="999"
-    class="w-full border p-2 rounded focus:outline-none focus:ring-1 focus:ring-[#684F43] focus:border-[#684F43]"
-    style="background-color: rgb(234, 220, 200)"
-    required
->
+                      type="number"
+                      name="kiekis"
+                      value="{{ old('kiekis', 1) }}"
+                      min="1"
+                      max="999"
+                      class="w-full border p-2 rounded focus:outline-none focus:ring-1 focus:ring-[#684F43] focus:border-[#684F43]"
+                      style="background-color: rgb(234, 220, 200)"
+                      required
+                  >
             </div>
 
             {{-- RENEWABLE --}}
@@ -237,67 +242,71 @@
                    class="appearance-none w-4 h-4 rounded border border-gray-500 checked:bg-[#684F43] checked:border-[#684F43] focus:outline-none focus:ring-1 focus:ring-[#684F43] focus:ring-offset-0"
                    style="background-color: rgb(234, 220, 200)">
                  
-                <label>Ar tai atnaujinamas produktas (galima papildyti atsargas)?</label>
-            </div>
-        </div>
+                      <label>Ar tai atnaujinamas produktas (galima papildyti atsargas)?</label>
+                  </div>
+              </div>
 
-       {{-- PRICE --}}
-          <div class="mb-4">
-              <label class="block font-semibold">Kaina (€)</label>
-              <input
-                  type="number"
-                  min="0.20"
-                  max="99999"
-                  step="0.01"
-                  name="kaina"
-                   value="{{ old('kaina', '0.20') }}"
-                  class="w-full border rounded p-2 focus:outline-none focus:ring-1 focus:ring-[#684F43] focus:border-[#684F43]"
-                  style="background-color: rgb(234, 220, 200)"
-                  onwheel="event.preventDefault()"
-                  required
-              >
-          </div>
+             {{-- PRICE --}}
+                <div class="mb-4">
+                    <label class="block font-semibold">Kaina (€)</label>
+                    <input
+                        type="number"
+                        min="0.20"
+                        max="99999"
+                        step="0.01"
+                        name="kaina"
+                         value="{{ old('kaina', '0.20') }}"
+                        class="w-full border rounded p-2 focus:outline-none focus:ring-1 focus:ring-[#684F43] focus:border-[#684F43]"
+                        style="background-color: rgb(234, 220, 200)"
+                        onwheel="event.preventDefault()"
+                        required
+                    >
+                </div>
 
-               {{-- PHOTOS WITH LIVE PREVIEW --}}
-               <div class="mb-6" x-data="{ fileNames: '' }">
-                   <label class="block font-semibold mb-2">Nuotraukos</label>
-               
-                   <input 
-                       type="file"
-                       name="photos[]"
-                       id="photoInput"
-                       multiple
-                       accept="image/jpeg,image/jpg,image/png,image/webp,image/gif"
-                       required
-                       class="hidden"
-                       @change="fileNames = Array.from($event.target.files).map(f => f.name).join(', ')"
-                   >
-               
-                   <label
-                       for="photoInput"
-                       class="inline-flex items-center px-4 py-2 rounded cursor-pointer text-white hover:text-black transition-colors"
-                       style="background-color: rgb(104, 79, 67)"
-                   >
-                       Pasirinkti nuotraukas
-                   </label>
-               
-                   <div
-                       class="mt-3 p-3 rounded border text-sm text-black"
-                       style="background-color: rgb(234, 220, 200); border-color: #684F43"
-                   >
-                       <span x-show="!fileNames">Nepasirinkta jokių failų</span>
-                       <span x-show="fileNames" x-text="fileNames"></span>
-                   </div>
-               
-                   <small class="text-gray-600 block mt-2">
-                       Galite įkelti tik nuotraukas: JPG, JPEG, PNG.
-                   </small>
-               
-                   <div
-                       id="previewContainer"
-                       class="grid grid-cols-2 sm:grid-cols-3 gap-4 mt-4"
-                   ></div>
-               </div>
+              {{-- PHOTOS WITH LIVE PREVIEW --}}
+                  <div class="mb-6" x-data="{ fileNames: '' }" id="photosWrapper">
+                      <label class="block font-semibold mb-2">Nuotraukos</label>
+                  
+                      <input 
+                          type="file"
+                          name="photos[]"
+                          id="photoInput"
+                          multiple
+                          accept="image/jpeg,image/jpg,image/png,image/webp,image/gif"
+                          class="hidden"
+                          @change="fileNames = Array.from($event.target.files).map(f => f.name).join(', ')"
+                      >
+                  
+                      <label
+                          for="photoInput"
+                          id="photoButton"
+                          class="inline-flex items-center px-4 py-2 rounded cursor-pointer text-white hover:text-black transition-colors"
+                          style="background-color: rgb(104, 79, 67)"
+                      >
+                          Pasirinkti nuotraukas
+                      </label>
+                  
+                      <p id="photosError" class="text-sm mt-2 hidden" style="color: rgb(184, 80, 54)">
+                          Pasirinkite bent vieną nuotrauką.
+                      </p>
+                  
+                      <div
+                          class="mt-3 p-3 rounded border text-sm text-black"
+                          style="background-color: rgb(234, 220, 200); border-color: #684F43"
+                      >
+                          <span x-show="!fileNames">Nepasirinkta jokių failų</span>
+                          <span x-show="fileNames" x-text="fileNames"></span>
+                      </div>
+                  
+                      <small class="text-gray-600 block mt-2">
+                          Galite įkelti tik nuotraukas: JPG, JPEG, PNG.
+                      </small>
+                  
+                      <div
+                          id="previewContainer"
+                          class="grid grid-cols-2 sm:grid-cols-3 gap-4 mt-4"
+                      ></div>
+                  </div>
 
         <div class="flex gap-4 mt-6">         
             <button

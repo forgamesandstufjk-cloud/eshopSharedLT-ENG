@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rules\Password;
 
 class PasswordController extends Controller
@@ -15,19 +16,40 @@ class PasswordController extends Controller
      */
     public function update(Request $request): RedirectResponse
     {
-        $validated = $request->validateWithBag('updatePassword', [
-            'current_password' => ['required', 'current_password'],
-            'password' => ['required', Password::defaults(), 'confirmed'],
-        ]);
+        $validator = Validator::make(
+            $request->all(),
+            [
+                'current_password' => ['required', 'current_password'],
+                'password' => ['required', 'string', Password::defaults(), 'confirmed'],
+            ],
+            [
+                'current_password.required' => 'Įveskite dabartinį slaptažodį.',
+                'current_password.current_password' => 'Dabartinis slaptažodis neteisingas.',
+                'password.required' => 'Įveskite naują slaptažodį.',
+                'password.confirmed' => 'Slaptažodžio patvirtinimas nesutampa.',
+            ]
+        );
 
-        if (Hash::check($validated['password'], $request->user()->slaptazodis)) {
-            return back()->withErrors([
-                'password' => 'Naujas slaptažodis turi skirtis nuo dabartinio slaptažodžio.',
-            ], 'updatePassword');
+        $validator->after(function ($validator) use ($request) {
+            $newPassword = $request->input('password');
+
+            if (
+                filled($newPassword) &&
+                Hash::check($newPassword, $request->user()->slaptazodis)
+            ) {
+                $validator->errors()->add(
+                    'password',
+                    'Naujas slaptažodis turi skirtis nuo dabartinio slaptažodžio.'
+                );
+            }
+        });
+
+        if ($validator->fails()) {
+            return back()->withErrors($validator, 'updatePassword');
         }
 
         $request->user()->update([
-            'slaptazodis' => Hash::make($validated['password']),
+            'slaptazodis' => Hash::make($request->input('password')),
         ]);
 
         return back()->with('status', 'password-updated');

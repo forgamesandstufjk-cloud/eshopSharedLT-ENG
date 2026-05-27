@@ -14,6 +14,17 @@
             {{ __("Atnaujinkite savo paskyros profilio informaciją.") }}
         </p>
     </header>
+    @if ($errors->any())
+    <div class="mt-4 mb-4 px-4 py-3 rounded text-black"
+         style="background-color: rgb(230, 190, 190); border: 1px solid #684F43">
+        <div class="font-semibold mb-2">Prašome ištaisyti šias klaidas:</div>
+        <ul class="list-disc pl-5 space-y-1">
+            @foreach ($errors->all() as $error)
+                <li>{{ $error }}</li>
+            @endforeach
+        </ul>
+    </div>
+@endif
 
      {{-- BUYER CODE --}}
 <div x-data="{ copied: false }" class="mt-5">

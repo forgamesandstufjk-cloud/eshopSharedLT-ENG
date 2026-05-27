@@ -85,61 +85,66 @@
         <div class="mb-4">
             <label class="block font-semibold">Aprašymas</label>
             <textarea
-    name="aprasymas"
-    rows="5"
-    class="w-full border rounded p-2 focus:outline-none focus:ring-1 focus:ring-[#684F43] focus:border-[#684F43]"
-    style="background-color: rgb(234, 220, 200)"
-      maxlength="2000"
-    required
->{{ old('aprasymas') }}</textarea>
+                name="aprasymas"
+                rows="5"
+                class="w-full border rounded p-2 focus:outline-none focus:ring-1 focus:ring-[#684F43] focus:border-[#684F43]"
+                style="background-color: rgb(234, 220, 200)"
+                  maxlength="2000"
+                required
+            >{{ old('aprasymas') }}</textarea>
         </div>
 
         {{-- CATEGORY --}}
-        <div class="mb-4 relative" x-data="{ open: false, selected: '{{ old('category_id', '') }}' }">
-            <label class="block font-semibold">Kategorija</label>
-
-            <input type="hidden" name="category_id" x-bind:value="selected" required>
-
-            <button
-                type="button"
-                @click="open = !open"
-                :class="open ? 'ring-1 ring-[#684F43] border-[#684F43]' : 'border-gray-500'"
-                class="w-full rounded border py-2 px-3 text-left focus:outline-none focus:ring-1 focus:ring-[#684F43] focus:border-[#684F43] flex justify-between items-center"
-                style="background-color: rgb(234, 220, 200)"
-            >
-                <span
-                    class="text-black"
-                    x-text="selected === '' ? 'Pasirinkite kategoriją' : (() => {
-                        const categories = {
-                            @foreach(\App\Models\Category::all() as $cat)
-                                '{{ $cat->id }}': '{{ $cat->pavadinimas }}',
-                            @endforeach
-                        };
-                        return categories[selected] ?? 'Pasirinkite kategoriją';
-                    })()"
-                ></span>
-
-                <svg class="h-5 w-5 text-black" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
-                    <path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 11.06l3.71-3.83a.75.75 0 111.08 1.04l-4.25 4.4a.75.75 0 01-1.08 0L5.21 8.27a.75.75 0 01.02-1.06z" clip-rule="evenodd" />
-                </svg>
-            </button>
-
-            <div
-                x-show="open"
-                @click.outside="open = false"
-                class="absolute left-0 right-0 mt-1 rounded border shadow overflow-hidden z-50 max-h-60 overflow-y-auto"
-                style="background-color: rgb(234, 220, 200); border-color: #684F43"
-            >
-                @foreach(\App\Models\Category::all() as $cat)
-                    <div
-                        @click="selected = '{{ $cat->id }}'; open = false"
-                        class="block w-full px-3 py-2 text-black cursor-pointer hover:bg-[#cfae86]"
-                    >
-                        {{ $cat->pavadinimas }}
-                    </div>
-                @endforeach
+            <div class="mb-4 relative" id="categoryWrapper" x-data="{ open: false, selected: '{{ old('category_id', '') }}' }">
+                <label class="block font-semibold">Kategorija</label>
+            
+                <input type="hidden" name="category_id" id="categoryInput" x-bind:value="selected">
+            
+                <button
+                    type="button"
+                    id="categoryButton"
+                    @click="open = !open"
+                    :class="open ? 'ring-1 ring-[#684F43] border-[#684F43]' : 'border-gray-500'"
+                    class="w-full rounded border py-2 px-3 text-left focus:outline-none focus:ring-1 focus:ring-[#684F43] focus:border-[#684F43] flex justify-between items-center"
+                    style="background-color: rgb(234, 220, 200)"
+                >
+                    <span
+                        class="text-black"
+                        x-text="selected === '' ? 'Pasirinkite kategoriją' : (() => {
+                            const categories = {
+                                @foreach(\App\Models\Category::all() as $cat)
+                                    '{{ $cat->id }}': '{{ $cat->pavadinimas }}',
+                                @endforeach
+                            };
+                            return categories[selected] ?? 'Pasirinkite kategoriją';
+                        })()"
+                    ></span>
+            
+                    <svg class="h-5 w-5 text-black" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                        <path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 11.06l3.71-3.83a.75.75 0 111.08 1.04l-4.25 4.4a.75.75 0 01-1.08 0L5.21 8.27a.75.75 0 01.02-1.06z" clip-rule="evenodd" />
+                    </svg>
+                </button>
+            
+                <p id="categoryError" class="text-sm mt-1 hidden" style="color: rgb(184, 80, 54)">
+                    Pasirinkite kategoriją.
+                </p>
+            
+                <div
+                    x-show="open"
+                    @click.outside="open = false"
+                    class="absolute left-0 right-0 mt-1 rounded border shadow overflow-hidden z-50 max-h-60 overflow-y-auto"
+                    style="background-color: rgb(234, 220, 200); border-color: #684F43"
+                >
+                    @foreach(\App\Models\Category::all() as $cat)
+                        <div
+                            @click="selected = '{{ $cat->id }}'; open = false"
+                            class="block w-full px-3 py-2 text-black cursor-pointer hover:bg-[#cfae86]"
+                        >
+                            {{ $cat->pavadinimas }}
+                        </div>
+                    @endforeach
+                </div>
             </div>
-        </div>
 
         {{-- PRODUCT ONLY FIELDS --}}
         <div x-show="type === 'preke'" x-transition>

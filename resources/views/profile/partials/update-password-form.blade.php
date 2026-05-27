@@ -25,7 +25,12 @@
                 class="mt-1 block w-full rounded-md shadow-sm border border-gray-500 text-black focus:outline-none focus:ring-1 focus:ring-[#684F43] focus:border-[#684F43]"
                 style="background-color: rgb(234, 220, 200);"
             />
-            <x-input-error :messages="$errors->updatePassword->get('current_password')" class="mt-2" />
+
+            @if($errors->updatePassword->has('current_password'))
+                <p class="mt-2 text-sm" style="color: rgb(184, 80, 54);">
+                    {{ $errors->updatePassword->first('current_password') }}
+                </p>
+            @endif
         </div>
 
         <div>
@@ -40,7 +45,16 @@
                 class="mt-1 block w-full rounded-md shadow-sm border border-gray-500 text-black focus:outline-none focus:ring-1 focus:ring-[#684F43] focus:border-[#684F43]"
                 style="background-color: rgb(234, 220, 200);"
             />
-            <x-input-error :messages="$errors->updatePassword->get('password')" class="mt-2" />
+
+            @if($errors->updatePassword->has('password'))
+                <div class="mt-2 space-y-1">
+                    @foreach($errors->updatePassword->get('password') as $message)
+                        <p class="text-sm" style="color: rgb(184, 80, 54);">
+                            {{ $message }}
+                        </p>
+                    @endforeach
+                </div>
+            @endif
         </div>
 
         <div>
@@ -55,7 +69,12 @@
                 class="mt-1 block w-full rounded-md shadow-sm border border-gray-500 text-black focus:outline-none focus:ring-1 focus:ring-[#684F43] focus:border-[#684F43]"
                 style="background-color: rgb(234, 220, 200);"
             />
-            <x-input-error :messages="$errors->updatePassword->get('password_confirmation')" class="mt-2" />
+
+            @if($errors->updatePassword->has('password_confirmation'))
+                <p class="mt-2 text-sm" style="color: rgb(184, 80, 54);">
+                    {{ $errors->updatePassword->first('password_confirmation') }}
+                </p>
+            @endif
         </div>
 
         <div class="flex items-center gap-4">

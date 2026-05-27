@@ -25,9 +25,9 @@ use App\Http\Controllers\ReviewReportController;
 use App\Http\Controllers\Frontend\SellerServiceOrderController;
 use App\Models\ServiceOrder;
 use Illuminate\Support\Str;
-
 use App\Mail\BuyerShipmentShippedMail;
 use Illuminate\Support\Facades\Mail;
+use App\Http\Controllers\Auth\PasswordController;
 
 Route::view('/privatumo-politika', 'frontend.privacy-policy')->name('privacy.policy');
 Route::view('/pirkimo-pardavimo-taisykles', 'frontend.sales-terms')->name('terms.sales');
@@ -608,7 +608,7 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])
         ->name('profile.destroy');
 
-    Route::put('/password', [ProfileController::class, 'updatePassword'])
+    Route::put('/password', [PasswordController::class, 'update'])
         ->name('password.update');
 });
 

@@ -102,7 +102,7 @@
                 value="{{ old('vardas', $user->vardas) }}"
                 autocomplete="given-name"
             />
-            <x-input-error class="mt-2" :messages="$errors->get('vardas')" />
+            <x-input-error class="mt-2" :messages="$errors->updateProfileInformation->get('vardas')" />
         </div>
 
         {{-- LAST NAME --}}
@@ -117,7 +117,7 @@
                 value="{{ old('pavarde', $user->pavarde) }}"
                 autocomplete="family-name"
             />
-            <x-input-error class="mt-2" :messages="$errors->get('pavarde')" />
+            <x-input-error class="mt-2" :messages="$errors->updateProfileInformation->get('pavarde')" />
         </div>
 
         {{-- EMAIL --}}
@@ -132,7 +132,7 @@
                 value="{{ old('el_pastas', $user->el_pastas) }}"
                 autocomplete="email"
             />
-            <x-input-error class="mt-2" :messages="$errors->get('el_pastas')" />
+            <x-input-error class="mt-2" :messages="$errors->updateProfileInformation->get('el_pastas')" />
         </div>
 
         {{-- SELLER TOGGLE --}}
@@ -188,7 +188,7 @@
                             style="background-color: rgb(234, 220, 200)"
                             value="{{ old('business_email', $user->business_email) }}"
                         />
-                        <x-input-error class="mt-2" :messages="$errors->get('business_email')" />
+                        <x-input-error class="mt-2" :messages="$errors->updateProfileInformation->get('business_email')" />
                     </div>
 
                     {{-- PHONE --}}
@@ -206,7 +206,7 @@
                             value="{{ old('telefonas', $user->telefonas) }}"
                             oninput="this.value = this.value.replace(/[^0-9+]/g, '')"
                         />
-                        <x-input-error class="mt-2" :messages="$errors->get('telefonas')" />
+                        <x-input-error class="mt-2" :messages="$errors->updateProfileInformation->get('telefonas')" />
                     </div>
 
                     <p class="text-xs text-black">
@@ -359,7 +359,7 @@
                     style="background-color: rgb(234, 220, 200)"
                     value="{{ old('gatve', $user->address->gatve ?? '') }}"
                 />
-                <x-input-error class="mt-1" :messages="$errors->get('gatve')" />
+                <x-input-error class="mt-1" :messages="$errors->updateProfileInformation->get('gatve')" />
             </div>
 
             {{-- HOUSE NUMBER --}}
@@ -373,7 +373,7 @@
                     style="background-color: rgb(234, 220, 200)"
                     value="{{ old('namo_nr', $user->address->namo_nr ?? '') }}"
                 />
-                <x-input-error class="mt-1" :messages="$errors->get('namo_nr')" />
+                <x-input-error class="mt-1" :messages="$errors->updateProfileInformation->get('namo_nr')" />
             </div>
 
             {{-- FLAT NUMBER --}}
@@ -387,7 +387,7 @@
                     style="background-color: rgb(234, 220, 200)"
                     value="{{ old('buto_nr', $user->address->buto_nr ?? '') }}"
                 />
-                <x-input-error class="mt-1" :messages="$errors->get('buto_nr')" />
+                <x-input-error class="mt-1" :messages="$errors->updateProfileInformation->get('buto_nr')" />
             </div>
         </div>
 

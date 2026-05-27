@@ -781,7 +781,7 @@ input[type=number] {
                                          <button
                                              type="button"
                                              class="custom-select-toggle w-full rounded border py-2 px-3 text-left text-black focus:outline-none focus:ring-1 focus:ring-[#684F43] focus:border-[#684F43] flex items-center justify-between"
-                                             style="background-color: rgb(104, 79, 67); border-color: #684F43"
+                                             style="background-color: rgb(234, 220, 200); border-color: #684F43"
                                              aria-haspopup="listbox"
                                              aria-expanded="false"
                                          >

@@ -855,27 +855,21 @@ input[type=number] {
 
                 <div>
                     <label class="block text-black font-medium mb-1" for="new-review-rating">Įvertinimas</label>
-                    <div class="relative custom-select" data-placeholder="Pasirinkite įvertinimą">
-                        <input type="hidden" id="new-review-rating" name="ivertinimas" value="" required>
-                        <button
-                            type="button"
-                            class="custom-select-toggle w-full border border-gray-500 rounded p-3 text-black focus:outline-none focus:ring-1 focus:ring-[#684F43] focus:border-[#684F43] flex items-center justify-between"
-                            style="background-color: rgb(227, 197, 157)"
-                            aria-haspopup="listbox"
-                            aria-expanded="false"
-                        >
-                            <span class="custom-select-label">Pasirinkite įvertinimą</span>
-                            <svg class="h-5 w-5 text-black shrink-0" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-                                <path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 11.06l3.71-3.83a.75.75 0 111.08 1.04l-4.25 4.4a.75.75 0 01-1.08 0L5.21 8.27a.75.75 0 01.02-1.06z" clip-rule="evenodd" />
-                            </svg>
-                        </button>
-                        <div class="custom-select-menu hidden absolute left-0 right-0 mt-1 rounded border shadow overflow-hidden z-50"
-                             style="background-color: rgb(227, 197, 157); border-color: #684F43">
-                            <button type="button" class="custom-select-option block w-full px-3 py-2 text-left text-black" data-value="">Pasirinkite įvertinimą</button>
-                            @for($n = 1; $n <= 5; $n++)
-                                <button type="button" class="custom-select-option block w-full px-3 py-2 text-left text-black" data-value="{{ $n }}">{{ $n }} / 5</button>
-                            @endfor
-                        </div>
+                    <input type="hidden" id="new-review-rating" name="ivertinimas" value="" required>
+
+                    <div class="review-stars mb-2" data-edit-stars data-input-id="new-review-rating" data-initial="0">
+                        @for($n = 1; $n <= 5; $n++)
+                            <button
+                                type="button"
+                                class="review-star-btn is-empty"
+                                data-star-value="{{ $n }}"
+                                aria-label="{{ $n }} žvaigždutės"
+                            >☆</button>
+                        @endfor
+                    </div>
+
+                    <div class="text-sm text-black">
+                        <span class="review-stars-value">0 / 5</span>
                     </div>
                 </div>
 
@@ -1157,47 +1151,56 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 
 
-    document.querySelectorAll('[data-edit-stars]').forEach((wrap) => {
-        const inputId = wrap.dataset.inputId;
-        const input = document.getElementById(inputId);
-        const valueLabel = wrap.parentElement.querySelector('.review-stars-value');
-        const buttons = wrap.querySelectorAll('[data-star-value]');
-        let selected = Number(wrap.dataset.initial || input?.value || 0);
-        let hover = 0;
+document.querySelectorAll('[data-edit-stars]').forEach((wrap) => {
+    const inputId = wrap.dataset.inputId;
+    const input = document.getElementById(inputId);
+    const valueLabel = wrap.parentElement.querySelector('.review-stars-value');
+    const buttons = wrap.querySelectorAll('[data-star-value]');
+    let selected = Number(wrap.dataset.initial || input?.value || 0);
+    let hover = 0;
 
-        const paint = () => {
-            const active = hover || selected;
-            buttons.forEach((btn) => {
-                const value = Number(btn.dataset.starValue);
-                const filled = value <= active;
-                btn.textContent = filled ? '★' : '☆';
-                btn.classList.toggle('is-full', filled);
-                btn.classList.toggle('is-empty', !filled);
-            });
-            if (valueLabel) valueLabel.textContent = `${selected} / 5`;
-            if (input) input.value = selected;
-        };
+    const paint = () => {
+        const active = hover || selected;
 
         buttons.forEach((btn) => {
-            btn.addEventListener('mouseenter', () => {
-                hover = Number(btn.dataset.starValue);
-                paint();
-            });
-            btn.addEventListener('click', () => {
-                selected = Number(btn.dataset.starValue);
-                if (input) input.value = selected;
-                if (valueLabel) valueLabel.textContent = `${selected} / 5`;
-                paint();
-            });
+            const value = Number(btn.dataset.starValue);
+            const filled = value <= active;
+
+            btn.textContent = filled ? '★' : '☆';
+            btn.classList.toggle('is-full', filled);
+            btn.classList.toggle('is-empty', !filled);
         });
 
-        wrap.addEventListener('mouseleave', () => {
-            hover = 0;
+        if (valueLabel) {
+            valueLabel.textContent = `${selected} / 5`;
+        }
+
+        if (input) {
+            input.value = selected > 0 ? selected : '';
+            input.setCustomValidity(selected > 0 ? '' : 'Pasirinkite įvertinimą');
+        }
+    };
+
+    buttons.forEach((btn) => {
+        btn.addEventListener('mouseenter', () => {
+            hover = Number(btn.dataset.starValue);
             paint();
         });
 
+        btn.addEventListener('click', () => {
+            selected = Number(btn.dataset.starValue);
+            hover = 0;
+            paint();
+        });
+    });
+
+    wrap.addEventListener('mouseleave', () => {
+        hover = 0;
         paint();
     });
+
+    paint();
+});
 
     document.querySelectorAll('.review-card').forEach((card) => {
         const display = card.querySelector('.review-display');

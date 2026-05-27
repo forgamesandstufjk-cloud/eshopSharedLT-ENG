@@ -98,7 +98,7 @@
                             </div>
 
                             <div class="flex justify-between items-center mt-3">
-                                <span class="font-bold text-base sm:text-lg" style="color: rgb(131, 99, 84)">
+                                <span class="font-bold text-base text-black sm:text-lg">
                                     {{ $item->kaina }} €
                                 </span>
 

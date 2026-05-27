@@ -20,9 +20,15 @@ class PasswordController extends Controller
             'password' => ['required', Password::defaults(), 'confirmed'],
         ]);
 
+        if (Hash::check($validated['password'], $request->user()->slaptazodis)) {
+            return back()->withErrors([
+                'password' => 'Naujas slaptažodis turi skirtis nuo dabartinio slaptažodžio.',
+            ], 'updatePassword');
+        }
+
         $request->user()->update([
-    'slaptazodis' => Hash::make($validated['password']),
-]);
+            'slaptazodis' => Hash::make($validated['password']),
+        ]);
 
         return back()->with('status', 'password-updated');
     }

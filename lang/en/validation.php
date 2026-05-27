@@ -47,7 +47,7 @@ return [
     'distinct' => ':attribute laukas turi pasikartojančią reikšmę.',
     'doesnt_end_with' => ':attribute negali baigtis viena iš šių reikšmių: :values.',
     'doesnt_start_with' => ':attribute negali prasidėti viena iš šių reikšmių: :values.',
-    'email' => ':attribute turi būti galiojantis el. pašto adresas.',
+    'email' => 'el. pašto adresas turi būti galiojantis.',
     'ends_with' => ':attribute turi baigtis viena iš šių reikšmių: :values.',
     'enum' => 'Pasirinkta :attribute reikšmė neteisinga.',
     'exists' => 'Pasirinkta :attribute reikšmė neteisinga.',
